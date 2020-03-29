@@ -1,7 +1,8 @@
 {
-    "name": "compilation-react-ts-scss",
-    "version": "0.1.0",
+    "name": "natural_selection",
+    "version": "0.0.1",
     "private": true,
+    "homepage": "http://slotovi4.github.io/natural_selection",
     "dependencies": {
         "@rematch/core": "^1.4.0",
         "connected-react-router": "^6.8.0",
@@ -17,7 +18,8 @@
         "start": "react-scripts-ts start",
         "build": "GENERATE_SOURCEMAP=false react-scripts-ts build",
         "test": "react-scripts-ts test --env=jsdom",
-        "eject": "react-scripts-ts eject"
+        "eject": "react-scripts-ts eject",
+        "deploy": "gh-pages -d build"
     },
     "devDependencies": {
         "@bem-react/classname": "^1.4.4",
@@ -30,9 +32,10 @@
         "@typescript-eslint/eslint-plugin": "^2.25.0",
         "@typescript-eslint/parser": "^2.25.0",
         "eslint": "^6.8.0",
-        "eslint-plugin-react": "^7.19.0",
         "eslint-config-airbnb": "^18.1.0",
         "eslint-config-airbnb-typescript": "^3.0.0",
+        "eslint-plugin-react": "^7.19.0",
+        "gh-pages": "^2.2.0",
         "typescript": "^3.3.3333"
     },
     "eslintConfig": {
