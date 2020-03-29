@@ -21,7 +21,11 @@
     },
     "rules": {
         "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/interface-name-prefix": 0,
-        "semi": [2, "always"]
+        "@typescript-eslint/interface-name-prefix": "off",
+        "semi": [
+            2,
+            "always"
+        ],
+        "prefer-arrow-callback": "error"
     }
 }
