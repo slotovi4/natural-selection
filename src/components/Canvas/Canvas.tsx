@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@bem-react/classname';
-import {renderArea} from './helpers';
+import { renderNaturalSelectionWorld } from './render';
 import './Canvas.scss';
 
 const Canvas = () => {
@@ -9,13 +9,13 @@ const Canvas = () => {
 
     React.useEffect(() => {
         if (canvasRef.current) {
-            renderArea(canvasRef.current);
+            renderNaturalSelectionWorld(canvasRef.current);
         }
     }, []);
 
     return (
         <div className={cl()}>
-            <canvas ref={canvasRef} width={300} height={300} />
+            <canvas ref={canvasRef} width={500} height={500} />
         </div>
     );
 };

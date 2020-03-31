@@ -22,10 +22,11 @@
     "rules": {
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/explicit-member-accessibility": ["error"],
+        "prefer-arrow-callback": "error",
         "semi": [
             2,
             "always"
         ],
-        "prefer-arrow-callback": "error"
     }
 }

@@ -77,7 +77,7 @@ const checkValidServiceWorker = (swUrl: string) => {
         });
 };
 
-export default () => {
+const register = () => {
     if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
         // The URL constructor is available in all browsers that support SW.
         const publicUrl = new URL(
@@ -121,3 +121,5 @@ export const unregister = () => {
         });
     }
 };
+
+export default register;
