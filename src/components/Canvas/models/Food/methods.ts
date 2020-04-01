@@ -1,33 +1,26 @@
 import { Food } from './Food';
-// import {randomIntFromRange} from '../../helpers';
 import { calcPointDistance } from '../helpers';
+import { foodParams } from './params';
 
 // https://programming.guide/random-point-within-circle.html
 
-export const createFood = (canvas: HTMLCanvasElement, areaRadius: number) => {
+const createFood = (canvas: HTMLCanvasElement, areaRadius: number) => {
     const foodArray: Food[] = [];
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
     if (ctx) {
-        const foodRadius = 10;
-        const foodDistance = foodRadius / 2;
+        const foodRadius = foodParams.radius;
+        const foodDistance = foodRadius;
 
         const areaSquare = Math.floor(Math.PI * Math.pow(areaRadius, 2));
         const foodSquare = Math.floor(Math.PI * Math.pow(foodRadius + foodDistance, 2));
 
         const maxFoodCount = Math.floor(areaSquare / foodSquare);
+        const foodCount = Math.floor(maxFoodCount / 4); // !!1 custom
 
-        for (let i = 0; i < maxFoodCount; i++) {
-            // const angle = Math.random() * Math.PI * 2;
-            // const areaBorderXCoordinate = centerX + Math.cos(angle) * areaRadius;
-            // const areaBorderYCoordinate = centerY + Math.sin(angle) * areaRadius;
-
-
-            // const x = minXCoordinate; // randomIntFromRange(minXCoordinate, minXCoordinate + areaRadius);
-            // const y = minYCoordinate; // randomIntFromRange(minYCoordinate, minYCoordinate + areaRadius);
-
+        for (let i = 0; i < foodCount; i++) {
             const randomAngle = Math.random() * 2 * Math.PI;
             const randomRadius = (areaRadius - foodRadius) * Math.sqrt(Math.random());
 
@@ -39,8 +32,9 @@ export const createFood = (canvas: HTMLCanvasElement, areaRadius: number) => {
             if (i !== 0) {
                 for (let j = 0; j < foodArray.length; j++) {
                     const pointDistance = calcPointDistance(x, y, foodArray[j].x, foodArray[j].y);
+                    const minimumDistance = foodRadius * 2 + foodDistance;
 
-                    if (pointDistance < foodRadius * 2) {
+                    if (pointDistance < minimumDistance) {
                         newFood = null;
                         break;
                     }

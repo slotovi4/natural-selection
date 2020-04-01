@@ -1,6 +1,6 @@
-import { foodParams } from './params';
+import { creatureParams } from './params';
 
-export class Food {
+export class Creature {
     public x: number;
     public y: number;
     public radius: number;
@@ -9,12 +9,13 @@ export class Food {
     public constructor(x: number, y: number, ctx: CanvasRenderingContext2D) {
         this.x = x;
         this.y = y;
-        this.radius = foodParams.radius;
         this.ctx = ctx;
+
+        this.radius = creatureParams.radius;
     }
 
     public draw() {
-        const { fillStyle, strokeStyle } = foodParams;
+        const { fillStyle, strokeStyle, lineWidth } = creatureParams;
 
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
@@ -22,6 +23,7 @@ export class Food {
         this.ctx.fillStyle = fillStyle;
         this.ctx.fill();
         this.ctx.restore();
+        this.ctx.lineWidth = lineWidth;
         this.ctx.strokeStyle = strokeStyle;
         this.ctx.stroke();
         this.ctx.closePath();

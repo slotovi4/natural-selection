@@ -1,4 +1,4 @@
-import { drawFood, drawArea } from './models';
+import { drawFood, drawArea, drawCreature } from './models';
 
 export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
     const ctx = canvas.getContext('2d');
@@ -8,6 +8,7 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
         const { radius } = areaModel.getArea();
 
         drawFood(canvas, radius);
+        drawCreature(canvas, radius);
 
         // setTimeout(() => {
         //     ctx.clearRect(0, 0, canvas.width, canvas.height);

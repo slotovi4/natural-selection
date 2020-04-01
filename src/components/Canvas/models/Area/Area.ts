@@ -1,3 +1,5 @@
+import { areaParams } from './params';
+
 export class Area {
     public radius: number;
     private ctx: CanvasRenderingContext2D;
@@ -9,24 +11,26 @@ export class Area {
     }
 
     public draw() {
+        const { borderWidth, fillStyle, strokeStyle } = areaParams;
         const centerX = this.canvas.width / 2;
         const centerY = this.canvas.height / 2;
-        const borderWidth = 5;
-        this.radius = centerY - borderWidth;
+        const padding = 20;
+        
+        this.radius = centerY - borderWidth - padding;
 
         this.ctx.beginPath();
         this.ctx.beginPath();
         this.ctx.arc(centerX, centerY, this.radius, 0, 2 * Math.PI, false);
-        this.ctx.fillStyle = 'white';
+        this.ctx.fillStyle = fillStyle;
         this.ctx.fill();
         this.ctx.lineWidth = borderWidth;
-        this.ctx.strokeStyle = '#003300';
+        this.ctx.strokeStyle = strokeStyle;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
     public getArea() {
-        return { 
+        return {
             radius: this.radius,
         };
     }
