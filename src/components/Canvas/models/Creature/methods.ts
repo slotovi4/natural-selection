@@ -1,4 +1,4 @@
-import { Creature } from './Creature';
+import { Creature, IFood, IArea } from './Creature';
 import { calcPointDistance } from '../helpers';
 import { creatureParams } from './params';
 
@@ -10,18 +10,12 @@ const createCreature = (canvas: HTMLCanvasElement, areaRadius: number) => {
 
     if (ctx) {
         const creatureRadius = creatureParams.radius;
-        // const creatureDistance = creatureRadius / 2;
-
-        // const areaSquare = Math.floor(Math.PI * Math.pow(areaRadius, 2));
-        // const creatureSquare = Math.floor(Math.PI * Math.pow(creatureRadius + creatureDistance, 2));
-
-        // const maxCreatureCount = Math.floor(areaSquare / creatureSquare);
 
         for (let i = 0; i < 1; i++) {
             const randomAngle = Math.random() * 2 * Math.PI;
 
-            const x = areaRadius * Math.cos(randomAngle) + centerX;
-            const y = areaRadius * Math.sin(randomAngle) + centerY;
+            const x = (areaRadius - creatureRadius) * Math.cos(randomAngle) + centerX;
+            const y = (areaRadius - creatureRadius) * Math.sin(randomAngle) + centerY;
 
             let newCreature: Creature | null = new Creature(x, y, ctx);
 
@@ -55,8 +49,9 @@ export const drawCreature = (canvas: HTMLCanvasElement, areaRadius: number) => {
     return creatureArray;
 };
 
-export const updateCreature = (creatureArray: Creature[]) => {
+export const updateCreature = (creatureArray: Creature[], foodArray: IFood[], area: IArea) => {
     creatureArray.forEach(creature => {
-        creature.update();
+        creature.update(foodArray, area);
     });
 };
+

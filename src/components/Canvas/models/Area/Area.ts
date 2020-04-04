@@ -2,25 +2,27 @@ import { areaParams } from './params';
 
 export class Area {
     public radius: number;
+    public centerX: number;
+    public centerY: number;
     private ctx: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
 
     public constructor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
         this.ctx = ctx;
         this.canvas = canvas;
+        this.centerX = this.canvas.width / 2;
+        this.centerY = this.canvas.height / 2;
     }
 
     public draw() {
-        const { borderWidth, fillStyle, strokeStyle } = areaParams;
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
+        const { fillStyle, strokeStyle, borderWidth } = areaParams;
         const padding = 20;
         
-        this.radius = centerY - borderWidth - padding;
+        this.radius = this.centerY - borderWidth - padding;
 
         this.ctx.beginPath();
         this.ctx.beginPath();
-        this.ctx.arc(centerX, centerY, this.radius, 0, 2 * Math.PI, false);
+        this.ctx.arc(this.centerX, this.centerY, this.radius, 0, 2 * Math.PI, false);
         this.ctx.fillStyle = fillStyle;
         this.ctx.fill();
         this.ctx.lineWidth = borderWidth;
@@ -32,6 +34,8 @@ export class Area {
     public getArea() {
         return {
             radius: this.radius,
+            centerX: this.centerX,
+            centerY: this.centerY,
         };
     }
 }
