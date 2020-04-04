@@ -1,1 +1,1 @@
-export { drawCreature } from './methods';
+export { drawCreature, updateCreature } from './methods';

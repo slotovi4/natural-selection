@@ -51,4 +51,12 @@ export const drawCreature = (canvas: HTMLCanvasElement, areaRadius: number) => {
     creatureArray.forEach(creature => {
         creature.draw();
     });
+
+    return creatureArray;
+};
+
+export const updateCreature = (creatureArray: Creature[]) => {
+    creatureArray.forEach(creature => {
+        creature.update();
+    });
 };

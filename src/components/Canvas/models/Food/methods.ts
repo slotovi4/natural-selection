@@ -50,9 +50,17 @@ const createFood = (canvas: HTMLCanvasElement, areaRadius: number) => {
     return foodArray;
 };
 
-export const drawFood = (canvas: HTMLCanvasElement, areaRadius: number) => {
-    const foodArray = createFood(canvas, areaRadius);
+export const drawFood = (canvas: HTMLCanvasElement, areaRadius: number, arr?: Food[]) => {
+    const foodArray = arr || createFood(canvas, areaRadius);
 
+    foodArray.forEach(food => {
+        food.draw();
+    });
+
+    return foodArray;
+};
+
+export const updateFood = (foodArray: Food[]) => {
     foodArray.forEach(food => {
         food.draw();
     });

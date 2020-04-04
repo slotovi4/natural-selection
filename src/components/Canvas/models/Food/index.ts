@@ -1,1 +1,1 @@
-export { drawFood } from './methods';
+export { drawFood, updateFood } from './methods';

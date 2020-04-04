@@ -4,6 +4,7 @@ export class Creature {
     public x: number;
     public y: number;
     public radius: number;
+    private velocity: number;
     private ctx: CanvasRenderingContext2D;
 
     public constructor(x: number, y: number, ctx: CanvasRenderingContext2D) {
@@ -12,6 +13,7 @@ export class Creature {
         this.ctx = ctx;
 
         this.radius = creatureParams.radius;
+        this.velocity = creatureParams.velocity;
     }
 
     public draw() {
@@ -27,5 +29,12 @@ export class Creature {
         this.ctx.strokeStyle = strokeStyle;
         this.ctx.stroke();
         this.ctx.closePath();
+    }
+
+    public update() {
+        this.draw();
+
+        this.x += this.velocity;
+        this.y += this.velocity;
     }
 }

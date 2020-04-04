@@ -1,3 +1,3 @@
 export { drawArea } from './Area';
-export { drawFood } from './Food';
-export { drawCreature } from './Creature';
+export { drawFood, updateFood } from './Food';
+export { drawCreature, updateCreature } from './Creature';
