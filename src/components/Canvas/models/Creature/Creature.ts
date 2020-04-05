@@ -1,5 +1,5 @@
 import { creatureParams } from './params';
-import { calcPointDistance, randomIntFromRange } from '../helpers';
+import { calcPointDistance, randomIntFromRange, getNearestPointFromPointsArray } from '../helpers';
 
 export class Creature {
     public x: number;
@@ -13,12 +13,15 @@ export class Creature {
     private stepDirectionCount: number;
     private stepDirectionChangeNum: number;
     private onAreaCenter: boolean;
+    private returnedToHome: boolean;
+    private area: IArea;
     private ctx: CanvasRenderingContext2D;
 
-    public constructor(x: number, y: number, ctx: CanvasRenderingContext2D) {
+    public constructor(x: number, y: number, ctx: CanvasRenderingContext2D, area: IArea) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
+        this.area = area;
 
         this.radius = creatureParams.radius;
         this.velocity = creatureParams.velocity;
@@ -26,6 +29,7 @@ export class Creature {
         this.stepDirectionCount = 0;
         this.onAreaCenter = false;
         this.grabbedFoodCount = 0;
+        this.returnedToHome = false;
 
         this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
         this.dX = this.randomDirection();
@@ -54,19 +58,25 @@ export class Creature {
         this.ctx.closePath();
     }
 
-    public update(foodArray: IFood[], area: IArea) {
-        if (!this.grabbedFoodCount) {
-            this.searchFood(foodArray, area);
-        }
+    public update(foodArray: IFood[]) {
+        if(!this.returnedToHome) {
+            if (!this.grabbedFoodCount) {
+                this.searchFood(foodArray);
+            } 
+            
+            else if (this.grabbedFoodCount === 1) {
+                this.goHome();
+            }
 
-        if (this.onAreaCenter) {
-            this.stepDirectionCount += 1;
-        }
+            if (this.onAreaCenter) {
+                this.stepDirectionCount += 1;
+            }
 
-        this.draw();
+            this.draw();
+        }
     }
 
-    private searchFood(foodArray: IFood[], area: IArea) {
+    private searchFood(foodArray: IFood[]) {
         const nearestFood = this.findNearestFood(foodArray);
 
         if (nearestFood) {
@@ -74,10 +84,23 @@ export class Creature {
                 this.grabbedFoodCount += 1;
                 nearestFood.eat();
             } {
-                this.moveToTheFood(nearestFood);
+                this.moveToThePoint(nearestFood);
             }
         } else {
-            this.move(area);
+            this.move();
+        }
+    }
+
+    private goHome() {
+        if(!this.creatureInsideArea()) {
+            this.returnedToHome = true;
+        } else {
+            const areaPoints = this.getAreaPoints();
+            const nearestAreaExitPoint = getNearestPointFromPointsArray(areaPoints, { x: this.x, y: this.y });
+
+            if (nearestAreaExitPoint) {
+                this.moveToThePoint(nearestAreaExitPoint);
+            }
         }
     }
 
@@ -87,55 +110,39 @@ export class Creature {
             food => !food.eaten && calcPointDistance(this.x, this.y, food.x, food.y) < this.radius + this.visibilityRadius + food.radius
         );
 
-        const visibilityFoodArrayLength = visibilityFoodArray.length;
-        let nearestFood: IFood | null = null;
-
         // выбрать ближайший кусок еды из еды в области видимости
-        for (let i = 0; i < visibilityFoodArrayLength; i++) {
-            const food = visibilityFoodArray[i];
-            const foodDistance = calcPointDistance(this.x, this.y, food.x, food.y);
-
-            if (nearestFood) {
-                const nearestFoodDistance = calcPointDistance(this.x, this.y, nearestFood.x, nearestFood.y);
-
-                if (nearestFoodDistance > foodDistance) {
-                    nearestFood = food;
-                }
-            } else {
-                nearestFood = food;
-            }
-        }
+        const nearestFood = getNearestPointFromPointsArray(visibilityFoodArray, { x: this.x, y: this.y });
 
         return nearestFood;
     }
 
-    private moveToTheFood(food: IFood) {
-        if (this.x > food.x) {
+    private moveToThePoint(point: IPoint) {
+        if (this.x > point.x) {
             this.x -= this.velocity;
         } else {
             this.x += this.velocity;
         }
 
-        if (this.y > food.y) {
+        if (this.y > point.y) {
             this.y -= this.velocity;
         } else {
             this.y += this.velocity;
         }
     }
 
-    private move(area: IArea) {
+    private move() {
         // if creature position not on area center
         if (!this.onAreaCenter) {
-            this.moveToAreaCenter(area);
+            this.moveToAreaCenter();
         }
 
         // if creature reached area center
-        if (this.creatureReachedAreaCenter(area) || this.onAreaCenter) {
-            this.moveToRandomDirection(area);
+        if (this.creatureReachedAreaCenter() || this.onAreaCenter) {
+            this.moveToRandomDirection();
         }
     }
 
-    private moveToRandomDirection(area: IArea) {
+    private moveToRandomDirection() {
         this.onAreaCenter = true;
 
         // create move direction
@@ -147,7 +154,7 @@ export class Creature {
         }
 
         // if creature outside area
-        if (!this.creatureInsideArea(area)) {
+        if (!this.creatureInsideArea()) {
             this.dX *= -1;
             this.dY *= -1;
             this.stepDirectionCount = 0;
@@ -158,14 +165,14 @@ export class Creature {
         this.y += this.dY;
     }
 
-    private moveToAreaCenter(area: IArea) {
-        if (this.x > area.centerX) {
+    private moveToAreaCenter() {
+        if (this.x > this.area.centerX) {
             this.x -= this.velocity;
         } else {
             this.x += this.velocity;
         }
 
-        if (this.y > area.centerY) {
+        if (this.y > this.area.centerY) {
             this.y -= this.velocity;
         } else {
             this.y += this.velocity;
@@ -185,18 +192,35 @@ export class Creature {
      * https://www.geeksforgeeks.org/check-if-a-circle-lies-inside-another-circle-or-not/
      * @param area 
      */
-    private creatureInsideArea(area: IArea) {
-        const pointDistance = calcPointDistance(this.x + this.dX, this.y + this.dY, area.centerX, area.centerY); 
-  
-        return pointDistance + this.radius <= area.radius;
+    private creatureInsideArea() {
+        const pointDistance = calcPointDistance(this.x + this.dX, this.y + this.dY, this.area.centerX, this.area.centerY);
+
+        return pointDistance + this.radius <= this.area.radius;
     }
 
     /**
      * Проверка, дошла ли сущность до центра области
      * @param area 
      */
-    private creatureReachedAreaCenter(area: IArea) {
-        return calcPointDistance(this.x, this.y, area.centerX, area.centerY) <= this.radius * 2;
+    private creatureReachedAreaCenter() {
+        return calcPointDistance(this.x, this.y, this.area.centerX, this.area.centerY) <= this.radius * 2;
+    }
+
+    /**
+     * Получить точки выхода из области
+     */
+    private getAreaPoints() {
+        const areaPoints = [];
+        const steps = this.area.radius / 2;
+
+        for (let i = 0; i < steps; i++) {
+            areaPoints.push({
+                x: this.area.centerX + this.area.radius * Math.cos(2 * Math.PI * i / steps),
+                y: this.area.centerY + this.area.radius * Math.sin(2 * Math.PI * i / steps)
+            });
+        }
+
+        return areaPoints;
     }
 
     private randomDirection() {
@@ -220,4 +244,9 @@ export interface IArea {
     centerX: number;
     centerY: number;
     radius: number;
+}
+
+interface IPoint {
+    x: number;
+    y: number;
 }

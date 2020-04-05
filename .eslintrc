@@ -28,6 +28,7 @@
         "no-unused-expressions": "error",
         "no-unused-labels": "error",
         "no-unused-vars": "error",
+        "curly": "error",
         "semi": [
             2,
             "always"

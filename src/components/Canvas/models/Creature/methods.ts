@@ -2,7 +2,7 @@ import { Creature, IFood, IArea } from './Creature';
 import { calcPointDistance } from '../helpers';
 import { creatureParams } from './params';
 
-const createCreature = (canvas: HTMLCanvasElement, areaRadius: number) => {
+const createCreature = (canvas: HTMLCanvasElement, area: IArea) => {
     const creatureArray: Creature[] = [];
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
@@ -14,10 +14,10 @@ const createCreature = (canvas: HTMLCanvasElement, areaRadius: number) => {
         for (let i = 0; i < 1; i++) {
             const randomAngle = Math.random() * 2 * Math.PI;
 
-            const x = (areaRadius - creatureRadius) * Math.cos(randomAngle) + centerX;
-            const y = (areaRadius - creatureRadius) * Math.sin(randomAngle) + centerY;
+            const x = (area.radius - creatureRadius) * Math.cos(randomAngle) + centerX;
+            const y = (area.radius - creatureRadius) * Math.sin(randomAngle) + centerY;
 
-            let newCreature: Creature | null = new Creature(x, y, ctx);
+            let newCreature: Creature | null = new Creature(x, y, ctx, area);
 
             if (i !== 0) {
                 for (let j = 0; j < creatureArray.length; j++) {
@@ -39,8 +39,8 @@ const createCreature = (canvas: HTMLCanvasElement, areaRadius: number) => {
     return creatureArray;
 };
 
-export const drawCreature = (canvas: HTMLCanvasElement, areaRadius: number) => {
-    const creatureArray = createCreature(canvas, areaRadius);
+export const drawCreature = (canvas: HTMLCanvasElement, area: IArea) => {
+    const creatureArray = createCreature(canvas, area);
 
     creatureArray.forEach(creature => {
         creature.draw();
@@ -49,9 +49,9 @@ export const drawCreature = (canvas: HTMLCanvasElement, areaRadius: number) => {
     return creatureArray;
 };
 
-export const updateCreature = (creatureArray: Creature[], foodArray: IFood[], area: IArea) => {
+export const updateCreature = (creatureArray: Creature[], foodArray: IFood[]) => {
     creatureArray.forEach(creature => {
-        creature.update(foodArray, area);
+        creature.update(foodArray);
     });
 };
 
