@@ -1,1 +1,8 @@
-export { drawCreature, updateCreature } from './methods';
+export { 
+    drawCreature, 
+    updateCreature, 
+    checkEndDay,
+    getDeadCreaturesCount,
+    getOffspringCreaturesCount,
+    getSurvivedCreaturesCount,
+} from './methods';

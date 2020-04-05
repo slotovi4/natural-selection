@@ -23,12 +23,12 @@ const createFood = (canvas: HTMLCanvasElement, areaRadius: number) => {
         const maxFoodCount = Math.floor(areaSquare / foodSquare);
         const foodCount = Math.floor(maxFoodCount / 20); // !!1 custom
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 5; i++) {
             const randomAngle = Math.random() * 2 * Math.PI;
             const randomRadius = (areaRadius - foodRadius) * Math.sqrt(Math.random());
 
-            const x = randomRadius * Math.cos(randomAngle) + centerX;
-            const y = randomRadius * Math.sin(randomAngle) + centerY;
+            const x = Math.floor(randomRadius * Math.cos(randomAngle) + centerX);
+            const y = Math.floor(randomRadius * Math.sin(randomAngle) + centerY);
 
             let newFood: Food | null = new Food(x, y, ctx);
 
