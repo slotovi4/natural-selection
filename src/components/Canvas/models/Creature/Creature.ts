@@ -7,10 +7,11 @@ export class Creature {
     public radius: number;
     private visibilityRadius: number;
     private velocity: number;
-    private foodWasGrabbed: boolean;
+    private grabbedFoodCount: number;
     private dX: number;
     private dY: number;
     private stepDirectionCount: number;
+    private stepDirectionChangeNum: number;
     private onAreaCenter: boolean;
     private ctx: CanvasRenderingContext2D;
 
@@ -22,10 +23,11 @@ export class Creature {
         this.radius = creatureParams.radius;
         this.velocity = creatureParams.velocity;
         this.visibilityRadius = creatureParams.visibilityRadius;
-        this.foodWasGrabbed = false;
         this.stepDirectionCount = 0;
         this.onAreaCenter = false;
+        this.grabbedFoodCount = 0;
 
+        this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
         this.dX = this.randomDirection();
         this.dY = this.randomDirection();
     }
@@ -53,7 +55,7 @@ export class Creature {
     }
 
     public update(foodArray: IFood[], area: IArea) {
-        if (!this.foodWasGrabbed) {
+        if (!this.grabbedFoodCount) {
             this.searchFood(foodArray, area);
         }
 
@@ -69,7 +71,7 @@ export class Creature {
 
         if (nearestFood) {
             if (this.foodWasGrabbedCheck(nearestFood)) {
-                this.foodWasGrabbed = true;
+                this.grabbedFoodCount += 1;
             } {
                 this.moveToTheFood(nearestFood);
             }
@@ -136,9 +138,11 @@ export class Creature {
         this.onAreaCenter = true;
 
         // create move direction
-        if (!(this.stepDirectionCount % 50)) {
+        if (!(this.stepDirectionCount % this.stepDirectionChangeNum)) {
             this.dX = this.randomDirection();
             this.dY = this.randomDirection();
+            this.stepDirectionCount = 0;
+            this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
         }
 
         // if creature outside area
@@ -177,10 +181,13 @@ export class Creature {
 
     /**
      * Проверка, на нахождение сущности в пределах области
+     * https://www.geeksforgeeks.org/check-if-a-circle-lies-inside-another-circle-or-not/
      * @param area 
      */
     private creatureInsideArea(area: IArea) {
-        return calcPointDistance(this.x + this.dX, this.y + this.dY, area.centerX, area.centerY) <= this.radius + area.radius; // FIX & UPDATE
+        const pointDistance = calcPointDistance(this.x + this.dX, this.y + this.dY, area.centerX, area.centerY); 
+  
+        return pointDistance + this.radius <= area.radius;
     }
 
     /**
@@ -193,6 +200,10 @@ export class Creature {
 
     private randomDirection() {
         return randomIntFromRange(0, 1) ? this.velocity : -this.velocity;
+    }
+
+    private randomStepDirectionChangeNum() {
+        return randomIntFromRange(30, 50);
     }
 }
 

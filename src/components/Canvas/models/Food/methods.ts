@@ -1,9 +1,12 @@
 import { Food } from './Food';
 import { calcPointDistance } from '../helpers';
 import { foodParams } from './params';
-
-// https://programming.guide/random-point-within-circle.html
-
+/**
+ * Создание массива еды для области
+ * https://programming.guide/random-point-within-circle.html
+ * @param canvas 
+ * @param areaRadius 
+ */
 const createFood = (canvas: HTMLCanvasElement, areaRadius: number) => {
     const foodArray: Food[] = [];
     const ctx = canvas.getContext('2d');
@@ -20,7 +23,7 @@ const createFood = (canvas: HTMLCanvasElement, areaRadius: number) => {
         const maxFoodCount = Math.floor(areaSquare / foodSquare);
         const foodCount = Math.floor(maxFoodCount / 20); // !!1 custom
 
-        for (let i = 0; i < 0; i++) {
+        for (let i = 0; i < 3; i++) {
             const randomAngle = Math.random() * 2 * Math.PI;
             const randomRadius = (areaRadius - foodRadius) * Math.sqrt(Math.random());
 
