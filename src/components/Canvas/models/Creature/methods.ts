@@ -11,7 +11,7 @@ const createCreature = (canvas: HTMLCanvasElement, area: IArea) => {
     if (ctx) {
         const creatureRadius = creatureParams.radius;
 
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 5; i++) {
             const randomAngle = Math.random() * 2 * Math.PI;
 
             const x = (area.radius - creatureRadius) * Math.cos(randomAngle) + centerX;
@@ -50,8 +50,25 @@ export const drawCreature = (canvas: HTMLCanvasElement, area: IArea) => {
 };
 
 export const updateCreature = (creatureArray: Creature[], foodArray: IFood[]) => {
+    const newCreatureArray: Creature[] = [];
+
     creatureArray.forEach(creature => {
-        creature.update(foodArray);
+        newCreatureArray.push(creature.update(foodArray));
     });
+
+    return newCreatureArray;
 };
 
+export const checkEndDay = (creatureArray: Creature[]) => creatureArray.every(creature => creature.isDie || creature.returnedToHome);
+
+export const getSurvivedCreaturesCount = (creatureArray: Creature[]) => {
+    return creatureArray.filter(creature => creature.grabbedFoodCount && !creature.isDie && creature.returnedToHome).length;
+};
+
+export const getDeadCreaturesCount = (creatureArray: Creature[]) => {
+    return creatureArray.filter(creature => creature.isDie).length;
+};
+
+export const getOffspringCreaturesCount = (creatureArray: Creature[]) => {
+    return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome).length;
+};

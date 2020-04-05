@@ -5,16 +5,17 @@ export class Creature {
     public x: number;
     public y: number;
     public radius: number;
+    public returnedToHome: boolean;
+    public isDie: boolean;
+    public grabbedFoodCount: number;
 
     private visibilityRadius: number;
     private velocity: number;
-    private grabbedFoodCount: number;
     private dX: number;
     private dY: number;
     private stepDirectionCount: number;
     private stepDirectionChangeNum: number;
     private onAreaCenter: boolean;
-    private returnedToHome: boolean;
     private step: number;
     private energy: number;
     private energyIntensity: number;
@@ -37,6 +38,7 @@ export class Creature {
         this.onAreaCenter = false;
         this.grabbedFoodCount = 0;
         this.returnedToHome = false;
+        this.isDie = false;
         this.step = 0;
         this.energyIntensity = 2;
         this.energy = this.replenishEnergy();
@@ -91,6 +93,8 @@ export class Creature {
             this.step += 1;
             this.draw();
         }
+
+        return this;
     }
 
     private searchFood(foodArray: IFood[]) {
@@ -263,7 +267,11 @@ export class Creature {
     }
 
     private checkDeath() {
-        return this.energy === 0;
+        if(this.energy === 0) {
+            this.isDie = true;
+        }
+
+        return this.isDie;
     }
 
     private replenishEnergy() {
