@@ -18,6 +18,7 @@ const init = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
 
 export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
     const ctx = canvas.getContext('2d');
+    // const fps = 60;
 
     if (ctx) {
         const { foodArray, creatureArray } = init(canvas, ctx);
@@ -29,7 +30,9 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
             updateFood(foodArray);
             updateCreature(creatureArray, foodArray);
 
-            requestAnimationFrame(animate);
+            // setTimeout(() => {
+                requestAnimationFrame(animate);
+            // }, 1000 / fps);
         };
 
         animate();

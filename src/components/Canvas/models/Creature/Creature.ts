@@ -5,6 +5,7 @@ export class Creature {
     public x: number;
     public y: number;
     public radius: number;
+
     private visibilityRadius: number;
     private velocity: number;
     private grabbedFoodCount: number;
@@ -14,6 +15,10 @@ export class Creature {
     private stepDirectionChangeNum: number;
     private onAreaCenter: boolean;
     private returnedToHome: boolean;
+    private step: number;
+    private energy: number;
+    private energyIntensity: number;
+
     private area: IArea;
     private ctx: CanvasRenderingContext2D;
 
@@ -30,6 +35,9 @@ export class Creature {
         this.onAreaCenter = false;
         this.grabbedFoodCount = 0;
         this.returnedToHome = false;
+        this.step = 0;
+        this.energyIntensity = 2;
+        this.energy = 100 * this.energyIntensity;
 
         this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
         this.dX = this.randomDirection();
@@ -59,11 +67,11 @@ export class Creature {
     }
 
     public update(foodArray: IFood[]) {
-        if(!this.returnedToHome) {
+        if (!this.returnedToHome && !this.checkDeath()) {
             if (!this.grabbedFoodCount) {
                 this.searchFood(foodArray);
-            } 
-            
+            }
+
             else if (this.grabbedFoodCount === 1) {
                 this.goHome();
             }
@@ -72,6 +80,7 @@ export class Creature {
                 this.stepDirectionCount += 1;
             }
 
+            this.step += 1;
             this.draw();
         }
     }
@@ -82,6 +91,7 @@ export class Creature {
         if (nearestFood) {
             if (this.foodWasGrabbedCheck(nearestFood)) {
                 this.grabbedFoodCount += 1;
+                this.energy = 100;
                 nearestFood.eat();
             } {
                 this.moveToThePoint(nearestFood);
@@ -92,7 +102,7 @@ export class Creature {
     }
 
     private goHome() {
-        if(!this.creatureInsideArea()) {
+        if (!this.creatureInsideArea()) {
             this.returnedToHome = true;
         } else {
             const areaPoints = this.getAreaPoints();
@@ -114,20 +124,6 @@ export class Creature {
         const nearestFood = getNearestPointFromPointsArray(visibilityFoodArray, { x: this.x, y: this.y });
 
         return nearestFood;
-    }
-
-    private moveToThePoint(point: IPoint) {
-        if (this.x > point.x) {
-            this.x -= this.velocity;
-        } else {
-            this.x += this.velocity;
-        }
-
-        if (this.y > point.y) {
-            this.y -= this.velocity;
-        } else {
-            this.y += this.velocity;
-        }
     }
 
     private move() {
@@ -163,16 +159,19 @@ export class Creature {
         // move creature
         this.x += this.dX;
         this.y += this.dY;
+        this.wasteOfEnergy();
     }
 
-    private moveToAreaCenter() {
-        if (this.x > this.area.centerX) {
+    private moveToThePoint(point: IPoint) {
+        this.wasteOfEnergy();
+
+        if (this.x > point.x) {
             this.x -= this.velocity;
         } else {
             this.x += this.velocity;
         }
 
-        if (this.y > this.area.centerY) {
+        if (this.y > point.y) {
             this.y -= this.velocity;
         } else {
             this.y += this.velocity;
@@ -221,6 +220,22 @@ export class Creature {
         }
 
         return areaPoints;
+    }
+
+    private moveToAreaCenter() {
+        this.moveToThePoint({ x: this.area.centerX, y: this.area.centerY });
+    }
+
+    private wasteOfEnergy() {
+        const wasteEnergyPerSec = Math.floor(this.area.radius / 60);
+        
+        if (!(this.step % wasteEnergyPerSec)) {
+            this.energy -= 1;
+        }
+    }
+
+    private checkDeath() {
+        return this.energy === 0;
     }
 
     private randomDirection() {
