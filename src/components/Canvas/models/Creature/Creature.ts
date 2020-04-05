@@ -18,6 +18,7 @@ export class Creature {
     private step: number;
     private energy: number;
     private energyIntensity: number;
+    private wasteEnergyPerMove: number;
 
     private area: IArea;
     private ctx: CanvasRenderingContext2D;
@@ -37,7 +38,8 @@ export class Creature {
         this.returnedToHome = false;
         this.step = 0;
         this.energyIntensity = 2;
-        this.energy = 100 * this.energyIntensity;
+        this.energy = this.replenishEnergy();
+        this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
 
         this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
         this.dX = this.randomDirection();
@@ -73,6 +75,10 @@ export class Creature {
             }
 
             else if (this.grabbedFoodCount === 1) {
+                this.tryFindFoodForPosterity(foodArray);
+            }
+
+            else if (this.grabbedFoodCount === 2) {
                 this.goHome();
             }
 
@@ -91,7 +97,7 @@ export class Creature {
         if (nearestFood) {
             if (this.foodWasGrabbedCheck(nearestFood)) {
                 this.grabbedFoodCount += 1;
-                this.energy = 100;
+                this.energy = this.replenishEnergy();
                 nearestFood.eat();
             } {
                 this.moveToThePoint(nearestFood);
@@ -105,11 +111,25 @@ export class Creature {
         if (!this.creatureInsideArea()) {
             this.returnedToHome = true;
         } else {
-            const areaPoints = this.getAreaPoints();
-            const nearestAreaExitPoint = getNearestPointFromPointsArray(areaPoints, { x: this.x, y: this.y });
+            const nearestAreaExitPoint = this.getNearestAreaExitPoint();
 
             if (nearestAreaExitPoint) {
                 this.moveToThePoint(nearestAreaExitPoint);
+            }
+        }
+    }
+
+    private tryFindFoodForPosterity(foodArray: IFood[]) {
+        const nearestAreaExitPoint = this.getNearestAreaExitPoint();
+
+        if(nearestAreaExitPoint) {
+            const nearestAreaExitPointDistance = calcPointDistance(this.x, this.y, nearestAreaExitPoint.x, nearestAreaExitPoint.y);
+            const distanceToExitPoint = Math.floor(nearestAreaExitPointDistance / this.velocity);
+   
+            if(distanceToExitPoint / this.wasteEnergyPerMove < this.energy) {
+                this.searchFood(foodArray);
+            } else {
+                this.goHome();
             }
         }
     }
@@ -178,6 +198,13 @@ export class Creature {
         }
     }
 
+    private getNearestAreaExitPoint() {
+        const areaPoints = this.getAreaPoints();
+        const nearestAreaExitPoint = getNearestPointFromPointsArray(areaPoints, { x: this.x, y: this.y });
+
+        return nearestAreaExitPoint;
+    }
+
     /**
      * Проверка, добыла ли еду сущность
      * @param food 
@@ -227,15 +254,20 @@ export class Creature {
     }
 
     private wasteOfEnergy() {
-        const wasteEnergyPerSec = Math.floor(this.area.radius / 60);
-        
-        if (!(this.step % wasteEnergyPerSec)) {
+        if (!(this.step % this.wasteEnergyPerMove)) {
             this.energy -= 1;
         }
     }
 
     private checkDeath() {
+        // this.energy / this.wasteEnergyPerMove
+        // if is death try find food
+
         return this.energy === 0;
+    }
+
+    private replenishEnergy() {
+        return this.energy = 100 * this.energyIntensity;
     }
 
     private randomDirection() {
