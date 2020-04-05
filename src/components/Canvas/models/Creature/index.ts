@@ -1,0 +1,1 @@
+export { drawCreature, updateCreature } from './methods';

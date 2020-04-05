@@ -2,7 +2,7 @@
     "name": "natural_selection",
     "version": "0.0.1",
     "private": true,
-    "homepage": "http://slotovi4.github.io/natural_selection",
+    "homepage": "https://slotovi4.github.io/natural_selection",
     "dependencies": {
         "@rematch/core": "^1.4.0",
         "connected-react-router": "^6.8.0",

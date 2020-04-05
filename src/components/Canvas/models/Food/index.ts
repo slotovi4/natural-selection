@@ -1,0 +1,1 @@
+export { drawFood, updateFood } from './methods';
