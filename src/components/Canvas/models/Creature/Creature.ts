@@ -72,6 +72,7 @@ export class Creature {
         if (nearestFood) {
             if (this.foodWasGrabbedCheck(nearestFood)) {
                 this.grabbedFoodCount += 1;
+                nearestFood.eat();
             } {
                 this.moveToTheFood(nearestFood);
             }
@@ -81,9 +82,9 @@ export class Creature {
     }
 
     private findNearestFood(foodArray: IFood[]) {
-        // отфильтровать еду и оставить только ту которая в радиусе видимости
+        // отфильтровать еду и оставить только ту которая в радиусе видимости и не съедена
         const visibilityFoodArray = foodArray.filter(
-            food => calcPointDistance(this.x, this.y, food.x, food.y) < this.radius + this.visibilityRadius + food.radius
+            food => !food.eaten && calcPointDistance(this.x, this.y, food.x, food.y) < this.radius + this.visibilityRadius + food.radius
         );
 
         const visibilityFoodArrayLength = visibilityFoodArray.length;
@@ -211,6 +212,8 @@ export interface IFood {
     x: number;
     y: number;
     radius: number;
+    eaten: boolean;
+    eat: () => void;
 }
 
 export interface IArea {
