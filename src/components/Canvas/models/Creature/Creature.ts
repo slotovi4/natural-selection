@@ -19,6 +19,7 @@ export class Creature {
     private energy: number;
     private energyIntensity: number;
     private wasteEnergyPerMove: number;
+    private noFoodForPosterity: boolean;
 
     private area: IArea;
     private ctx: CanvasRenderingContext2D;
@@ -40,6 +41,7 @@ export class Creature {
         this.energyIntensity = 2;
         this.energy = this.replenishEnergy();
         this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
+        this.noFoodForPosterity = false;
 
         this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
         this.dX = this.randomDirection();
@@ -74,11 +76,11 @@ export class Creature {
                 this.searchFood(foodArray);
             }
 
-            else if (this.grabbedFoodCount === 1) {
+            else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity) {
                 this.tryFindFoodForPosterity(foodArray);
             }
 
-            else if (this.grabbedFoodCount === 2) {
+            else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity) {
                 this.goHome();
             }
 
@@ -129,6 +131,7 @@ export class Creature {
             if(distanceToExitPoint / this.wasteEnergyPerMove < this.energy) {
                 this.searchFood(foodArray);
             } else {
+                this.noFoodForPosterity = true;
                 this.goHome();
             }
         }
@@ -260,9 +263,6 @@ export class Creature {
     }
 
     private checkDeath() {
-        // this.energy / this.wasteEnergyPerMove
-        // if is death try find food
-
         return this.energy === 0;
     }
 
