@@ -1,46 +1,41 @@
-import { Creature, IFood, IArea } from './Creature';
-import { calcPointDistance } from '../helpers';
-import { creatureParams } from './params';
+import { Creature } from './Creature';
+import { creatureParams } from './config';
+import { IArea, IFood } from "../interface";
 
-const createCreature = (canvas: HTMLCanvasElement, area: IArea) => {
+const createCreature = (ctx: CanvasRenderingContext2D, area: IArea) => {
+    const creatureRadius = creatureParams.radius;
+    const randomAngle = Math.random() * 2 * Math.PI;
+
+    const x = (area.radius - creatureRadius) * Math.cos(randomAngle) + area.centerX;
+    const y = (area.radius - creatureRadius) * Math.sin(randomAngle) + area.centerY;
+
+    return new Creature(x, y, ctx, area);
+};
+
+const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea) => {
     const creatureArray: Creature[] = [];
-    const ctx = canvas.getContext('2d');
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
 
-    if (ctx) {
-        const creatureRadius = creatureParams.radius;
-
-        for (let i = 0; i < 5; i++) {
-            const randomAngle = Math.random() * 2 * Math.PI;
-
-            const x = (area.radius - creatureRadius) * Math.cos(randomAngle) + centerX;
-            const y = (area.radius - creatureRadius) * Math.sin(randomAngle) + centerY;
-
-            let newCreature: Creature | null = new Creature(x, y, ctx, area);
-
-            if (i !== 0) {
-                for (let j = 0; j < creatureArray.length; j++) {
-                    const pointDistance = calcPointDistance(x, y, creatureArray[j].x, creatureArray[j].y);
-
-                    if (pointDistance < creatureRadius * 2) {
-                        newCreature = null;
-                        break;
-                    }
-                }
-            }
-
-            if (newCreature) {
-                creatureArray.push(newCreature);
-            }
-        }
+    for (let i = 0; i < 5; i++) {
+        creatureArray.push(createCreature(ctx, area));
     }
 
     return creatureArray;
 };
 
-export const drawCreature = (canvas: HTMLCanvasElement, area: IArea) => {
-    const creatureArray = createCreature(canvas, area);
+const getSurvivedCreatures = (creatureArray: Creature[]) => {
+    return creatureArray.filter(creature => creature.grabbedFoodCount && !creature.isDie && creature.returnedToHome);
+};
+
+const getDeadCreatures = (creatureArray: Creature[]) => {
+    return creatureArray.filter(creature => creature.isDie);
+};
+
+const getOffspringCreatures = (creatureArray: Creature[]) => {
+    return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome);
+};
+
+export const drawCreature = (ctx: CanvasRenderingContext2D, area: IArea) => {
+    const creatureArray = createCreatureArray(ctx, area);
 
     creatureArray.forEach(creature => {
         creature.draw();
@@ -49,11 +44,11 @@ export const drawCreature = (canvas: HTMLCanvasElement, area: IArea) => {
     return creatureArray;
 };
 
-export const updateCreature = (creatureArray: Creature[], foodArray: IFood[]) => {
+export const updateCreature = (creatureArray: Creature[], foodArray: IFood[], dayEnd: boolean) => {
     const newCreatureArray: Creature[] = [];
 
     creatureArray.forEach(creature => {
-        newCreatureArray.push(creature.update(foodArray));
+        newCreatureArray.push(creature.update(foodArray, dayEnd));
     });
 
     return newCreatureArray;
@@ -61,14 +56,32 @@ export const updateCreature = (creatureArray: Creature[], foodArray: IFood[]) =>
 
 export const checkEndDay = (creatureArray: Creature[]) => creatureArray.every(creature => creature.isDie || creature.returnedToHome);
 
-export const getSurvivedCreaturesCount = (creatureArray: Creature[]) => {
-    return creatureArray.filter(creature => creature.grabbedFoodCount && !creature.isDie && creature.returnedToHome).length;
+export const getNextDayCreatureArray = (endDayCreatureArray: Creature[], ctx: CanvasRenderingContext2D, area: IArea) => {
+    const nextDayCreatureArray = [];
+    const posterityCreaturesArray = [];
+
+    const survivedCreatures = getSurvivedCreatures(endDayCreatureArray);
+    const offspringCreaturesCount = getOffspringCreatures(endDayCreatureArray).length;
+
+    for (let i = 0; i < offspringCreaturesCount; i++) {
+        posterityCreaturesArray.push(createCreature(ctx, area));
+    }
+
+    nextDayCreatureArray.push(...survivedCreatures, ...posterityCreaturesArray);
+
+    return nextDayCreatureArray;
 };
 
-export const getDeadCreaturesCount = (creatureArray: Creature[]) => {
-    return creatureArray.filter(creature => creature.isDie).length;
+export const getDayResult = (endDayCreatureArray: Creature[]): IDayResult => {
+    return ({
+        dieCount: getDeadCreatures(endDayCreatureArray).length,
+        survivedCount: getSurvivedCreatures(endDayCreatureArray).length,
+        offspringCount: getOffspringCreatures(endDayCreatureArray).length,
+    });
 };
 
-export const getOffspringCreaturesCount = (creatureArray: Creature[]) => {
-    return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome).length;
-};
+export interface IDayResult {
+    dieCount: number;
+    survivedCount: number;
+    offspringCount: number;
+}

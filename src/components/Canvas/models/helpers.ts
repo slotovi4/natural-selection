@@ -1,3 +1,5 @@
+import { IPoint } from "./interface";
+
 export const calcPointDistance = (x1: number, y1: number, x2: number, y2: number) => {
     const xDist = x2 - x1;
     const yDist = y2 - y1;
@@ -31,8 +33,3 @@ export const getNearestPointFromPointsArray = <T extends IPoint, N extends IPoin
 
     return nearestPoint;
 };
-
-interface IPoint {
-    x: number;
-    y: number;
-}

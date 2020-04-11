@@ -2,7 +2,7 @@ export {
     drawCreature, 
     updateCreature, 
     checkEndDay,
-    getDeadCreaturesCount,
-    getOffspringCreaturesCount,
-    getSurvivedCreaturesCount,
+    getDayResult,
+    getNextDayCreatureArray,
+    IDayResult,
 } from './methods';

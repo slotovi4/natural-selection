@@ -1,5 +1,6 @@
-import { creatureParams } from './params';
+import { creatureParams } from './config';
 import { calcPointDistance, randomIntFromRange, getNearestPointFromPointsArray } from '../helpers';
+import { IArea, IFood, IPoint } from "../interface";
 
 export class Creature {
     public x: number;
@@ -72,25 +73,34 @@ export class Creature {
         this.ctx.closePath();
     }
 
-    public update(foodArray: IFood[]) {
-        if (!this.returnedToHome && !this.checkDeath()) {
-            if (!this.grabbedFoodCount) {
-                this.searchFood(foodArray);
+    public update(foodArray: IFood[], dayEnd: boolean) {
+        if (!this.checkDeath()) {
+            // if not returned to home
+            if (!this.returnedToHome) {
+                if (!this.grabbedFoodCount) {
+                    this.searchFood(foodArray);
+                }
+
+                else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity) {
+                    this.tryFindFoodForPosterity(foodArray);
+                }
+
+                else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity) {
+                    this.goHome();
+                }
+
+                if (this.onAreaCenter) {
+                    this.stepDirectionCount += 1;
+                }
+
+                this.step += 1;
             }
 
-            else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity) {
-                this.tryFindFoodForPosterity(foodArray);
+            // if returned to home
+            else if (this.returnedToHome && dayEnd) {
+                this.resetState();
             }
 
-            else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity) {
-                this.goHome();
-            }
-
-            if (this.onAreaCenter) {
-                this.stepDirectionCount += 1;
-            }
-
-            this.step += 1;
             this.draw();
         }
 
@@ -128,11 +138,11 @@ export class Creature {
     private tryFindFoodForPosterity(foodArray: IFood[]) {
         const nearestAreaExitPoint = this.getNearestAreaExitPoint();
 
-        if(nearestAreaExitPoint) {
+        if (nearestAreaExitPoint) {
             const nearestAreaExitPointDistance = calcPointDistance(this.x, this.y, nearestAreaExitPoint.x, nearestAreaExitPoint.y);
             const distanceToExitPoint = Math.floor(nearestAreaExitPointDistance / this.velocity);
-   
-            if(distanceToExitPoint / this.wasteEnergyPerMove < this.energy) {
+
+            if (distanceToExitPoint / this.wasteEnergyPerMove < this.energy) {
                 this.searchFood(foodArray);
             } else {
                 this.noFoodForPosterity = true;
@@ -212,6 +222,22 @@ export class Creature {
         return nearestAreaExitPoint;
     }
 
+    private resetState() {
+        if (!this.checkDeath()) {
+            this.stepDirectionCount = 0;
+            this.onAreaCenter = false;
+            this.grabbedFoodCount = 0;
+            this.returnedToHome = false;
+            this.step = 0;
+            this.energy = this.replenishEnergy();
+            this.noFoodForPosterity = false;
+
+            this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
+            this.dX = this.randomDirection();
+            this.dY = this.randomDirection();
+        }
+    }
+
     /**
      * Проверка, добыла ли еду сущность
      * @param food 
@@ -260,6 +286,9 @@ export class Creature {
         this.moveToThePoint({ x: this.area.centerX, y: this.area.centerY });
     }
 
+    /**
+     * Расход энергии
+     */
     private wasteOfEnergy() {
         if (!(this.step % this.wasteEnergyPerMove)) {
             this.energy -= 1;
@@ -267,7 +296,7 @@ export class Creature {
     }
 
     private checkDeath() {
-        if(this.energy === 0) {
+        if (this.energy === 0) {
             this.isDie = true;
         }
 
@@ -285,23 +314,4 @@ export class Creature {
     private randomStepDirectionChangeNum() {
         return randomIntFromRange(30, 50);
     }
-}
-
-export interface IFood {
-    x: number;
-    y: number;
-    radius: number;
-    eaten: boolean;
-    eat: () => void;
-}
-
-export interface IArea {
-    centerX: number;
-    centerY: number;
-    radius: number;
-}
-
-interface IPoint {
-    x: number;
-    y: number;
 }

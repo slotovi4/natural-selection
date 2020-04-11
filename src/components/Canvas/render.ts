@@ -5,48 +5,56 @@ import {
     updateFood,
     updateCreature,
     checkEndDay,
-    getDeadCreaturesCount,
-    getOffspringCreaturesCount,
-    getSurvivedCreaturesCount,
+    getDayResult,
+    getNextDayCreatureArray,
+    IDayResult,
 } from './models';
 
 const init = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
     const areaModel = drawArea(ctx, canvas);
     const area = areaModel.getArea();
 
-    const creatureArray = drawCreature(canvas, area);
-    const foodArray = drawFood(canvas, area.radius);
+    const creatureArray = drawCreature(ctx, area);
+    const foodArray = drawFood(ctx, area);
 
-    return { foodArray, creatureArray };
+    return { foodArray, creatureArray, area };
 };
 
-export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
+export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement, stopSelection: () => void) => {
     const ctx = canvas.getContext('2d');
-    // const fps = 60;
 
     if (ctx) {
-        const { foodArray, creatureArray } = init(canvas, ctx);
+        const { foodArray, creatureArray, area } = init(canvas, ctx);
+        const resultArray: IDayResult[] = [];
+        
+        let day = 0;
         let dayEnd = false;
+        let newCreatureArray = creatureArray;
+        let newFoodArray = foodArray;
 
         const animate = () => {
-            if(!dayEnd) {
+            if (day !== 5) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 drawArea(ctx, canvas);
-                updateFood(foodArray);
-                
-                const newCreatureArray = updateCreature(creatureArray, foodArray);
+                updateFood(newFoodArray);
+                newCreatureArray = updateCreature(newCreatureArray, newFoodArray, dayEnd);
+
                 dayEnd = checkEndDay(newCreatureArray);
 
-                if(dayEnd) {
-                    console.log(`умерло: ${getDeadCreaturesCount(newCreatureArray)}`);
-                    console.log(`выжило: ${getSurvivedCreaturesCount(newCreatureArray)}`);
-                    console.log(`дало потомство: ${getOffspringCreaturesCount(newCreatureArray)}`);
+                if (dayEnd) {
+                    resultArray.push(getDayResult(newCreatureArray));
+
+                    newFoodArray = drawFood(ctx, area);
+                    newCreatureArray = getNextDayCreatureArray(newCreatureArray, ctx, area);
+
+                    day += 1;
                 }
 
-                // setTimeout(() => {
                 requestAnimationFrame(animate);
-                // }, 1000 / fps);
+            } else {
+                stopSelection();
+                console.log(resultArray);
             }
         };
 

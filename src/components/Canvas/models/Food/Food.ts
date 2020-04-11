@@ -1,4 +1,4 @@
-import { foodParams } from './params';
+import { foodParams } from './config';
 
 export class Food {
     public x: number;
