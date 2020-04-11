@@ -6,5 +6,5 @@ export {
     checkEndDay,
     getDayResult,
     getNextDayCreatureArray,
-    IResult,
+    IDayResult,
 } from './Creature';

@@ -7,15 +7,15 @@ import {
     checkEndDay,
     getDayResult,
     getNextDayCreatureArray,
-    IResult,
+    IDayResult,
 } from './models';
 
 const init = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
     const areaModel = drawArea(ctx, canvas);
     const area = areaModel.getArea();
 
-    const creatureArray = drawCreature(canvas, area);
-    const foodArray = drawFood(canvas, area.radius);
+    const creatureArray = drawCreature(ctx, area);
+    const foodArray = drawFood(ctx, area);
 
     return { foodArray, creatureArray, area };
 };
@@ -26,7 +26,7 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
     if (ctx) {
         const { foodArray, creatureArray, area } = init(canvas, ctx);
 
-        const resultArray: IResult[] = [];
+        const resultArray: IDayResult[] = [];
         let day = 0;
         let dayEnd = false;
         let newCreatureArray = creatureArray;
@@ -45,7 +45,7 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
                 if (dayEnd) {
                     resultArray.push(getDayResult(newCreatureArray));
 
-                    newFoodArray = drawFood(canvas, area.radius);
+                    newFoodArray = drawFood(ctx, area);
                     newCreatureArray = getNextDayCreatureArray(newCreatureArray, ctx, area);
 
                     day += 1;

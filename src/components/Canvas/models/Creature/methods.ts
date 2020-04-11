@@ -1,5 +1,6 @@
-import { Creature, IFood, IArea } from './Creature';
+import { Creature } from './Creature';
 import { creatureParams } from './params';
+import { IArea, IFood } from "../interface";
 
 const createCreature = (ctx: CanvasRenderingContext2D, area: IArea) => {
     const creatureRadius = creatureParams.radius;
@@ -11,14 +12,11 @@ const createCreature = (ctx: CanvasRenderingContext2D, area: IArea) => {
     return new Creature(x, y, ctx, area);
 };
 
-const createCreatureArray = (canvas: HTMLCanvasElement, area: IArea) => {
+const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea) => {
     const creatureArray: Creature[] = [];
-    const ctx = canvas.getContext('2d');
 
-    if (ctx) {
-        for (let i = 0; i < 5; i++) {
-            creatureArray.push(createCreature(ctx, area));
-        }
+    for (let i = 0; i < 5; i++) {
+        creatureArray.push(createCreature(ctx, area));
     }
 
     return creatureArray;
@@ -36,8 +34,8 @@ const getOffspringCreatures = (creatureArray: Creature[]) => {
     return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome);
 };
 
-export const drawCreature = (canvas: HTMLCanvasElement, area: IArea) => {
-    const creatureArray = createCreatureArray(canvas, area);
+export const drawCreature = (ctx: CanvasRenderingContext2D, area: IArea) => {
+    const creatureArray = createCreatureArray(ctx, area);
 
     creatureArray.forEach(creature => {
         creature.draw();
@@ -74,7 +72,7 @@ export const getNextDayCreatureArray = (endDayCreatureArray: Creature[], ctx: Ca
     return nextDayCreatureArray;
 };
 
-export const getDayResult = (endDayCreatureArray: Creature[]): IResult => {
+export const getDayResult = (endDayCreatureArray: Creature[]): IDayResult => {
     return ({
         dieCount: getDeadCreatures(endDayCreatureArray).length,
         survivedCount: getSurvivedCreatures(endDayCreatureArray).length,
@@ -82,7 +80,7 @@ export const getDayResult = (endDayCreatureArray: Creature[]): IResult => {
     });
 };
 
-export interface IResult {
+export interface IDayResult {
     dieCount: number;
     survivedCount: number;
     offspringCount: number;

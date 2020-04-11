@@ -1,5 +1,6 @@
 import { creatureParams } from './params';
 import { calcPointDistance, randomIntFromRange, getNearestPointFromPointsArray } from '../helpers';
+import { IArea, IFood, IPoint } from "../interface";
 
 export class Creature {
     public x: number;
@@ -73,30 +74,30 @@ export class Creature {
     }
 
     public update(foodArray: IFood[], dayEnd: boolean) {
-        if(!this.checkDeath()) {
+        if (!this.checkDeath()) {
             // if not returned to home
             if (!this.returnedToHome) {
                 if (!this.grabbedFoodCount) {
                     this.searchFood(foodArray);
                 }
-    
+
                 else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity) {
                     this.tryFindFoodForPosterity(foodArray);
                 }
-    
+
                 else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity) {
                     this.goHome();
                 }
-    
+
                 if (this.onAreaCenter) {
                     this.stepDirectionCount += 1;
                 }
-    
+
                 this.step += 1;
             }
 
             // if returned to home
-            else if(this.returnedToHome && dayEnd) {
+            else if (this.returnedToHome && dayEnd) {
                 this.resetState();
             }
 
@@ -137,11 +138,11 @@ export class Creature {
     private tryFindFoodForPosterity(foodArray: IFood[]) {
         const nearestAreaExitPoint = this.getNearestAreaExitPoint();
 
-        if(nearestAreaExitPoint) {
+        if (nearestAreaExitPoint) {
             const nearestAreaExitPointDistance = calcPointDistance(this.x, this.y, nearestAreaExitPoint.x, nearestAreaExitPoint.y);
             const distanceToExitPoint = Math.floor(nearestAreaExitPointDistance / this.velocity);
-   
-            if(distanceToExitPoint / this.wasteEnergyPerMove < this.energy) {
+
+            if (distanceToExitPoint / this.wasteEnergyPerMove < this.energy) {
                 this.searchFood(foodArray);
             } else {
                 this.noFoodForPosterity = true;
@@ -222,7 +223,7 @@ export class Creature {
     }
 
     private resetState() {
-        if(!this.checkDeath()) {
+        if (!this.checkDeath()) {
             this.stepDirectionCount = 0;
             this.onAreaCenter = false;
             this.grabbedFoodCount = 0;
@@ -292,7 +293,7 @@ export class Creature {
     }
 
     private checkDeath() {
-        if(this.energy === 0) {
+        if (this.energy === 0) {
             this.isDie = true;
         }
 
@@ -310,23 +311,4 @@ export class Creature {
     private randomStepDirectionChangeNum() {
         return randomIntFromRange(30, 50);
     }
-}
-
-export interface IFood {
-    x: number;
-    y: number;
-    radius: number;
-    eaten: boolean;
-    eat: () => void;
-}
-
-export interface IArea {
-    centerX: number;
-    centerY: number;
-    radius: number;
-}
-
-interface IPoint {
-    x: number;
-    y: number;
 }
