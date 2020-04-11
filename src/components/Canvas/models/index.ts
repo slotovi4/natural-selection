@@ -4,7 +4,7 @@ export {
     drawCreature, 
     updateCreature, 
     checkEndDay,
-    getDeadCreaturesCount,
-    getOffspringCreaturesCount,
-    getSurvivedCreaturesCount,
+    getDayResult,
+    getNextDayCreatureArray,
+    IResult,
 } from './Creature';
