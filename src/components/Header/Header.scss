@@ -1,0 +1,10 @@
+.Header {
+    display: flex!important;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 0;
+
+    &-Icon {
+        margin-right: 10px;
+    }
+}

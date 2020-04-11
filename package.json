@@ -4,6 +4,8 @@
     "private": true,
     "homepage": "https://slotovi4.github.io/natural_selection",
     "dependencies": {
+        "@material-ui/core": "^4.9.10",
+        "@material-ui/icons": "^4.9.1",
         "@rematch/core": "^1.4.0",
         "connected-react-router": "^6.8.0",
         "react": "^16.8.3",

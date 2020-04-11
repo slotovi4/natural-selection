@@ -1,14 +1,9 @@
 import React from 'react';
-import { Home, Canvas } from '../../components';
+import { Canvas } from '../../components';
 import { connect } from 'react-redux';
 import { IRootState, Dispatch } from '../../redux/store';
 
-const HomeContainer = ({ textModelText, clearTestMoselState }: IProps) => (
-    <section>
-        <Home text={textModelText} onHeaderClick={clearTestMoselState} />
-        <Canvas />
-    </section>
-);
+const CanvasContainer = ({ textModelText, clearTestMoselState }: IProps) => <Canvas />;
 
 const mapState = (state: IRootState) => ({
     textModelText: state.testModel.text,
@@ -18,6 +13,6 @@ const mapDispatch = (dispatch: Dispatch) => ({
     clearTestMoselState: () => dispatch.testModel.clearTestMoselState(),
 });
 
-export default connect(mapState, mapDispatch)(HomeContainer);
+export default connect(mapState, mapDispatch)(CanvasContainer);
 
 type IProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
