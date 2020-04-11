@@ -1,4 +1,4 @@
-import { areaParams } from './params';
+import { areaParams } from './config';
 
 export class Area {
     public radius: number;

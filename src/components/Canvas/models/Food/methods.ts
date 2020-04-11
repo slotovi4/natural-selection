@@ -1,5 +1,5 @@
 import { Food } from './Food';
-import { foodParams } from './params';
+import { foodParams } from './config';
 import { IArea } from "../interface";
 
 const createFood = (ctx: CanvasRenderingContext2D, area: IArea) => {
@@ -22,19 +22,17 @@ const createFood = (ctx: CanvasRenderingContext2D, area: IArea) => {
 const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea) => {
     const foodArray: Food[] = [];
 
-    if (ctx) {
-        const foodRadius = foodParams.radius;
-        const foodDistance = foodRadius;
+    const foodRadius = foodParams.radius;
+    const foodDistance = foodRadius;
 
-        const areaSquare = Math.floor(Math.PI * Math.pow(area.radius, 2));
-        const foodSquare = Math.floor(Math.PI * Math.pow(foodRadius + foodDistance, 2));
+    const areaSquare = Math.floor(Math.PI * Math.pow(area.radius, 2));
+    const foodSquare = Math.floor(Math.PI * Math.pow(foodRadius + foodDistance, 2));
 
-        const maxFoodCount = Math.floor(areaSquare / foodSquare);
-        const foodCount = Math.floor(maxFoodCount / 20); // !!1 custom
+    const maxFoodCount = Math.floor(areaSquare / foodSquare);
+    const foodCount = Math.floor(maxFoodCount / 20); // !!1 custom
 
-        for (let i = 0; i <= 5; i++) {
-            foodArray.push(createFood(ctx, area));
-        }
+    for (let i = 0; i <= 5; i++) {
+        foodArray.push(createFood(ctx, area));
     }
 
     return foodArray;

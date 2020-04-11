@@ -1,4 +1,4 @@
-import { creatureParams } from './params';
+import { creatureParams } from './config';
 import { calcPointDistance, randomIntFromRange, getNearestPointFromPointsArray } from '../helpers';
 import { IArea, IFood, IPoint } from "../interface";
 

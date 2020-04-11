@@ -1,5 +1,5 @@
 import { Creature } from './Creature';
-import { creatureParams } from './params';
+import { creatureParams } from './config';
 import { IArea, IFood } from "../interface";
 
 const createCreature = (ctx: CanvasRenderingContext2D, area: IArea) => {
