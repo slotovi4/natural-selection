@@ -2,6 +2,13 @@ $lowVal: 10px;
 $midVal: 20px;
 $largeVal: 30px;
 
+.row {
+    display: flex;
+    align-items: center;
+}
+
+// margin
+
 .m-0 {
     margin: 0!important;
 }

@@ -9,24 +9,32 @@ import {
     getNextDayCreatureArray,
     IDayResult,
 } from './models';
+import { IArea } from './models/interface';
+import { Food } from './models/Food/Food';
+import { Creature } from './models/Creature/Creature';
 
-const init = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
-    const areaModel = drawArea(ctx, canvas);
-    const area = areaModel.getArea();
+export const init = (canvas: HTMLCanvasElement) => {
+    const ctx = canvas.getContext('2d');
 
-    const creatureArray = drawCreature(ctx, area);
-    const foodArray = drawFood(ctx, area);
+    if(ctx) {
+        const areaModel = drawArea(ctx, canvas);
+        const area = areaModel.getArea();
 
-    return { foodArray, creatureArray, area };
+        const creatureArray = drawCreature(ctx, area);
+        const foodArray = drawFood(ctx, area);
+
+        return { foodArray, creatureArray, area };
+    }
+
+    return null;
 };
 
-export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement, stopSelection: () => void) => {
+export const renderNaturalSelectionWorld = ({ canvas, stopSelection, foodArray, creatureArray, area }: IRenderProps) => {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-        const { foodArray, creatureArray, area } = init(canvas, ctx);
         const resultArray: IDayResult[] = [];
-        
+
         let day = 0;
         let dayEnd = false;
         let newCreatureArray = creatureArray;
@@ -61,3 +69,14 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement, stopSelec
         animate();
     }
 };
+
+interface IRenderProps extends IRenderAreaElements {
+    canvas: HTMLCanvasElement;
+    stopSelection: () => void;
+}
+
+export interface IRenderAreaElements {
+    foodArray: Food[];
+    creatureArray: Creature[];
+    area: IArea;
+}

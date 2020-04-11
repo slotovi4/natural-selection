@@ -19,7 +19,8 @@
         "ordered-imports": false,
         "no-var-requires": false,
         "semicolon": [true, "always"],
-        "only-arrow-functions": true
+        "only-arrow-functions": true,
+        "jsx-boolean-value": false
     },
     "jsRules": {
         "no-console": false,
@@ -29,6 +30,7 @@
         "ordered-imports": false,
         "no-var-requires": false,
         "semicolon": [true, "always"],
-        "only-arrow-functions": true
+        "only-arrow-functions": true,
+        "jsx-boolean-value": false
     }
 }

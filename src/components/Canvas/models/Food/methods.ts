@@ -38,6 +38,18 @@ const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea) => {
     return foodArray;
 };
 
+export const getMaxFoodCount = (area: IArea) => {
+    const foodRadius = foodParams.radius;
+    const foodDistance = foodRadius;
+
+    const areaSquare = Math.floor(Math.PI * Math.pow(area.radius, 2));
+    const foodSquare = Math.floor(Math.PI * Math.pow(foodRadius + foodDistance, 2));
+
+    const maxFoodCount = Math.floor(areaSquare / foodSquare);
+
+    return maxFoodCount;
+};
+
 export const drawFood = (ctx: CanvasRenderingContext2D, area: IArea) => {
     const foodArray = createFoodArray(ctx, area);
 

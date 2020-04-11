@@ -4,4 +4,9 @@
     &-Image {
         height: 130px;
     }
+
+    &-Label {
+        min-width: max-content;
+        padding-right: 10px;
+    }
 }
