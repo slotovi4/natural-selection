@@ -1,1 +1,1 @@
-export { default as testModel } from './testModel';
+export { default as selection } from './selection';

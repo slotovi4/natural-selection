@@ -3,13 +3,13 @@ import { cn } from '@bem-react/classname';
 import { renderNaturalSelectionWorld } from './render';
 import './Canvas.scss';
 
-const Canvas = ({ start }: IProps) => {
+const Canvas = ({ start, stopSelection }: IProps) => {
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
     const cl = cn('Canvas');
 
     React.useEffect(() => {
         if (canvasRef.current && start) {
-            renderNaturalSelectionWorld(canvasRef.current);
+            renderNaturalSelectionWorld(canvasRef.current, stopSelection);
         }
     }, [start]);
 
@@ -23,5 +23,6 @@ const Canvas = ({ start }: IProps) => {
 export default Canvas;
 
 interface IProps {
-    start?: boolean;
+    start: boolean;
+    stopSelection: () => void;
 }

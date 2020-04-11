@@ -20,7 +20,7 @@ const init = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
     return { foodArray, creatureArray, area };
 };
 
-export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
+export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement, stopSelection: () => void) => {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
@@ -53,6 +53,7 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
 
                 requestAnimationFrame(animate);
             } else {
+                stopSelection();
                 console.log(resultArray);
             }
         };

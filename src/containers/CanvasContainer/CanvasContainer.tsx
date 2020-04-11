@@ -3,14 +3,14 @@ import { Canvas } from '../../components';
 import { connect } from 'react-redux';
 import { IRootState, Dispatch } from '../../redux/store';
 
-const CanvasContainer = ({ textModelText, clearTestMoselState }: IProps) => <Canvas />;
+const CanvasContainer = (props: IProps) => <Canvas {...props} />;
 
 const mapState = (state: IRootState) => ({
-    textModelText: state.testModel.text,
+    start: state.selection.start,
 });
 
 const mapDispatch = (dispatch: Dispatch) => ({
-    clearTestMoselState: () => dispatch.testModel.clearTestMoselState(),
+    stopSelection: () => dispatch.selection.stopSelection(),
 });
 
 export default connect(mapState, mapDispatch)(CanvasContainer);
