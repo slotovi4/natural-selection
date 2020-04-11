@@ -25,8 +25,8 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement) => {
 
     if (ctx) {
         const { foodArray, creatureArray, area } = init(canvas, ctx);
-
         const resultArray: IDayResult[] = [];
+        
         let day = 0;
         let dayEnd = false;
         let newCreatureArray = creatureArray;

@@ -286,6 +286,9 @@ export class Creature {
         this.moveToThePoint({ x: this.area.centerX, y: this.area.centerY });
     }
 
+    /**
+     * Расход энергии
+     */
     private wasteOfEnergy() {
         if (!(this.step % this.wasteEnergyPerMove)) {
             this.energy -= 1;
