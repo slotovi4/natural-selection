@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, CardMedia } from '@material-ui/core';
-import { FoodExpansionPanel, IProps as FoodExpansionPanelProps } from './FoodExpansionPanel';
 import { SelectionExpansionPanel } from './SelectionExpansionPanel';
+import { FoodExpansionPanel, IFoodProps as FoodExpansionPanelProps } from './FoodExpansionPanel';
+import { CreatureExpansionPanel, ICreatureProps as CreatureExpansionPanelProps } from './CreatureExpansionPanel';
 import { cn } from '@bem-react/classname';
 import controlImg from './controlImg.jpg';
 import './ControlSection.scss';
@@ -9,9 +10,9 @@ import './ControlSection.scss';
 const ControlSection = ({
     onStartClick,
     onResetClick,
-    food,
+    foodProps,
+    creatureProps,
     disabled,
-    setFoodCount
 }: IProps) => {
     const cl = cn('ControlSection');
 
@@ -23,8 +24,9 @@ const ControlSection = ({
                 className={cl('Image')}
             />
 
-            <SelectionExpansionPanel />
-            <FoodExpansionPanel foodSettings={food} setFoodCount={setFoodCount} />
+            <SelectionExpansionPanel disabled={disabled} />
+            <CreatureExpansionPanel disabled={disabled} {...creatureProps} />
+            <FoodExpansionPanel disabled={disabled} {...foodProps} />
 
             <div className='p-2'>
                 <Button disabled={disabled} variant="contained" onClick={onStartClick}>Start</Button>
@@ -38,8 +40,8 @@ export default ControlSection;
 
 interface IProps {
     disabled: boolean;
-    food: FoodExpansionPanelProps["foodSettings"];
+    foodProps: FoodExpansionPanelProps;
+    creatureProps: CreatureExpansionPanelProps;
     onResetClick: () => void;
     onStartClick: () => void;
-    setFoodCount: (foodCount: number) => void;
 }

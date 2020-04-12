@@ -1,1 +1,1 @@
-export { default as FoodExpansionPanel, IProps } from './FoodExpansionPanel';
+export { default as FoodExpansionPanel, IFoodProps } from './FoodExpansionPanel';

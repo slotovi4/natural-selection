@@ -4,7 +4,7 @@ import { ExpansionPanel } from '../../index';
 import { cn } from '@bem-react/classname';
 import './FoodExpansionPanel.scss';
 
-const FoodExpansionPanel = ({ foodSettings, setFoodCount }: IProps) => {
+const FoodExpansionPanel = ({ foodSettings, setFoodCount, disabled }: IProps) => {
     const cl = cn('FoodExpansionPanel');
 
     const foodSliderStep = 1;
@@ -33,7 +33,11 @@ const FoodExpansionPanel = ({ foodSettings, setFoodCount }: IProps) => {
     ];
 
     return (
-        <ExpansionPanel id='food' title='Food settings' secondaryText='Настройки пищи'>
+        <ExpansionPanel
+            id='food'
+            title='Food settings'
+            secondaryText='Настройки пищи'
+        >
             <div className='w-100'>
                 <span className={cl('Label')}>Food count</span>
                 <Slider
@@ -47,6 +51,7 @@ const FoodExpansionPanel = ({ foodSettings, setFoodCount }: IProps) => {
                     marks={foodMarks}
                     min={minFoodCount}
                     max={maxFoodCount}
+                    disabled={disabled}
                 />
             </div>
         </ExpansionPanel>
@@ -55,7 +60,11 @@ const FoodExpansionPanel = ({ foodSettings, setFoodCount }: IProps) => {
 
 export default FoodExpansionPanel;
 
-export interface IProps {
+interface IProps extends IFoodProps {
+    disabled: boolean;
+}
+
+export interface IFoodProps {
     foodSettings: IFood;
     setFoodCount: (foodCount: number) => void;
 }

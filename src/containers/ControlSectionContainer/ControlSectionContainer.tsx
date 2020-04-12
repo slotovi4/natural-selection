@@ -3,32 +3,36 @@ import { ControlSection } from '../../components';
 import { IRootState, Dispatch } from '../../redux/store';
 import { connect } from 'react-redux';
 
-const ControlSectionContainer = ({ 
-    setSelectionStart, 
+const ControlSectionContainer = ({
+    start,
+    setSelectionStart,
     clearSelectionState,
     setFoodCount,
-    start,
-    food,
+    setCreatureCount,
+    foodSettings,
+    creatureSettings,
 }: IProps) => {
     return (
         <ControlSection
             onStartClick={setSelectionStart}
             onResetClick={clearSelectionState}
-            setFoodCount={setFoodCount}
             disabled={start}
-            food={food}
+            foodProps={{ foodSettings, setFoodCount }}
+            creatureProps={{ creatureSettings, setCreatureCount }}
         />
     );
 };
 
 const mapState = (state: IRootState) => ({
     start: state.selection.start,
-    food: state.food,
+    foodSettings: state.food,
+    creatureSettings: state.creature
 });
 
 const mapDispatch = (dispatch: Dispatch) => ({
     setSelectionStart: () => dispatch.selection.startSelection(),
     setFoodCount: (foodCount: number) => dispatch.food.setNewFoodCount(foodCount),
+    setCreatureCount: (creatureCount: number) => dispatch.creature.setNewCreatureCount(creatureCount),
     clearSelectionState: () => dispatch.selection.clearSelectionState(),
 });
 

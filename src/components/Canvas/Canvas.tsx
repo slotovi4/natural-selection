@@ -33,7 +33,7 @@ const Canvas = ({
                 creatureControlParams
             }));
         }
-    }, [foodControlParams]);
+    }, [foodControlParams, creatureControlParams]);
 
     React.useEffect(() => {
         if (canvasRef.current && !areaElements) {

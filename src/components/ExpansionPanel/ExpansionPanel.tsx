@@ -8,11 +8,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { cn } from '@bem-react/classname';
 import './ExpansionPanel.scss';
 
-const ExpansionPanel = ({ children, id, title, secondaryText }: IProps) => {
+const ExpansionPanel = ({ children, id, title, secondaryText, disabled }: IProps) => {
     const cl = cn('ExpansionPanel');
 
     return (
-        <MaterialExpansionPanel>
+        <MaterialExpansionPanel disabled={disabled}>
             <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="controlSelection"
@@ -36,5 +36,6 @@ interface IProps {
     children: React.ReactNode;
     title: string;
     id: string;
+    disabled?: boolean;
     secondaryText?: string;
 }

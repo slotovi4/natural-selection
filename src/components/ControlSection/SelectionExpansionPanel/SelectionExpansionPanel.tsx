@@ -1,7 +1,7 @@
 import React from 'react';
 import { ExpansionPanel } from '../../index';
 
-const SelectionExpansionPanel = () => {
+const SelectionExpansionPanel = ({ disabled }: IProps) => {
     return (
         <ExpansionPanel
             id='selection'
@@ -16,3 +16,7 @@ const SelectionExpansionPanel = () => {
 };
 
 export default SelectionExpansionPanel;
+
+interface IProps {
+    disabled: boolean;
+}
