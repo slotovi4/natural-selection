@@ -1,1 +1,1 @@
-export { drawFood, updateFood } from './methods';
+export { drawFood, updateFood, getMaxFoodCount } from './methods';

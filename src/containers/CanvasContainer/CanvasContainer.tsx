@@ -8,11 +8,13 @@ const CanvasContainer = (props: IProps) => <Canvas {...props} />;
 
 const mapState = (state: IRootState) => ({
     start: state.selection.start,
+    foodControlParams: state.food,
 });
 
 const mapDispatch = (dispatch: Dispatch) => ({
     stopSelection: () => dispatch.selection.stopSelection(),
     setArea: (area: IArea) => dispatch.area.setNewArea(area),
+    setMaxFoodCount: (maxFoodCount: number) => dispatch.food.setNewMaxFoodCount(maxFoodCount),
 });
 
 export default connect(mapState, mapDispatch)(CanvasContainer);

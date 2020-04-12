@@ -1,5 +1,5 @@
 export { drawArea } from './Area';
-export { drawFood, updateFood } from './Food';
+export { drawFood, updateFood, getMaxFoodCount } from './Food';
 export { 
     drawCreature, 
     updateCreature, 

@@ -19,19 +19,10 @@ const createFood = (ctx: CanvasRenderingContext2D, area: IArea) => {
  * @param canvas 
  * @param areaRadius 
  */
-const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea) => {
+const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea, foodCount: number) => {
     const foodArray: Food[] = [];
 
-    const foodRadius = foodParams.radius;
-    const foodDistance = foodRadius;
-
-    const areaSquare = Math.floor(Math.PI * Math.pow(area.radius, 2));
-    const foodSquare = Math.floor(Math.PI * Math.pow(foodRadius + foodDistance, 2));
-
-    const maxFoodCount = Math.floor(areaSquare / foodSquare);
-    const foodCount = Math.floor(maxFoodCount / 20); // !!1 custom
-
-    for (let i = 0; i <= 5; i++) {
+    for (let i = 0; i < foodCount; i++) {
         foodArray.push(createFood(ctx, area));
     }
 
@@ -50,8 +41,8 @@ export const getMaxFoodCount = (area: IArea) => {
     return maxFoodCount;
 };
 
-export const drawFood = (ctx: CanvasRenderingContext2D, area: IArea) => {
-    const foodArray = createFoodArray(ctx, area);
+export const drawFood = (ctx: CanvasRenderingContext2D, area: IArea, foodCount: number) => {
+    const foodArray = createFoodArray(ctx, area, foodCount);
 
     foodArray.forEach(food => {
         food.draw();

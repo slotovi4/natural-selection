@@ -1,6 +1,6 @@
 
 import { createModel } from '@rematch/core';
-import {IArea} from '../../components/Canvas/models/interface';
+import { IArea } from '../../components/Canvas/models/interface';
 
 const initialState: IState = {
     areaParams: null,
@@ -13,7 +13,7 @@ const area = createModel({
             return { ...state, areaParams };
         },
         clearState() {
-            return {...initialState};
+            return { ...initialState };
         },
     },
     effects: dispatch => ({

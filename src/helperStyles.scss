@@ -2,9 +2,14 @@ $lowVal: 10px;
 $midVal: 20px;
 $largeVal: 30px;
 
+.w-100 {
+    width: 100%!important;
+}
+
 .row {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 // margin
