@@ -19,7 +19,7 @@ const creature = createModel({
         setNewCreatureCount(creatureCount: IState["creatureCount"]) {
             this.setCreatureCount(creatureCount);
         },
-        clearFoodState() {
+        clearCreatureState() {
             this.clearState();
         },
     }),

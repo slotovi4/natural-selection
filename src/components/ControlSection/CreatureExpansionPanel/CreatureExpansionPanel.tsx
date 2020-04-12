@@ -6,6 +6,12 @@ import { cn } from '@bem-react/classname';
 const CreatureExpansionPanel = ({ creatureSettings, setCreatureCount, disabled }: IProps) => {
     const cl = cn('FoodExpansionPanel');
 
+    React.useEffect(() => {
+        if (creatureSettings.creatureCount !== countCreature) {
+            setCountCreature(creatureSettings.creatureCount);
+        }
+    }, [creatureSettings]);
+
     const creatureSliderStep = 1;
     const minCreatureCount = 1;
     const maxCreatureCount = 10;

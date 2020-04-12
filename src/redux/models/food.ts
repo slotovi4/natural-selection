@@ -16,8 +16,8 @@ const food = createModel({
         setFoodCount(state: IState, foodCount: IState["foodCount"]) {
             return { ...state, foodCount };
         },
-        clearState() {
-            return { ...initialState };
+        clearState(state: IState) {
+            return { ...state, foodCount: initialState.foodCount };
         },
     },
     effects: dispatch => ({

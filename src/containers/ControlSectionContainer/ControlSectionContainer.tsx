@@ -7,6 +7,8 @@ const ControlSectionContainer = ({
     start,
     setSelectionStart,
     clearSelectionState,
+    clearFoodState,
+    clearCreatureState,
     setFoodCount,
     setCreatureCount,
     foodSettings,
@@ -15,7 +17,11 @@ const ControlSectionContainer = ({
     return (
         <ControlSection
             onStartClick={setSelectionStart}
-            onResetClick={clearSelectionState}
+            onResetClick={() => {
+                clearSelectionState();
+                clearFoodState();
+                clearCreatureState();
+            }}
             disabled={start}
             foodProps={{ foodSettings, setFoodCount }}
             creatureProps={{ creatureSettings, setCreatureCount }}
@@ -34,6 +40,8 @@ const mapDispatch = (dispatch: Dispatch) => ({
     setFoodCount: (foodCount: number) => dispatch.food.setNewFoodCount(foodCount),
     setCreatureCount: (creatureCount: number) => dispatch.creature.setNewCreatureCount(creatureCount),
     clearSelectionState: () => dispatch.selection.clearSelectionState(),
+    clearFoodState: () => dispatch.food.clearFoodState(),
+    clearCreatureState: () => dispatch.creature.clearCreatureState(),
 });
 
 export default connect(mapState, mapDispatch)(ControlSectionContainer);

@@ -7,6 +7,12 @@ import './FoodExpansionPanel.scss';
 const FoodExpansionPanel = ({ foodSettings, setFoodCount, disabled }: IProps) => {
     const cl = cn('FoodExpansionPanel');
 
+    React.useEffect(() => {
+        if (foodSettings.foodCount !== countFood) {
+            setCountFood(foodSettings.minFoodCount);
+        }
+    }, [foodSettings]);
+
     const foodSliderStep = 1;
     const { minFoodCount } = foodSettings;
     const maxFoodCount = foodSettings.maxFoodCount / foodSliderStep;
