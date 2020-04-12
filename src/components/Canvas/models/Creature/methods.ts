@@ -12,10 +12,10 @@ const createCreature = (ctx: CanvasRenderingContext2D, area: IArea) => {
     return new Creature(x, y, ctx, area);
 };
 
-const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea) => {
+const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea, creatureCount: number) => {
     const creatureArray: Creature[] = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < creatureCount; i++) {
         creatureArray.push(createCreature(ctx, area));
     }
 
@@ -34,8 +34,8 @@ const getOffspringCreatures = (creatureArray: Creature[]) => {
     return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome);
 };
 
-export const drawCreature = (ctx: CanvasRenderingContext2D, area: IArea) => {
-    const creatureArray = createCreatureArray(ctx, area);
+export const drawCreature = (ctx: CanvasRenderingContext2D, area: IArea, creatureCount: number) => {
+    const creatureArray = createCreatureArray(ctx, area, creatureCount);
 
     creatureArray.forEach(creature => {
         creature.draw();

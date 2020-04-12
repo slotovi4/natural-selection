@@ -1,0 +1,1 @@
+export { default as FoodExpansionPanel, IProps } from './FoodExpansionPanel';

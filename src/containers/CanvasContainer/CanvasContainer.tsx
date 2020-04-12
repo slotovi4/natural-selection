@@ -9,6 +9,7 @@ const CanvasContainer = (props: IProps) => <Canvas {...props} />;
 const mapState = (state: IRootState) => ({
     start: state.selection.start,
     foodControlParams: state.food,
+    creatureControlParams: state.creature
 });
 
 const mapDispatch = (dispatch: Dispatch) => ({

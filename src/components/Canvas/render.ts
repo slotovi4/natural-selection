@@ -13,17 +13,23 @@ import { IArea } from './models/interface';
 import { Food } from './models/Food/Food';
 import { Creature } from './models/Creature/Creature';
 
-const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea, foodControlParams: IFoodControlParams) => drawFood(ctx, area, foodControlParams.foodCount);
+const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea, foodControlParams: IFoodControlParams) => {
+    return drawFood(ctx, area, foodControlParams.foodCount);
+};
 
-export const updateNaturalSelectionInitParams = (canvas: HTMLCanvasElement, area: IArea, foodControlParams: IFoodControlParams) => {
+const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea, creatureControlParams: ICreatureControlParams) => {
+    return drawCreature(ctx, area, creatureControlParams.creatureCount);
+};
+
+export const updateNaturalSelectionInitParams = ({ canvas, area, foodControlParams, creatureControlParams }: IUpdateInitProps) => {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         drawArea(ctx, canvas);
         const foodArray = createFoodArray(ctx, area, foodControlParams);
-        const creatureArray = drawCreature(ctx, area);
+        const creatureArray = createCreatureArray(ctx, area, creatureControlParams);
 
         return { foodArray, creatureArray, area };
     }
@@ -31,7 +37,7 @@ export const updateNaturalSelectionInitParams = (canvas: HTMLCanvasElement, area
     return null;
 };
 
-export const init = (canvas: HTMLCanvasElement, foodControlParams: IFoodControlParams) => {
+export const init = (canvas: HTMLCanvasElement, foodControlParams: IFoodControlParams, creatureControlParams: ICreatureControlParams) => {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
@@ -39,7 +45,7 @@ export const init = (canvas: HTMLCanvasElement, foodControlParams: IFoodControlP
         const area = areaModel.getArea();
 
         const foodArray = createFoodArray(ctx, area, foodControlParams);
-        const creatureArray = drawCreature(ctx, area);
+        const creatureArray = createCreatureArray(ctx, area, creatureControlParams);
 
         return { foodArray, creatureArray, area };
     }
@@ -99,7 +105,15 @@ export const renderNaturalSelectionWorld = ({
 interface IRenderProps extends IRenderAreaElements {
     canvas: HTMLCanvasElement;
     foodControlParams: IFoodControlParams;
+    creatureControlParams: ICreatureControlParams;
     stopSelection: () => void;
+}
+
+interface IUpdateInitProps {
+    canvas: HTMLCanvasElement;
+    area: IArea;
+    foodControlParams: IFoodControlParams;
+    creatureControlParams: ICreatureControlParams;
 }
 
 export interface IRenderAreaElements {
@@ -108,6 +122,10 @@ export interface IRenderAreaElements {
     area: IArea;
 }
 
-interface IFoodControlParams {
+export interface IFoodControlParams {
     foodCount: number;
+}
+
+export interface ICreatureControlParams {
+    creatureCount: number;
 }

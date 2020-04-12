@@ -5,25 +5,39 @@ import {
     init,
     IRenderAreaElements,
     updateNaturalSelectionInitParams,
+    IFoodControlParams,
+    ICreatureControlParams,
 } from './render';
 import { getMaxFoodCount } from './models';
 import { IArea } from './models/interface';
 import './Canvas.scss';
 
-const Canvas = ({ start, stopSelection, setArea, setMaxFoodCount, foodControlParams }: IProps) => {
+const Canvas = ({
+    start,
+    stopSelection,
+    setArea,
+    setMaxFoodCount,
+    foodControlParams,
+    creatureControlParams,
+}: IProps) => {
     const [areaElements, setAreaElements] = React.useState<IRenderAreaElements | null>(null);
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
     const cl = cn('Canvas');
 
     React.useEffect(() => {
         if (canvasRef.current && areaElements) {
-            setAreaElements(updateNaturalSelectionInitParams(canvasRef.current, areaElements.area, foodControlParams));
+            setAreaElements(updateNaturalSelectionInitParams({
+                canvas: canvasRef.current,
+                area: areaElements.area,
+                foodControlParams,
+                creatureControlParams
+            }));
         }
     }, [foodControlParams]);
 
     React.useEffect(() => {
         if (canvasRef.current && !areaElements) {
-            const res = init(canvasRef.current, foodControlParams);
+            const res = init(canvasRef.current, foodControlParams, creatureControlParams);
 
             if (res) {
                 setAreaElements(res);
@@ -39,6 +53,7 @@ const Canvas = ({ start, stopSelection, setArea, setMaxFoodCount, foodControlPar
                 canvas: canvasRef.current,
                 stopSelection,
                 foodControlParams,
+                creatureControlParams,
                 ...areaElements
             });
         }
@@ -55,12 +70,9 @@ export default Canvas;
 
 interface IProps {
     start: boolean;
-    foodControlParams: IFood;
+    foodControlParams: IFoodControlParams;
+    creatureControlParams: ICreatureControlParams;
     stopSelection: () => void;
     setArea: (area: IArea) => void;
     setMaxFoodCount: (maxFoodCount: number) => void;
-}
-
-interface IFood {
-    foodCount: number;
 }

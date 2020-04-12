@@ -1,0 +1,20 @@
+.ExpansionPanel {
+    &-Expansion-Header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    &-Title {
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+
+    &-Text {
+        &_secondary {
+            font-size: 12px;
+            color: #0000008a;
+        }
+    }
+}
