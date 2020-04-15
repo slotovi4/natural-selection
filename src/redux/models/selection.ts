@@ -1,12 +1,6 @@
 
 import { createModel } from '@rematch/core';
-
-export enum SelectionSpeed {
-    X1 = 1,
-    X2 = 2,
-    X10 = 10,
-    X100 = 100
-}
+import { SelectionSpeed } from '../../components/ControlSection/SelectionExpansionPanel';
 
 const initialState: IState = {
     start: false,

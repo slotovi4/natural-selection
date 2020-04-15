@@ -22,18 +22,20 @@ export class Creature {
     private energyIntensity: number;
     private wasteEnergyPerMove: number;
     private noFoodForPosterity: boolean;
+    private selectionSpeed: number;
 
     private area: IArea;
     private ctx: CanvasRenderingContext2D;
 
-    public constructor(x: number, y: number, ctx: CanvasRenderingContext2D, area: IArea) {
+    public constructor(x: number, y: number, ctx: CanvasRenderingContext2D, area: IArea, selectionSpeed: number) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
         this.area = area;
 
+        this.selectionSpeed = selectionSpeed;
         this.radius = creatureParams.radius;
-        this.velocity = creatureParams.velocity;
+        this.velocity = creatureParams.velocity * this.selectionSpeed;
         this.visibilityRadius = creatureParams.visibilityRadius;
         this.stepDirectionCount = 0;
         this.onAreaCenter = false;
@@ -291,7 +293,7 @@ export class Creature {
      */
     private wasteOfEnergy() {
         if (!(this.step % this.wasteEnergyPerMove)) {
-            this.energy -= 1;
+            this.energy -= 1 * this.selectionSpeed;
         }
     }
 
@@ -312,6 +314,6 @@ export class Creature {
     }
 
     private randomStepDirectionChangeNum() {
-        return randomIntFromRange(30, 50);
+        return randomIntFromRange(Math.floor(30 / this.selectionSpeed), Math.floor(50 / this.selectionSpeed));
     }
 }

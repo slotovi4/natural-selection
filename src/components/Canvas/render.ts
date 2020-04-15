@@ -17,11 +17,11 @@ const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea, foodControl
     return drawFood(ctx, area, foodControlParams.foodCount);
 };
 
-const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea, creatureControlParams: ICreatureControlParams) => {
-    return drawCreature(ctx, area, creatureControlParams.creatureCount);
+const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea, creatureControlParams: ICreatureControlParams, selectionControlParams: ISelectionControlParams) => {
+    return drawCreature(ctx, area, creatureControlParams.creatureCount, selectionControlParams.selectionSpeed);
 };
 
-export const updateNaturalSelectionInitParams = ({ canvas, area, foodControlParams, creatureControlParams }: IUpdateInitProps) => {
+export const updateNaturalSelectionInitParams = ({ canvas, area, foodControlParams, creatureControlParams, selectionControlParams }: IUpdateInitProps) => {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
@@ -29,15 +29,15 @@ export const updateNaturalSelectionInitParams = ({ canvas, area, foodControlPara
 
         drawArea(ctx, canvas);
         const foodArray = createFoodArray(ctx, area, foodControlParams);
-        const creatureArray = createCreatureArray(ctx, area, creatureControlParams);
-
+        const creatureArray = createCreatureArray(ctx, area, creatureControlParams, selectionControlParams);
+        
         return { foodArray, creatureArray, area };
     }
 
     return null;
 };
 
-export const init = (canvas: HTMLCanvasElement, foodControlParams: IFoodControlParams, creatureControlParams: ICreatureControlParams) => {
+export const init = ({ canvas, foodControlParams, creatureControlParams, selectionControlParams }: IInitProps) => {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
@@ -45,8 +45,8 @@ export const init = (canvas: HTMLCanvasElement, foodControlParams: IFoodControlP
         const area = areaModel.getArea();
 
         const foodArray = createFoodArray(ctx, area, foodControlParams);
-        const creatureArray = createCreatureArray(ctx, area, creatureControlParams);
-
+        const creatureArray = createCreatureArray(ctx, area, creatureControlParams, selectionControlParams);
+    
         return { foodArray, creatureArray, area };
     }
 
@@ -73,8 +73,11 @@ export const renderNaturalSelectionWorld = ({
         let newCreatureArray = creatureArray;
         let newFoodArray = foodArray;
 
+
         const animate = () => {
-            if (day !== selectionControlParams.selectionDays) {
+            const haveLiveCreatures = resultArray[day - 1] ? resultArray[day - 1].survivedCount > 0 : true;
+            
+            if (day !== selectionControlParams.selectionDays && haveLiveCreatures) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 drawArea(ctx, canvas);
@@ -87,7 +90,7 @@ export const renderNaturalSelectionWorld = ({
                     resultArray.push(getDayResult(newCreatureArray));
 
                     newFoodArray = drawFood(ctx, area, foodCount);
-                    newCreatureArray = getNextDayCreatureArray(newCreatureArray, ctx, area);
+                    newCreatureArray = getNextDayCreatureArray(newCreatureArray, ctx, area, selectionControlParams.selectionSpeed);
 
                     day += 1;
                 }
@@ -111,11 +114,19 @@ interface IRenderProps extends IRenderAreaElements {
     stopSelection: () => void;
 }
 
+interface IInitProps {
+    canvas: HTMLCanvasElement;
+    foodControlParams: IFoodControlParams;
+    creatureControlParams: ICreatureControlParams;
+    selectionControlParams: ISelectionControlParams;
+}
+
 interface IUpdateInitProps {
     canvas: HTMLCanvasElement;
     area: IArea;
     foodControlParams: IFoodControlParams;
     creatureControlParams: ICreatureControlParams;
+    selectionControlParams: ISelectionControlParams;
 }
 
 export interface IRenderAreaElements {
@@ -134,5 +145,6 @@ export interface ICreatureControlParams {
 
 export interface ISelectionControlParams {
     selectionDays: number;
+    selectionSpeed: number;
     start: boolean;
 }

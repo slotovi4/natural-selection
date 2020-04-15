@@ -31,14 +31,20 @@ const Canvas = ({
                 canvas: canvasRef.current,
                 area: areaElements.area,
                 foodControlParams,
-                creatureControlParams
+                creatureControlParams,
+                selectionControlParams
             }));
         }
-    }, [foodControlParams, creatureControlParams]);
+    }, [foodControlParams, creatureControlParams, selectionControlParams]);
 
     React.useEffect(() => {
         if (canvasRef.current && !areaElements) {
-            const res = init(canvasRef.current, foodControlParams, creatureControlParams);
+            const res = init({
+                canvas: canvasRef.current, 
+                foodControlParams, 
+                creatureControlParams, 
+                selectionControlParams
+            });
 
             if (res) {
                 setAreaElements(res);

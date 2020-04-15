@@ -1,7 +1,7 @@
 import React from 'react';
 import { ControlSection } from '../../components';
 import { IRootState, Dispatch } from '../../redux/store';
-import { SelectionSpeed } from '../../redux/models/selection';
+import { SelectionSpeed } from '../../components/ControlSection/SelectionExpansionPanel';
 import { connect } from 'react-redux';
 
 const ControlSectionContainer = ({

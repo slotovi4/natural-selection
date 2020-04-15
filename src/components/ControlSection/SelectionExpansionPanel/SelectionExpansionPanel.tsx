@@ -45,6 +45,7 @@ const SelectionExpansionPanel = ({ disabled, setSelectionDaysCount, selectionSet
             value={SelectionSpeed[key]}
             name="selection-speed"
             label={key}
+            disabled={disabled}
         />
     ));
 
@@ -98,9 +99,9 @@ interface ISelectionSettings {
     selectionSpeed: SelectionSpeed;
 }
 
-enum SelectionSpeed {
+export enum SelectionSpeed {
     X1 = 1,
     X2 = 2,
     X10 = 10,
-    X100 = 100
+    X20 = 20
 }
