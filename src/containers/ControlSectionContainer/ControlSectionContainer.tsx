@@ -1,6 +1,7 @@
 import React from 'react';
 import { ControlSection } from '../../components';
 import { IRootState, Dispatch } from '../../redux/store';
+import { SelectionSpeed } from '../../redux/models/selection';
 import { connect } from 'react-redux';
 
 const ControlSectionContainer = ({
@@ -15,6 +16,7 @@ const ControlSectionContainer = ({
     creatureSettings,
     selectionSettings,
     setSelectionDaysCount,
+    setSelectionSpeed,
 }: IProps) => {
     return (
         <ControlSection
@@ -27,7 +29,7 @@ const ControlSectionContainer = ({
             disabled={start}
             foodProps={{ foodSettings, setFoodCount }}
             creatureProps={{ creatureSettings, setCreatureCount }}
-            selectionProps={{ selectionSettings, setSelectionDaysCount }}
+            selectionProps={{ selectionSettings, setSelectionDaysCount, setSelectionSpeed }}
         />
     );
 };
@@ -44,6 +46,7 @@ const mapDispatch = (dispatch: Dispatch) => ({
     setFoodCount: (foodCount: number) => dispatch.food.setNewFoodCount(foodCount),
     setCreatureCount: (creatureCount: number) => dispatch.creature.setNewCreatureCount(creatureCount),
     setSelectionDaysCount: (daysCount: number) => dispatch.selection.setNewSelectionDays(daysCount),
+    setSelectionSpeed: (selectionSpeed: SelectionSpeed) => dispatch.selection.setNewSelectionSpeed(selectionSpeed),
     clearSelectionState: () => dispatch.selection.clearSelectionState(),
     clearFoodState: () => dispatch.food.clearFoodState(),
     clearCreatureState: () => dispatch.creature.clearCreatureState(),

@@ -1,9 +1,17 @@
 
 import { createModel } from '@rematch/core';
 
+export enum SelectionSpeed {
+    X1 = 1,
+    X2 = 2,
+    X10 = 10,
+    X100 = 100
+}
+
 const initialState: IState = {
     start: false,
-    selectionDays: 10
+    selectionDays: 10,
+    selectionSpeed: SelectionSpeed.X1,
 };
 
 const selection = createModel({
@@ -14,6 +22,9 @@ const selection = createModel({
         },
         setSelectionDays(state: IState, selectionDays: IState["selectionDays"]) {
             return { ...state, selectionDays };
+        },
+        setSelectionSpeed(state: IState, selectionSpeed: IState["selectionSpeed"]) {
+            return { ...state, selectionSpeed };
         },
         clearState() {
             return {
@@ -31,6 +42,9 @@ const selection = createModel({
         setNewSelectionDays(selectionDays: IState["selectionDays"]) {
             this.setSelectionDays(selectionDays);
         },
+        setNewSelectionSpeed(selectionSpeed: IState["selectionSpeed"]) {
+            this.setSelectionSpeed(selectionSpeed);
+        },
         clearSelectionState() {
             this.clearState();
         },
@@ -42,4 +56,5 @@ export default selection;
 interface IState {
     start: boolean;
     selectionDays: number;
+    selectionSpeed: SelectionSpeed;
 }

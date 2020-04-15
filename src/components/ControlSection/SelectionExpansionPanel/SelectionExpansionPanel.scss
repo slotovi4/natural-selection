@@ -10,4 +10,10 @@
             font-size: 12px!important;
         }
     }
+
+    &-Panel-Container {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+    }
 }
