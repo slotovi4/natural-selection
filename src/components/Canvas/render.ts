@@ -54,12 +54,13 @@ export const init = (canvas: HTMLCanvasElement, foodControlParams: IFoodControlP
 };
 
 export const renderNaturalSelectionWorld = ({
+    area,
     canvas,
     stopSelection,
     foodArray,
     creatureArray,
-    area,
     foodControlParams,
+    selectionControlParams,
 }: IRenderProps) => {
     const ctx = canvas.getContext('2d');
 
@@ -73,7 +74,7 @@ export const renderNaturalSelectionWorld = ({
         let newFoodArray = foodArray;
 
         const animate = () => {
-            if (day !== 5) {
+            if (day !== selectionControlParams.selectionDays) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 drawArea(ctx, canvas);
@@ -106,6 +107,7 @@ interface IRenderProps extends IRenderAreaElements {
     canvas: HTMLCanvasElement;
     foodControlParams: IFoodControlParams;
     creatureControlParams: ICreatureControlParams;
+    selectionControlParams: ISelectionControlParams;
     stopSelection: () => void;
 }
 
@@ -128,4 +130,9 @@ export interface IFoodControlParams {
 
 export interface ICreatureControlParams {
     creatureCount: number;
+}
+
+export interface ISelectionControlParams {
+    selectionDays: number;
+    start: boolean;
 }

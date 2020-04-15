@@ -2,9 +2,10 @@ import React from 'react';
 import { Slider } from '@material-ui/core';
 import { ExpansionPanel } from '../../index';
 import { cn } from '@bem-react/classname';
+import './CreatureExpansionPanel.scss';
 
 const CreatureExpansionPanel = ({ creatureSettings, setCreatureCount, disabled }: IProps) => {
-    const cl = cn('FoodExpansionPanel');
+    const cl = cn('CreatureExpansionPanel');
 
     React.useEffect(() => {
         if (creatureSettings.creatureCount !== countCreature) {

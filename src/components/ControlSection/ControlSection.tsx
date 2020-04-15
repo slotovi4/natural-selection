@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, CardMedia } from '@material-ui/core';
-import { SelectionExpansionPanel } from './SelectionExpansionPanel';
+import { SelectionExpansionPanel, ISelectionProps as SelectionExpansionPanelProps} from './SelectionExpansionPanel';
 import { FoodExpansionPanel, IFoodProps as FoodExpansionPanelProps } from './FoodExpansionPanel';
 import { CreatureExpansionPanel, ICreatureProps as CreatureExpansionPanelProps } from './CreatureExpansionPanel';
 import { cn } from '@bem-react/classname';
@@ -12,6 +12,7 @@ const ControlSection = ({
     onResetClick,
     foodProps,
     creatureProps,
+    selectionProps,
     disabled,
 }: IProps) => {
     const cl = cn('ControlSection');
@@ -24,7 +25,7 @@ const ControlSection = ({
                 className={cl('Image')}
             />
 
-            <SelectionExpansionPanel disabled={disabled} />
+            <SelectionExpansionPanel disabled={disabled} {...selectionProps} />
             <CreatureExpansionPanel disabled={disabled} {...creatureProps} />
             <FoodExpansionPanel disabled={disabled} {...foodProps} />
 
@@ -42,6 +43,7 @@ interface IProps {
     disabled: boolean;
     foodProps: FoodExpansionPanelProps;
     creatureProps: CreatureExpansionPanelProps;
+    selectionProps: SelectionExpansionPanelProps;
     onResetClick: () => void;
     onStartClick: () => void;
 }

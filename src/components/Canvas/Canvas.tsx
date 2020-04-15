@@ -6,6 +6,7 @@ import {
     IRenderAreaElements,
     updateNaturalSelectionInitParams,
     IFoodControlParams,
+    ISelectionControlParams,
     ICreatureControlParams,
 } from './render';
 import { getMaxFoodCount } from './models';
@@ -13,12 +14,12 @@ import { IArea } from './models/interface';
 import './Canvas.scss';
 
 const Canvas = ({
-    start,
     stopSelection,
     setArea,
     setMaxFoodCount,
     foodControlParams,
     creatureControlParams,
+    selectionControlParams,
 }: IProps) => {
     const [areaElements, setAreaElements] = React.useState<IRenderAreaElements | null>(null);
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
@@ -48,16 +49,17 @@ const Canvas = ({
     }, []);
 
     React.useEffect(() => {
-        if (start && areaElements && canvasRef.current) {
+        if (selectionControlParams.start && areaElements && canvasRef.current) {
             renderNaturalSelectionWorld({
                 canvas: canvasRef.current,
                 stopSelection,
                 foodControlParams,
                 creatureControlParams,
+                selectionControlParams,
                 ...areaElements
             });
         }
-    }, [start]);
+    }, [selectionControlParams.start]);
 
     return (
         <section className={cl()}>
@@ -69,9 +71,9 @@ const Canvas = ({
 export default Canvas;
 
 interface IProps {
-    start: boolean;
     foodControlParams: IFoodControlParams;
     creatureControlParams: ICreatureControlParams;
+    selectionControlParams: ISelectionControlParams;
     stopSelection: () => void;
     setArea: (area: IArea) => void;
     setMaxFoodCount: (maxFoodCount: number) => void;

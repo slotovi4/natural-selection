@@ -13,6 +13,8 @@ const ControlSectionContainer = ({
     setCreatureCount,
     foodSettings,
     creatureSettings,
+    selectionSettings,
+    setSelectionDaysCount,
 }: IProps) => {
     return (
         <ControlSection
@@ -25,6 +27,7 @@ const ControlSectionContainer = ({
             disabled={start}
             foodProps={{ foodSettings, setFoodCount }}
             creatureProps={{ creatureSettings, setCreatureCount }}
+            selectionProps={{ selectionSettings, setSelectionDaysCount }}
         />
     );
 };
@@ -32,13 +35,15 @@ const ControlSectionContainer = ({
 const mapState = (state: IRootState) => ({
     start: state.selection.start,
     foodSettings: state.food,
-    creatureSettings: state.creature
+    creatureSettings: state.creature,
+    selectionSettings: state.selection,
 });
 
 const mapDispatch = (dispatch: Dispatch) => ({
     setSelectionStart: () => dispatch.selection.startSelection(),
     setFoodCount: (foodCount: number) => dispatch.food.setNewFoodCount(foodCount),
     setCreatureCount: (creatureCount: number) => dispatch.creature.setNewCreatureCount(creatureCount),
+    setSelectionDaysCount: (daysCount: number) => dispatch.selection.setNewSelectionDays(daysCount),
     clearSelectionState: () => dispatch.selection.clearSelectionState(),
     clearFoodState: () => dispatch.food.clearFoodState(),
     clearCreatureState: () => dispatch.creature.clearCreatureState(),

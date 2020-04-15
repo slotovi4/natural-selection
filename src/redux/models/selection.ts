@@ -3,6 +3,7 @@ import { createModel } from '@rematch/core';
 
 const initialState: IState = {
     start: false,
+    selectionDays: 10
 };
 
 const selection = createModel({
@@ -10,6 +11,9 @@ const selection = createModel({
     reducers: {
         setStart(state: IState, start: IState["start"]) {
             return { ...state, start };
+        },
+        setSelectionDays(state: IState, selectionDays: IState["selectionDays"]) {
+            return { ...state, selectionDays };
         },
         clearState() {
             return {
@@ -24,6 +28,9 @@ const selection = createModel({
         stopSelection() {
             this.setStart(false);
         },
+        setNewSelectionDays(selectionDays: IState["selectionDays"]) {
+            this.setSelectionDays(selectionDays);
+        },
         clearSelectionState() {
             this.clearState();
         },
@@ -34,4 +41,5 @@ export default selection;
 
 interface IState {
     start: boolean;
+    selectionDays: number;
 }

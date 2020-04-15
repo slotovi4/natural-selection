@@ -7,7 +7,7 @@ import { IArea } from '../../components/Canvas/models/interface';
 const CanvasContainer = (props: IProps) => <Canvas {...props} />;
 
 const mapState = (state: IRootState) => ({
-    start: state.selection.start,
+    selectionControlParams: state.selection,
     foodControlParams: state.food,
     creatureControlParams: state.creature
 });

@@ -1,1 +1,1 @@
-export { default as SelectionExpansionPanel } from './SelectionExpansionPanel';
+export { default as SelectionExpansionPanel, ISelectionProps } from './SelectionExpansionPanel';
