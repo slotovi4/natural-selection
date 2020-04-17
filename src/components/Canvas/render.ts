@@ -76,7 +76,7 @@ export const renderNaturalSelectionWorld = ({
 
         const animate = () => {
             const haveLiveCreatures = resultArray[day - 1] ? resultArray[day - 1].survivedCount > 0 : true;
-            
+
             if (day !== selectionControlParams.selectionDays && haveLiveCreatures) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -106,11 +106,7 @@ export const renderNaturalSelectionWorld = ({
     }
 };
 
-interface IRenderProps extends IRenderAreaElements {
-    canvas: HTMLCanvasElement;
-    foodControlParams: IFoodControlParams;
-    creatureControlParams: ICreatureControlParams;
-    selectionControlParams: ISelectionControlParams;
+interface IRenderProps extends IRenderAreaElements, IInitProps {
     stopSelection: () => void;
 }
 
@@ -121,12 +117,8 @@ interface IInitProps {
     selectionControlParams: ISelectionControlParams;
 }
 
-interface IUpdateInitProps {
-    canvas: HTMLCanvasElement;
+interface IUpdateInitProps extends IInitProps {
     area: IArea;
-    foodControlParams: IFoodControlParams;
-    creatureControlParams: ICreatureControlParams;
-    selectionControlParams: ISelectionControlParams;
 }
 
 export interface IRenderAreaElements {

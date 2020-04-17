@@ -54,13 +54,13 @@ export class Creature {
     }
 
     public draw() {
-        const { fillStyle, strokeStyle, lineWidth } = creatureParams;
+        const { fillStyle, dieFillStyle, strokeStyle, lineWidth } = creatureParams;
 
         // draw creature
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.ctx.save();
-        this.ctx.fillStyle = fillStyle;
+        this.ctx.fillStyle = this.checkDeath() ? dieFillStyle : fillStyle;
         this.ctx.fill();
         this.ctx.restore();
         this.ctx.closePath();
@@ -103,6 +103,8 @@ export class Creature {
                 this.resetState();
             }
 
+            this.draw();
+        } else if (this.ctx.fillStyle === creatureParams.fillStyle) {
             this.draw();
         }
 
