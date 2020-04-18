@@ -2,7 +2,7 @@
 import { createModel } from '@rematch/core';
 
 const initialState: IState = {
-    creatureCount: 5,
+    creatureCount: 3,
 };
 
 const creature = createModel({

@@ -30,7 +30,7 @@ export const updateNaturalSelectionInitParams = ({ canvas, area, foodControlPara
         drawArea(ctx, canvas);
         const foodArray = createFoodArray(ctx, area, foodControlParams);
         const creatureArray = createCreatureArray(ctx, area, creatureControlParams, selectionControlParams);
-        
+
         return { foodArray, creatureArray, area };
     }
 
@@ -46,7 +46,7 @@ export const init = ({ canvas, foodControlParams, creatureControlParams, selecti
 
         const foodArray = createFoodArray(ctx, area, foodControlParams);
         const creatureArray = createCreatureArray(ctx, area, creatureControlParams, selectionControlParams);
-    
+
         return { foodArray, creatureArray, area };
     }
 
@@ -61,6 +61,7 @@ export const renderNaturalSelectionWorld = ({
     creatureArray,
     foodControlParams,
     selectionControlParams,
+    setSelectionResultData,
 }: IRenderProps) => {
     const ctx = canvas.getContext('2d');
 
@@ -98,7 +99,7 @@ export const renderNaturalSelectionWorld = ({
                 requestAnimationFrame(animate);
             } else {
                 stopSelection();
-                console.log(resultArray);
+                setSelectionResultData(resultArray);
             }
         };
 
@@ -108,6 +109,7 @@ export const renderNaturalSelectionWorld = ({
 
 interface IRenderProps extends IRenderAreaElements, IInitProps {
     stopSelection: () => void;
+    setSelectionResultData: (data: IDayResult[]) => void;
 }
 
 interface IInitProps {
@@ -138,5 +140,4 @@ export interface ICreatureControlParams {
 export interface ISelectionControlParams {
     selectionDays: number;
     selectionSpeed: number;
-    start: boolean;
 }

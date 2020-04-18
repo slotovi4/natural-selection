@@ -4,7 +4,7 @@ import { createModel } from '@rematch/core';
 const initialState: IState = {
     maxFoodCount: 10,
     minFoodCount: 0,
-    foodCount: 1,
+    foodCount: 10,
 };
 
 const food = createModel({

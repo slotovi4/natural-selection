@@ -38,7 +38,7 @@ export const getMaxFoodCount = (area: IArea) => {
 
     const maxFoodCount = Math.floor(areaSquare / foodSquare);
 
-    return maxFoodCount;
+    return maxFoodCount / 10;
 };
 
 export const drawFood = (ctx: CanvasRenderingContext2D, area: IArea, foodCount: number) => {

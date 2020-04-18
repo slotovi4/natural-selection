@@ -38,7 +38,7 @@ const mapState = (state: IRootState) => ({
     start: state.selection.start,
     foodSettings: state.food,
     creatureSettings: state.creature,
-    selectionSettings: state.selection,
+    selectionSettings: state.selection.selectionSettings,
 });
 
 const mapDispatch = (dispatch: Dispatch) => ({

@@ -9,7 +9,7 @@ import {
     ISelectionControlParams,
     ICreatureControlParams,
 } from './render';
-import { getMaxFoodCount } from './models';
+import { getMaxFoodCount, IDayResult } from './models';
 import { IArea } from './models/interface';
 import './Canvas.scss';
 
@@ -20,10 +20,27 @@ const Canvas = ({
     foodControlParams,
     creatureControlParams,
     selectionControlParams,
+    setSelectionResultData,
+    start,
 }: IProps) => {
     const [areaElements, setAreaElements] = React.useState<IRenderAreaElements | null>(null);
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
     const cl = cn('Canvas');
+
+    const initSelection = (canvas: HTMLCanvasElement) => {
+        const res = init({
+            canvas, 
+            foodControlParams, 
+            creatureControlParams, 
+            selectionControlParams
+        });
+
+        if (res) {
+            setAreaElements(res);
+            setArea(res.area);
+            setMaxFoodCount(getMaxFoodCount(res.area));
+        }
+    };
 
     React.useEffect(() => {
         if (canvasRef.current && areaElements) {
@@ -39,33 +56,28 @@ const Canvas = ({
 
     React.useEffect(() => {
         if (canvasRef.current && !areaElements) {
-            const res = init({
-                canvas: canvasRef.current, 
-                foodControlParams, 
-                creatureControlParams, 
-                selectionControlParams
-            });
-
-            if (res) {
-                setAreaElements(res);
-                setArea(res.area);
-                setMaxFoodCount(getMaxFoodCount(res.area) / 10);
-            }
+            initSelection(canvasRef.current);
         }
     }, []);
 
     React.useEffect(() => {
-        if (selectionControlParams.start && areaElements && canvasRef.current) {
-            renderNaturalSelectionWorld({
-                canvas: canvasRef.current,
-                stopSelection,
-                foodControlParams,
-                creatureControlParams,
-                selectionControlParams,
-                ...areaElements
-            });
+        if(areaElements && canvasRef.current) {
+            if (start) {
+                renderNaturalSelectionWorld({
+                    canvas: canvasRef.current,
+                    stopSelection,
+                    foodControlParams,
+                    creatureControlParams,
+                    selectionControlParams,
+                    setSelectionResultData,
+                    ...areaElements
+                });
+            } else {
+                setAreaElements(null);
+                initSelection(canvasRef.current);
+            }
         }
-    }, [selectionControlParams.start]);
+    }, [start]);
 
     return (
         <section className={cl()}>
@@ -80,7 +92,9 @@ interface IProps {
     foodControlParams: IFoodControlParams;
     creatureControlParams: ICreatureControlParams;
     selectionControlParams: ISelectionControlParams;
+    start: boolean;
     stopSelection: () => void;
     setArea: (area: IArea) => void;
     setMaxFoodCount: (maxFoodCount: number) => void;
+    setSelectionResultData: (data: IDayResult[]) => void;
 }

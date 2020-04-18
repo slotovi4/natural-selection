@@ -17,7 +17,7 @@ const FoodExpansionPanel = ({ foodSettings, setFoodCount, disabled }: IProps) =>
     const { minFoodCount } = foodSettings;
     const maxFoodCount = foodSettings.maxFoodCount / foodSliderStep;
 
-    const [countFood, setCountFood] = React.useState(minFoodCount);
+    const [countFood, setCountFood] = React.useState(foodSettings.foodCount);
 
     const foodMarks = [
         {
