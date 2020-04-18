@@ -1,0 +1,13 @@
+.FoodExpansionPanel {
+    &-Label {
+        min-width: max-content;
+        padding-right: 10px;
+        font-size: 12px;
+    }
+
+    &-Slider {
+        & span {
+            font-size: 12px!important;
+        }
+    }
+}

@@ -1,11 +1,14 @@
 import { History } from 'history';
 import { init, RematchRootState } from '@rematch/core';
-import { selection } from '../models';
+import { selection, area, food, creature } from '../models';
 import { createBrowserHistory } from 'history';
 import { connectRouter } from 'connected-react-router';
 
 const models = {
     selection,
+    area,
+    food,
+    creature,
 };
 
 export const browserHistory: History = createBrowserHistory();

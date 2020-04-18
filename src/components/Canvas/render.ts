@@ -9,31 +9,76 @@ import {
     getNextDayCreatureArray,
     IDayResult,
 } from './models';
+import { IArea } from './models/interface';
+import { Food } from './models/Food/Food';
+import { Creature } from './models/Creature/Creature';
 
-const init = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
-    const areaModel = drawArea(ctx, canvas);
-    const area = areaModel.getArea();
-
-    const creatureArray = drawCreature(ctx, area);
-    const foodArray = drawFood(ctx, area);
-
-    return { foodArray, creatureArray, area };
+const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea, foodControlParams: IFoodControlParams) => {
+    return drawFood(ctx, area, foodControlParams.foodCount);
 };
 
-export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement, stopSelection: () => void) => {
+const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea, creatureControlParams: ICreatureControlParams, selectionControlParams: ISelectionControlParams) => {
+    return drawCreature(ctx, area, creatureControlParams.creatureCount, selectionControlParams.selectionSpeed);
+};
+
+export const updateNaturalSelectionInitParams = ({ canvas, area, foodControlParams, creatureControlParams, selectionControlParams }: IUpdateInitProps) => {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-        const { foodArray, creatureArray, area } = init(canvas, ctx);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawArea(ctx, canvas);
+        const foodArray = createFoodArray(ctx, area, foodControlParams);
+        const creatureArray = createCreatureArray(ctx, area, creatureControlParams, selectionControlParams);
+
+        return { foodArray, creatureArray, area };
+    }
+
+    return null;
+};
+
+export const init = ({ canvas, foodControlParams, creatureControlParams, selectionControlParams }: IInitProps) => {
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+        const areaModel = drawArea(ctx, canvas);
+        const area = areaModel.getArea();
+
+        const foodArray = createFoodArray(ctx, area, foodControlParams);
+        const creatureArray = createCreatureArray(ctx, area, creatureControlParams, selectionControlParams);
+
+        return { foodArray, creatureArray, area };
+    }
+
+    return null;
+};
+
+export const renderNaturalSelectionWorld = ({
+    area,
+    canvas,
+    stopSelection,
+    foodArray,
+    creatureArray,
+    foodControlParams,
+    selectionControlParams,
+    setSelectionResultData,
+}: IRenderProps) => {
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
         const resultArray: IDayResult[] = [];
-        
+        const { foodCount } = foodControlParams;
+
         let day = 0;
         let dayEnd = false;
         let newCreatureArray = creatureArray;
         let newFoodArray = foodArray;
 
+
         const animate = () => {
-            if (day !== 5) {
+            const haveLiveCreatures = resultArray[day - 1] ? resultArray[day - 1].survivedCount > 0 : true;
+
+            if (day !== selectionControlParams.selectionDays && haveLiveCreatures) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 drawArea(ctx, canvas);
@@ -45,8 +90,8 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement, stopSelec
                 if (dayEnd) {
                     resultArray.push(getDayResult(newCreatureArray));
 
-                    newFoodArray = drawFood(ctx, area);
-                    newCreatureArray = getNextDayCreatureArray(newCreatureArray, ctx, area);
+                    newFoodArray = drawFood(ctx, area, foodCount);
+                    newCreatureArray = getNextDayCreatureArray(newCreatureArray, ctx, area, selectionControlParams.selectionSpeed);
 
                     day += 1;
                 }
@@ -54,10 +99,45 @@ export const renderNaturalSelectionWorld = (canvas: HTMLCanvasElement, stopSelec
                 requestAnimationFrame(animate);
             } else {
                 stopSelection();
-                console.log(resultArray);
+                setSelectionResultData(resultArray);
             }
         };
 
         animate();
     }
 };
+
+interface IRenderProps extends IRenderAreaElements, IInitProps {
+    stopSelection: () => void;
+    setSelectionResultData: (data: IDayResult[]) => void;
+}
+
+interface IInitProps {
+    canvas: HTMLCanvasElement;
+    foodControlParams: IFoodControlParams;
+    creatureControlParams: ICreatureControlParams;
+    selectionControlParams: ISelectionControlParams;
+}
+
+interface IUpdateInitProps extends IInitProps {
+    area: IArea;
+}
+
+export interface IRenderAreaElements {
+    foodArray: Food[];
+    creatureArray: Creature[];
+    area: IArea;
+}
+
+export interface IFoodControlParams {
+    foodCount: number;
+}
+
+export interface ICreatureControlParams {
+    creatureCount: number;
+}
+
+export interface ISelectionControlParams {
+    selectionDays: number;
+    selectionSpeed: number;
+}

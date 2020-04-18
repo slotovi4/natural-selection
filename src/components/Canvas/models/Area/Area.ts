@@ -1,4 +1,5 @@
 import { areaParams } from './config';
+import {IArea} from '../interface';
 
 export class Area {
     public radius: number;
@@ -31,7 +32,7 @@ export class Area {
         this.ctx.closePath();
     }
 
-    public getArea() {
+    public getArea(): IArea {
         return {
             radius: this.radius,
             centerX: this.centerX,

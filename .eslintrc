@@ -32,6 +32,9 @@
         "no-unused-vars": "error",
         "curly": "error",
         "no-extra-semi": "error",
+        "no-shadow": "error",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": "off",
         "semi": [
             2,
             "always"

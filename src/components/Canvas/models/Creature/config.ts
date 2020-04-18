@@ -3,6 +3,7 @@ export const creatureParams = {
     velocity: 1,
     visibilityRadius: 50,
     fillStyle: 'blue',
-    strokeStyle: 'black',
+    dieFillStyle: 'red',
+    strokeStyle: 'rgba(0,0,0,0.2)',
     lineWidth: 1,
 };

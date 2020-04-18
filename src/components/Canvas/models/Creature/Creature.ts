@@ -22,18 +22,20 @@ export class Creature {
     private energyIntensity: number;
     private wasteEnergyPerMove: number;
     private noFoodForPosterity: boolean;
+    private selectionSpeed: number;
 
     private area: IArea;
     private ctx: CanvasRenderingContext2D;
 
-    public constructor(x: number, y: number, ctx: CanvasRenderingContext2D, area: IArea) {
+    public constructor(x: number, y: number, ctx: CanvasRenderingContext2D, area: IArea, selectionSpeed: number) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
         this.area = area;
 
+        this.selectionSpeed = selectionSpeed;
         this.radius = creatureParams.radius;
-        this.velocity = creatureParams.velocity;
+        this.velocity = creatureParams.velocity * this.selectionSpeed;
         this.visibilityRadius = creatureParams.visibilityRadius;
         this.stepDirectionCount = 0;
         this.onAreaCenter = false;
@@ -52,13 +54,13 @@ export class Creature {
     }
 
     public draw() {
-        const { fillStyle, strokeStyle, lineWidth } = creatureParams;
+        const { fillStyle, dieFillStyle, strokeStyle, lineWidth } = creatureParams;
 
         // draw creature
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.ctx.save();
-        this.ctx.fillStyle = fillStyle;
+        this.ctx.fillStyle = this.checkDeath() ? dieFillStyle : fillStyle;
         this.ctx.fill();
         this.ctx.restore();
         this.ctx.closePath();
@@ -101,6 +103,8 @@ export class Creature {
                 this.resetState();
             }
 
+            this.draw();
+        } else if (this.ctx.fillStyle === creatureParams.fillStyle) {
             this.draw();
         }
 
@@ -291,7 +295,7 @@ export class Creature {
      */
     private wasteOfEnergy() {
         if (!(this.step % this.wasteEnergyPerMove)) {
-            this.energy -= 1;
+            this.energy -= 1 * this.selectionSpeed;
         }
     }
 
@@ -312,6 +316,6 @@ export class Creature {
     }
 
     private randomStepDirectionChangeNum() {
-        return randomIntFromRange(30, 50);
+        return randomIntFromRange(Math.floor(30 / this.selectionSpeed), Math.floor(50 / this.selectionSpeed));
     }
 }

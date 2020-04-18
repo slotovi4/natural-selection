@@ -1,35 +1,38 @@
 import React from 'react';
-import {
-    Button,
-    Card,
-    CardMedia,
-    CardContent,
-    CardActions,
-} from '@material-ui/core';
+import { Button, CardMedia } from '@material-ui/core';
+import { SelectionExpansionPanel, ISelectionProps as SelectionExpansionPanelProps} from './SelectionExpansionPanel';
+import { FoodExpansionPanel, IFoodProps as FoodExpansionPanelProps } from './FoodExpansionPanel';
+import { CreatureExpansionPanel, ICreatureProps as CreatureExpansionPanelProps } from './CreatureExpansionPanel';
 import { cn } from '@bem-react/classname';
-import selectionImg from './selectionImg.jpg';
+import controlImg from './controlImg.jpg';
 import './ControlSection.scss';
 
-const ControlSection = ({ onStartClick, onResetClick, disabled }: IProps) => {
+const ControlSection = ({
+    onStartClick,
+    onResetClick,
+    foodProps,
+    creatureProps,
+    selectionProps,
+    disabled,
+}: IProps) => {
     const cl = cn('ControlSection');
 
     return (
         <section className={cl()}>
-            <Card>
-                <CardMedia
-                    image={selectionImg}
-                    title="Selection Image"
-                    className={cl('Image')}
-                />
-                <CardContent>
-                    <span>Selection params</span>
-                </CardContent>
+            <CardMedia
+                image={controlImg}
+                title="Control Image"
+                className={cl('Image')}
+            />
 
-                <CardActions>
-                    <Button disabled={disabled} variant="contained" onClick={onStartClick}>Start</Button>
-                    <Button disabled={disabled} variant="contained" onClick={onResetClick} className='ml-2'>Reset</Button>
-                </CardActions>
-            </Card>
+            <SelectionExpansionPanel disabled={disabled} {...selectionProps} />
+            <CreatureExpansionPanel disabled={disabled} {...creatureProps} />
+            <FoodExpansionPanel disabled={disabled} {...foodProps} />
+
+            <div className='p-2'>
+                <Button disabled={disabled} variant="contained" onClick={onStartClick}>Start</Button>
+                <Button disabled={disabled} variant="contained" onClick={onResetClick} className='ml-2'>Reset</Button>
+            </div>
         </section>
     );
 };
@@ -38,6 +41,9 @@ export default ControlSection;
 
 interface IProps {
     disabled: boolean;
+    foodProps: FoodExpansionPanelProps;
+    creatureProps: CreatureExpansionPanelProps;
+    selectionProps: SelectionExpansionPanelProps;
     onResetClick: () => void;
     onStartClick: () => void;
 }
