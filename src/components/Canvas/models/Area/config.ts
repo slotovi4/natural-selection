@@ -1,5 +1,5 @@
 export const areaParams = {
     borderWidth: 5,
-    fillStyle: 'white',
-    strokeStyle: '#003300',
+    fillStyle: '#f5f5f5',
+    strokeStyle: 'rgba(0,0,0,3)',
 };

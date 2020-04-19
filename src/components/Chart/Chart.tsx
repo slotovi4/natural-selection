@@ -1,12 +1,12 @@
 import React from 'react';
-import { ChartOptions, Chart as ChartJs } from 'chart.js';
+import { ChartOptions, ChartDataSets, Chart as ChartJs } from 'chart.js';
 import { Line, LinearComponentProps } from 'react-chartjs-2';
 
-const Chart = ({ selectionResultData }: IProps) => {
+const Chart = ({ selectionResultData, combineCharts }: IProps) => {
     const createChartData: LinearComponentProps["data"] = (canvas: HTMLCanvasElement) => {
         const ctx = canvas.getContext("2d");
 
-        if (ctx && selectionResultData.length) {
+        if (ctx) {
             const gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
             gradientStroke.addColorStop(0, '#80b6f4');
             gradientStroke.addColorStop(1, 'white');
@@ -28,24 +28,37 @@ const Chart = ({ selectionResultData }: IProps) => {
                 borderWidth: 2,
             };
 
+            const combineDataSets: ChartDataSets[] = [];
             let labels: number[] = [];
             let survivedCount: number[] = [];
             let offspringCount: number[] = [];
-            let selectionsDaysCountArray: number[] = [];
 
             for (let i = 0; i < selectionResultData.length; i++) {
-                labels = [...labels, ...selectionResultData[i].map((e, num) => num)];
-                survivedCount = [...survivedCount, ...selectionResultData[i].map(e => e.survivedCount)];
-                offspringCount = [...offspringCount, ...selectionResultData[i].map(e => e.offspringCount)];
+                const survived = selectionResultData[i].map(e => e.survivedCount);
+                const offspring = selectionResultData[i].map(e => e.offspringCount);
 
-                selectionsDaysCountArray = [...selectionsDaysCountArray, selectionResultData[i].length];
+                labels = [...labels, ...selectionResultData[i].map((e, num) => num)];
+                survivedCount = [...survivedCount, ...survived];
+                offspringCount = [...offspringCount, ...offspring];
+
+                if (combineCharts) {
+                    combineDataSets.push({
+                        label: `Survived count (selection: ${i})`,
+                        data: survived,
+                        ...dataSetsParams
+                    });
+
+                    combineDataSets.push({
+                        label: `Offspring count (selection: ${i})`,
+                        data: offspring,
+                        ...dataSetsParams
+                    });
+                }
             }
 
-            labels.filter((e, j) => labels.indexOf(e) === j);
-
             return {
-                labels,
-                datasets: [
+                labels: combineCharts ? labels.filter((e, j) => labels.indexOf(e) === j) : labels,
+                datasets: combineCharts ? combineDataSets : [
                     {
                         label: "Survived count",
                         data: survivedCount,
@@ -101,34 +114,36 @@ const Chart = ({ selectionResultData }: IProps) => {
         },
     };
 
-    ChartJs.pluginService.register({
-        afterDraw: chart => {
-            if (selectionResultData.length) {
-                const { ctx, chartArea } = chart;
-                let selectionsDaysCountArray: number[] = [];
+    const drawChartDividingLine = (chart: Chart) => {
+        if (selectionResultData.length) {
+            const { ctx, chartArea } = chart;
+            let selectionsDaysCountArray: number[] = [];
 
-                for (let i = 0; i < selectionResultData.length; i++) {
-                    selectionsDaysCountArray = [...selectionsDaysCountArray, selectionResultData[i].length];
-                }
+            for (let i = 0; i < selectionResultData.length; i++) {
+                selectionsDaysCountArray = [...selectionsDaysCountArray, selectionResultData[i].length];
+            }
 
-                const labelItems: ILabelItem[] = (chart as any).scales['x-axis-0']._labelItems;
+            const labelItems: ILabelItem[] = (chart as any).scales['x-axis-0']._labelItems;
 
-                if (ctx && chartArea && labelItems) {
-                    for (let i = 0; i < labelItems.length; i++) {
-                        if (labelItems[i].label === '0') {
+            if (ctx && chartArea && labelItems) {
+                for (let i = 0; i < labelItems.length; i++) {
+                    if (labelItems[i].label === '0') {
 
-                            ctx.save();
-                            ctx.beginPath();
-                            ctx.moveTo(labelItems[i].x, chartArea.top);
-                            ctx.lineTo(labelItems[i].x, chartArea.bottom);
-                            ctx.lineWidth = 2;
-                            ctx.strokeStyle = '#ff0000';
-                            ctx.stroke();
-                        }
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.moveTo(labelItems[i].x, chartArea.top);
+                        ctx.lineTo(labelItems[i].x, chartArea.bottom);
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = '#ff0000';
+                        ctx.stroke();
                     }
                 }
             }
         }
+    };
+
+    ChartJs.pluginService.register({
+        afterDraw: drawChartDividingLine
     });
 
     return (
@@ -142,6 +157,7 @@ export default Chart;
 
 interface IProps {
     selectionResultData: IDayResult[][];
+    combineCharts?: boolean;
 }
 
 interface IDayResult {
