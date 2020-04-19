@@ -16,7 +16,7 @@ export class Creature {
     private dY: number;
     private stepDirectionCount: number;
     private stepDirectionChangeNum: number;
-    private onAreaCenter: boolean;
+    private reachedTheAreaCenter: boolean;
     private step: number;
     private energy: number;
     private energyIntensity: number;
@@ -35,19 +35,21 @@ export class Creature {
 
         this.selectionSpeed = selectionSpeed;
         this.radius = creatureParams.radius;
-        this.velocity = creatureParams.velocity * this.selectionSpeed;
+        this.velocity = creatureParams.velocity * selectionSpeed;
         this.visibilityRadius = creatureParams.visibilityRadius;
+
+        this.step = 0;
         this.stepDirectionCount = 0;
-        this.onAreaCenter = false;
         this.grabbedFoodCount = 0;
+        this.energyIntensity = 2;
         this.returnedToHome = false;
         this.isDie = false;
-        this.step = 0;
-        this.energyIntensity = 2;
-        this.energy = this.replenishEnergy();
-        this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
+        this.reachedTheAreaCenter = false;
         this.noFoodForPosterity = false;
 
+        // dependence variables
+        this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
+        this.energy = this.replenishEnergy();
         this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
         this.dX = this.randomDirection();
         this.dY = this.randomDirection();
@@ -91,7 +93,7 @@ export class Creature {
                     this.goHome();
                 }
 
-                if (this.onAreaCenter) {
+                if (this.reachedTheAreaCenter) {
                     this.stepDirectionCount += 1;
                 }
 
@@ -143,10 +145,14 @@ export class Creature {
         const nearestAreaExitPoint = this.getNearestAreaExitPoint();
 
         if (nearestAreaExitPoint) {
+            // расстояние до ближайшей точки выхода
             const nearestAreaExitPointDistance = calcPointDistance(this.x, this.y, nearestAreaExitPoint.x, nearestAreaExitPoint.y);
-            const distanceToExitPoint = Math.floor(nearestAreaExitPointDistance / this.velocity);
+            // количество шагов до точки выхода
+            const stepsCountToExitPoint = Math.floor(nearestAreaExitPointDistance / this.velocity);
+            // количество энергии требуемой для выхода
+            const amountEnergyToExit = Math.floor((stepsCountToExitPoint * this.selectionSpeed) / this.wasteEnergyPerMove);
 
-            if (distanceToExitPoint / this.wasteEnergyPerMove < this.energy) {
+            if (this.energy > amountEnergyToExit) {
                 this.searchFood(foodArray);
             } else {
                 this.noFoodForPosterity = true;
@@ -169,18 +175,18 @@ export class Creature {
 
     private move() {
         // if creature position not on area center
-        if (!this.onAreaCenter) {
+        if (!this.reachedTheAreaCenter) {
             this.moveToAreaCenter();
         }
 
         // if creature reached area center
-        if (this.creatureReachedAreaCenter() || this.onAreaCenter) {
+        if (this.creatureReachedAreaCenter() || this.reachedTheAreaCenter) {
             this.moveToRandomDirection();
         }
     }
 
     private moveToRandomDirection() {
-        this.onAreaCenter = true;
+        this.reachedTheAreaCenter = true;
 
         // create move direction
         if (!(this.stepDirectionCount % this.stepDirectionChangeNum)) {
@@ -228,17 +234,18 @@ export class Creature {
 
     private resetState() {
         if (!this.checkDeath()) {
-            this.stepDirectionCount = 0;
-            this.onAreaCenter = false;
-            this.grabbedFoodCount = 0;
-            this.returnedToHome = false;
             this.step = 0;
-            this.energy = this.replenishEnergy();
+            this.stepDirectionCount = 0;
+            this.grabbedFoodCount = 0;
+
+            this.reachedTheAreaCenter = false;
+            this.returnedToHome = false;
             this.noFoodForPosterity = false;
 
             this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
             this.dX = this.randomDirection();
             this.dY = this.randomDirection();
+            this.energy = this.replenishEnergy();
         }
     }
 
@@ -300,7 +307,7 @@ export class Creature {
     }
 
     private checkDeath() {
-        if (this.energy === 0) {
+        if (this.energy <= 0) {
             this.isDie = true;
         }
 

@@ -98,8 +98,8 @@ export const renderNaturalSelectionWorld = ({
 
                 requestAnimationFrame(animate);
             } else {
-                stopSelection();
                 setSelectionResultData(resultArray);
+                stopSelection();
             }
         };
 
