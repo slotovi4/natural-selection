@@ -9,7 +9,7 @@ const createCreature = ({ ctx, area, selectionSpeed }: ICreateCreatureProps) => 
     const x = (area.radius - creatureRadius) * Math.cos(randomAngle) + area.centerX;
     const y = (area.radius - creatureRadius) * Math.sin(randomAngle) + area.centerY;
 
-    return new Creature(x, y, ctx, area, selectionSpeed);
+    return new Creature({ x, y, ctx, area, selectionSpeed });
 };
 
 const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed }: ICreateCreatureArrayProps) => {

@@ -10,7 +10,7 @@ const createFood = ({ ctx, area }: IDefaultProps) => {
     const x = Math.floor(randomRadius * Math.cos(randomAngle) + area.centerX);
     const y = Math.floor(randomRadius * Math.sin(randomAngle) + area.centerY);
 
-    return new Food(x, y, ctx);
+    return new Food({x, y, ctx});
 };
 
 /**

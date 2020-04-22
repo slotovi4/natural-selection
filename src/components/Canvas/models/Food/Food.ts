@@ -5,10 +5,10 @@ export class Food {
     public readonly y: number;
     public readonly radius: number;
     public eaten: boolean;
-    
+
     private readonly ctx: CanvasRenderingContext2D;
 
-    public constructor(x: number, y: number, ctx: CanvasRenderingContext2D) {
+    public constructor({ x, y, ctx }: IProps) {
         this.x = x;
         this.y = y;
         this.radius = foodParams.radius;
@@ -35,4 +35,10 @@ export class Food {
     public eat() {
         this.eaten = true;
     }
+}
+
+interface IProps {
+    x: number;
+    y: number;
+    ctx: CanvasRenderingContext2D;
 }

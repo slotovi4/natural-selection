@@ -1,5 +1,5 @@
 import { areaParams } from './config';
-import {IArea} from '../interface';
+import { IArea } from '../interface';
 
 export class Area {
     private readonly radius: number;
@@ -8,7 +8,7 @@ export class Area {
     private readonly ctx: CanvasRenderingContext2D;
     private readonly canvas: HTMLCanvasElement;
 
-    public constructor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+    public constructor({ ctx, canvas }: IProps) {
         this.ctx = ctx;
         this.canvas = canvas;
         this.centerX = this.canvas.width / 2;
@@ -39,4 +39,9 @@ export class Area {
             centerY: this.centerY,
         };
     }
+}
+
+interface IProps {
+    ctx: CanvasRenderingContext2D;
+    canvas: HTMLCanvasElement;
 }

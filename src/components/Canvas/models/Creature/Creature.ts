@@ -27,7 +27,7 @@ export class Creature {
     private step: number;
     private energy: number;
 
-    public constructor(x: number, y: number, ctx: CanvasRenderingContext2D, area: IArea, selectionSpeed: number) {
+    public constructor({ x, y, ctx, area, selectionSpeed }: IProps) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
@@ -325,4 +325,12 @@ export class Creature {
     private randomStepDirectionChangeNum() {
         return randomIntFromRange(Math.floor(30 / this.selectionSpeed), Math.floor(50 / this.selectionSpeed));
     }
+}
+
+interface IProps {
+    x: number;
+    y: number;
+    ctx: CanvasRenderingContext2D;
+    area: IArea;
+    selectionSpeed: number;
 }
