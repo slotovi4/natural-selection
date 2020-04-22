@@ -2,24 +2,24 @@ import { areaParams } from './config';
 import {IArea} from '../interface';
 
 export class Area {
-    public radius: number;
-    public centerX: number;
-    public centerY: number;
-    private ctx: CanvasRenderingContext2D;
-    private canvas: HTMLCanvasElement;
+    private readonly radius: number;
+    private readonly centerX: number;
+    private readonly centerY: number;
+    private readonly ctx: CanvasRenderingContext2D;
+    private readonly canvas: HTMLCanvasElement;
 
     public constructor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
         this.ctx = ctx;
         this.canvas = canvas;
         this.centerX = this.canvas.width / 2;
         this.centerY = this.canvas.height / 2;
+
+        const padding = 20;
+        this.radius = this.centerY - areaParams.borderWidth - padding;
     }
 
     public draw() {
         const { fillStyle, strokeStyle, borderWidth } = areaParams;
-        const padding = 20;
-        
-        this.radius = this.centerY - borderWidth - padding;
 
         this.ctx.beginPath();
         this.ctx.beginPath();
@@ -32,7 +32,7 @@ export class Area {
         this.ctx.closePath();
     }
 
-    public getArea(): IArea {
+    public getAreaParams(): IArea {
         return {
             radius: this.radius,
             centerX: this.centerX,

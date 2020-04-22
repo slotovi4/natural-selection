@@ -2,7 +2,7 @@ import { Creature } from './Creature';
 import { creatureParams } from './config';
 import { IArea, IFood } from "../interface";
 
-const createCreature = (ctx: CanvasRenderingContext2D, area: IArea, selectionSpeed: number) => {
+const createCreature = ({ ctx, area, selectionSpeed }: ICreateCreatureProps) => {
     const creatureRadius = creatureParams.radius;
     const randomAngle = Math.random() * 2 * Math.PI;
 
@@ -12,11 +12,11 @@ const createCreature = (ctx: CanvasRenderingContext2D, area: IArea, selectionSpe
     return new Creature(x, y, ctx, area, selectionSpeed);
 };
 
-const createCreatureArray = (ctx: CanvasRenderingContext2D, area: IArea, creatureCount: number, selectionSpeed: number) => {
+const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed }: ICreateCreatureArrayProps) => {
     const creatureArray: Creature[] = [];
 
     for (let i = 0; i < creatureCount; i++) {
-        creatureArray.push(createCreature(ctx, area, selectionSpeed));
+        creatureArray.push(createCreature({ ctx, area, selectionSpeed }));
     }
 
     return creatureArray;
@@ -34,8 +34,8 @@ const getOffspringCreatures = (creatureArray: Creature[]) => {
     return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome);
 };
 
-export const drawCreature = (ctx: CanvasRenderingContext2D, area: IArea, creatureCount: number, selectionSpeed: number) => {
-    const creatureArray = createCreatureArray(ctx, area, creatureCount, selectionSpeed);
+export const drawCreature = ({ ctx, area, creatureCount, selectionSpeed }: ICreateCreatureArrayProps) => {
+    const creatureArray = createCreatureArray({ ctx, area, creatureCount, selectionSpeed });
 
     creatureArray.forEach(creature => {
         creature.draw();
@@ -56,7 +56,7 @@ export const updateCreature = (creatureArray: Creature[], foodArray: IFood[], da
 
 export const checkEndDay = (creatureArray: Creature[]) => creatureArray.every(creature => creature.isDie || creature.returnedToHome);
 
-export const getNextDayCreatureArray = (endDayCreatureArray: Creature[], ctx: CanvasRenderingContext2D, area: IArea, selectionSpeed: number) => {
+export const getNextDayCreatureArray = ({ endDayCreatureArray, ctx, area, selectionSpeed }: IGetNextDayCreature) => {
     const nextDayCreatureArray = [];
     const posterityCreaturesArray = [];
 
@@ -64,7 +64,7 @@ export const getNextDayCreatureArray = (endDayCreatureArray: Creature[], ctx: Ca
     const offspringCreaturesCount = getOffspringCreatures(endDayCreatureArray).length;
 
     for (let i = 0; i < offspringCreaturesCount; i++) {
-        posterityCreaturesArray.push(createCreature(ctx, area, selectionSpeed));
+        posterityCreaturesArray.push(createCreature({ ctx, area, selectionSpeed }));
     }
 
     nextDayCreatureArray.push(...survivedCreatures, ...posterityCreaturesArray);
@@ -84,4 +84,21 @@ export interface IDayResult {
     dieCount: number;
     survivedCount: number;
     offspringCount: number;
+}
+
+interface ICreateCreatureProps extends IDefaultProps {
+    selectionSpeed: number;
+}
+
+interface ICreateCreatureArrayProps extends ICreateCreatureProps {
+    creatureCount: number;
+}
+
+interface IGetNextDayCreature extends ICreateCreatureProps {
+    endDayCreatureArray: Creature[];
+}
+
+interface IDefaultProps {
+    ctx: CanvasRenderingContext2D;
+    area: IArea;
 }

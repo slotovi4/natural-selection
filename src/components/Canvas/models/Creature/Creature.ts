@@ -3,29 +3,29 @@ import { calcPointDistance, randomIntFromRange, getNearestPointFromPointsArray }
 import { IArea, IFood, IPoint } from "../interface";
 
 export class Creature {
+    public readonly radius: number;
     public x: number;
     public y: number;
-    public radius: number;
     public returnedToHome: boolean;
     public isDie: boolean;
     public grabbedFoodCount: number;
 
-    private visibilityRadius: number;
-    private velocity: number;
+    private readonly visibilityRadius: number;
+    private readonly velocity: number;
+    private readonly energyIntensity: number;
+    private readonly wasteEnergyPerMove: number;
+    private readonly selectionSpeed: number;
+    private readonly area: IArea;
+    private readonly ctx: CanvasRenderingContext2D;
+
     private dX: number;
     private dY: number;
     private stepDirectionCount: number;
     private stepDirectionChangeNum: number;
     private reachedTheAreaCenter: boolean;
+    private noFoodForPosterity: boolean;
     private step: number;
     private energy: number;
-    private energyIntensity: number;
-    private wasteEnergyPerMove: number;
-    private noFoodForPosterity: boolean;
-    private selectionSpeed: number;
-
-    private area: IArea;
-    private ctx: CanvasRenderingContext2D;
 
     public constructor(x: number, y: number, ctx: CanvasRenderingContext2D, area: IArea, selectionSpeed: number) {
         this.x = x;
