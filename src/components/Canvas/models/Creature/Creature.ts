@@ -1,6 +1,11 @@
-import { creatureParams } from './config';
-import { calcPointDistance, randomIntFromRange, getNearestPointFromPointsArray } from '../helpers';
+import {
+    calcPointDistance,
+    randomIntFromRange,
+    getNearestPointFromPointsArray,
+    getRandomColor
+} from '../helpers';
 import { IArea, IFood, IPoint } from "../interface";
+import { creatureParams } from './config';
 
 export class Creature {
     public readonly radius: number;
@@ -11,23 +16,27 @@ export class Creature {
     public grabbedFoodCount: number;
 
     private readonly visibilityRadius: number;
-    private readonly velocity: number;
-    private readonly energyIntensity: number;
     private readonly wasteEnergyPerMove: number;
     private readonly selectionSpeed: number;
+    private readonly mutationChance: number;
+    private readonly isPosterity: boolean;
+    private readonly isMutate: boolean;
+    private readonly fillStyle: string;
     private readonly area: IArea;
     private readonly ctx: CanvasRenderingContext2D;
 
     private dX: number;
     private dY: number;
+    private velocity: number;
     private stepDirectionCount: number;
     private stepDirectionChangeNum: number;
     private reachedTheAreaCenter: boolean;
     private noFoodForPosterity: boolean;
+    private energyIntensity: number;
     private step: number;
     private energy: number;
 
-    public constructor({ x, y, ctx, area, selectionSpeed }: IProps) {
+    public constructor({ x, y, ctx, area, selectionSpeed, isPosterity }: IProps) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
@@ -46,6 +55,15 @@ export class Creature {
         this.isDie = false;
         this.reachedTheAreaCenter = false;
         this.noFoodForPosterity = false;
+        this.mutationChance = 0.1;
+        this.isPosterity = isPosterity !== undefined ? isPosterity : false;
+        this.isMutate = this.getIsMutate();
+        this.fillStyle = this.getFillStyle();
+
+        // mutation
+        if(this.isMutate) {
+           this.mutateVelocity();
+        }
 
         // dependence variables
         this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
@@ -56,13 +74,13 @@ export class Creature {
     }
 
     public draw() {
-        const { fillStyle, dieFillStyle, strokeStyle, lineWidth } = creatureParams;
+        const { dieFillStyle, strokeStyle, lineWidth } = creatureParams;
 
         // draw creature
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.ctx.save();
-        this.ctx.fillStyle = this.checkDeath() ? dieFillStyle : fillStyle;
+        this.ctx.fillStyle = this.checkDeath() ? dieFillStyle : this.fillStyle;
         this.ctx.fill();
         this.ctx.restore();
         this.ctx.closePath();
@@ -111,6 +129,12 @@ export class Creature {
         }
 
         return this;
+    }
+
+    public getCreatureParams() {
+        return {
+            velocity: this.velocity,
+        };
     }
 
     private searchFood(foodArray: IFood[]) {
@@ -306,6 +330,13 @@ export class Creature {
         }
     }
 
+    private mutateVelocity() {
+        const oldVelocity = this.velocity;
+
+        this.velocity =this.mutateParam(this.velocity);
+        this.energyIntensity *= oldVelocity / this.velocity;
+    }
+
     private checkDeath() {
         if (this.energy <= 0) {
             this.isDie = true;
@@ -325,6 +356,18 @@ export class Creature {
     private randomStepDirectionChangeNum() {
         return randomIntFromRange(Math.floor(30 / this.selectionSpeed), Math.floor(50 / this.selectionSpeed));
     }
+
+    private getIsMutate() {
+        return this.isPosterity ? Math.random() <= this.mutationChance : false;
+    }
+
+    private getFillStyle() {
+        return this.isMutate ? getRandomColor() : creatureParams.fillStyle;
+    }
+
+    private mutateParam(defaultValue: number) {
+        return randomIntFromRange(defaultValue / 2, defaultValue * 2);
+    }
 }
 
 interface IProps {
@@ -333,4 +376,5 @@ interface IProps {
     ctx: CanvasRenderingContext2D;
     area: IArea;
     selectionSpeed: number;
+    isPosterity?: boolean;
 }

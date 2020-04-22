@@ -2,14 +2,14 @@ import { Creature } from './Creature';
 import { creatureParams } from './config';
 import { IArea, IFood } from "../interface";
 
-const createCreature = ({ ctx, area, selectionSpeed }: ICreateCreatureProps) => {
+const createCreature = ({ ctx, area, selectionSpeed, isPosterity }: ICreateCreatureProps) => {
     const creatureRadius = creatureParams.radius;
     const randomAngle = Math.random() * 2 * Math.PI;
 
     const x = (area.radius - creatureRadius) * Math.cos(randomAngle) + area.centerX;
     const y = (area.radius - creatureRadius) * Math.sin(randomAngle) + area.centerY;
 
-    return new Creature({ x, y, ctx, area, selectionSpeed });
+    return new Creature({ x, y, ctx, area, selectionSpeed, isPosterity });
 };
 
 const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed }: ICreateCreatureArrayProps) => {
@@ -32,6 +32,10 @@ const getDeadCreatures = (creatureArray: Creature[]) => {
 
 const getOffspringCreatures = (creatureArray: Creature[]) => {
     return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome);
+};
+
+const getCreaturesSpeed = (creatureArray: Creature[]) => {
+    return creatureArray.filter(creature => creature.getCreatureParams().velocity);
 };
 
 export const drawCreature = ({ ctx, area, creatureCount, selectionSpeed }: ICreateCreatureArrayProps) => {
@@ -64,7 +68,7 @@ export const getNextDayCreatureArray = ({ endDayCreatureArray, ctx, area, select
     const offspringCreaturesCount = getOffspringCreatures(endDayCreatureArray).length;
 
     for (let i = 0; i < offspringCreaturesCount; i++) {
-        posterityCreaturesArray.push(createCreature({ ctx, area, selectionSpeed }));
+        posterityCreaturesArray.push(createCreature({ ctx, area, selectionSpeed, isPosterity: true }));
     }
 
     nextDayCreatureArray.push(...survivedCreatures, ...posterityCreaturesArray);
@@ -76,7 +80,7 @@ export const getDayResult = (endDayCreatureArray: Creature[]): IDayResult => {
     return ({
         dieCount: getDeadCreatures(endDayCreatureArray).length,
         survivedCount: getSurvivedCreatures(endDayCreatureArray).length,
-        offspringCount: getOffspringCreatures(endDayCreatureArray).length,
+        offspringCount: getOffspringCreatures(endDayCreatureArray).length
     });
 };
 
@@ -101,4 +105,5 @@ interface IGetNextDayCreature extends ICreateCreatureProps {
 interface IDefaultProps {
     ctx: CanvasRenderingContext2D;
     area: IArea;
+    isPosterity?: boolean;
 }

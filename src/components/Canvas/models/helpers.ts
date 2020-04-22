@@ -11,6 +11,10 @@ export const randomIntFromRange = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
+export const getRandomColor = () => {
+    return `rgb(${randomIntFromRange(0, 255)}, ${randomIntFromRange(0, 255)}, ${randomIntFromRange(0, 255)})`;
+};
+
 export const getNearestPointFromPointsArray = <T extends IPoint, N extends IPoint>(pointsArray: T[], parentPoint: N) => {
     const { length } = pointsArray;
     const parPoint = parentPoint;
