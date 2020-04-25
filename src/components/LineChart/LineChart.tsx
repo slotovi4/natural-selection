@@ -1,8 +1,11 @@
 import React from 'react';
+import { FormControlLabel, Switch } from '@material-ui/core';
 import { ChartOptions, ChartDataSets, Chart as ChartJs } from 'chart.js';
 import { Line, LinearComponentProps } from 'react-chartjs-2';
 
-const LineChart = ({ selectionResultData, combineCharts }: IProps) => {
+const LineChart = ({ selectionResultData }: IProps) => {
+    const [combineCharts, setCombineCharts] = React.useState(false);
+
     const createChartData: LinearComponentProps["data"] = (canvas: HTMLCanvasElement) => {
         const ctx = canvas.getContext("2d");
 
@@ -147,11 +150,25 @@ const LineChart = ({ selectionResultData, combineCharts }: IProps) => {
     });
 
     return (
-        <Line
-            data={createChartData}
-            options={options}
-            height={200}
-        />
+        <section>
+            <FormControlLabel
+                control={
+                    <Switch
+                        checked={combineCharts}
+                        onChange={() => setCombineCharts(!combineCharts)}
+                        name="combineChartsSwitch"
+                        color="primary"
+                    />
+                }
+                label="Combine charts"
+            />
+            
+            <Line
+                data={createChartData}
+                options={options}
+                height={200}
+            />
+        </section>
     );
 };
 
@@ -159,7 +176,6 @@ export default LineChart;
 
 interface IProps {
     selectionResultData: IDayResult[][];
-    combineCharts?: boolean;
 }
 
 interface IDayResult {
