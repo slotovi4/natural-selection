@@ -13,7 +13,7 @@ const LineChart = ({ selectionResultData, combineCharts }: IProps) => {
 
             const gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
             gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
-            gradientFill.addColorStop(1, "rgba(63, 81, 181, 0.40)");
+            gradientFill.addColorStop(1, "rgba(63, 81, 181, 0.4)");
 
             const dataSetsParams = {
                 borderColor: "#3f51b5",

@@ -35,6 +35,7 @@ export class Creature {
     private energyIntensity: number;
     private step: number;
     private energy: number;
+    private isMutated: boolean;
 
     public constructor({ x, y, ctx, area, selectionSpeed, mutationChance, isPosterity }: IProps) {
         this.x = x;
@@ -47,6 +48,7 @@ export class Creature {
         this.radius = creatureParams.radius;
         this.velocity = creatureParams.velocity * selectionSpeed;
         this.visibilityRadius = creatureParams.visibilityRadius;
+        this.isMutated = false;
 
         this.step = 0;
         this.stepDirectionCount = 0;
@@ -61,8 +63,8 @@ export class Creature {
         this.fillStyle = this.getFillStyle();
 
         // mutation
-        if(this.isMutate) {
-           this.mutateVelocity();
+        if (this.isMutate) {
+            this.mutateVelocity();
         }
 
         // dependence variables
@@ -133,7 +135,7 @@ export class Creature {
 
     public getCreatureParams() {
         return {
-            velocity: this.velocity,
+            velocity: this.velocity / this.selectionSpeed,
         };
     }
 
@@ -333,8 +335,9 @@ export class Creature {
     private mutateVelocity() {
         const oldVelocity = this.velocity;
 
-        this.velocity =this.mutateParam(this.velocity);
+        this.velocity = this.mutateParam(this.velocity);
         this.energyIntensity *= oldVelocity / this.velocity;
+        this.isMutated = true;
     }
 
     private checkDeath() {
@@ -358,7 +361,7 @@ export class Creature {
     }
 
     private getIsMutate() {
-        return this.isPosterity ? Math.random() <= this.mutationChance : false;
+        return this.isPosterity && !this.isMutated ? Math.random() <= this.mutationChance : false;
     }
 
     private getFillStyle() {

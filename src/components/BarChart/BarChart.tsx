@@ -19,32 +19,30 @@ const BarChart = ({ survivedCreatures }: IProps) => {
     creatureData = creatureData.sort((a, b) => a.velocity - b.velocity);
 
     const data: ChartComponentProps["data"] = {
-        labels: [...creatureData.map(e => e.velocity)],
+        labels: [...creatureData.map(e => `speed: ${e.velocity}`)],
         datasets: [
             {
-                label: 'My First dataset',
-                backgroundColor: 'rgba(255,99,132,0.2)',
-                borderColor: 'rgba(255,99,132,1)',
+                label: 'Creature speed mutation',
+                backgroundColor: 'rgba(63, 81, 181, 0.4)',
+                borderColor: '#3f51b5',
                 borderWidth: 1,
-                hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-                hoverBorderColor: 'rgba(255,99,132,1)',
-                data: [...creatureData.map(e => e.creaturesCount), 5],
-                barPercentage: 1,
-                stack: '1'
+                hoverBackgroundColor: 'rgba(63, 81, 181, 0.6)',
+                hoverBorderColor: '#3f51b5',
+                data: [...creatureData.map(e => e.creaturesCount)],
             }
         ]
     };
 
     const options: ChartOptions = {
         maintainAspectRatio: false,
-        // scales: {
-        //     xAxes: [{
-        //         stacked: true
-        //     }],
-        //     yAxes: [{
-        //         stacked: true
-        //     }]
-        // }
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1,
+                }
+            }]
+        }
     };
 
     return (
@@ -52,6 +50,7 @@ const BarChart = ({ survivedCreatures }: IProps) => {
             <Bar
                 data={data}
                 options={options}
+                height={400}
             />
         </div>
     );
