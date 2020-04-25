@@ -1,6 +1,7 @@
 import React from 'react';
 import { Slider } from '@material-ui/core';
 import { ExpansionPanel } from '../../index';
+import { checkResetExpansionSettings } from '../helpers';
 import { cn } from '@bem-react/classname';
 import './FoodExpansionPanel.scss';
 
@@ -8,16 +9,16 @@ const FoodExpansionPanel = ({ foodSettings, setFoodCount, disabled }: IProps) =>
     const cl = cn('FoodExpansionPanel');
 
     React.useEffect(() => {
-        if (foodSettings.foodCount !== countFood) {
-            setCountFood(foodSettings.foodCount);
+        if (checkResetExpansionSettings(foodSettings, settings)) {
+            setSettings(foodSettings);
         }
     }, [foodSettings]);
+
+    const [settings, setSettings] = React.useState(foodSettings);
 
     const foodSliderStep = 1;
     const { minFoodCount } = foodSettings;
     const maxFoodCount = foodSettings.maxFoodCount / foodSliderStep;
-
-    const [countFood, setCountFood] = React.useState(foodSettings.foodCount);
 
     const foodMarks = [
         {
@@ -47,8 +48,8 @@ const FoodExpansionPanel = ({ foodSettings, setFoodCount, disabled }: IProps) =>
             <div className='w-100'>
                 <span className={cl('Label')}>Food count</span>
                 <Slider
-                    value={countFood}
-                    onChange={(e, value) => typeof value === 'number' && setCountFood(value)}
+                    value={settings.foodCount}
+                    onChange={(e, value) => typeof value === 'number' && setSettings({...settings, foodCount: value})}
                     onChangeCommitted={(e, value) => typeof value === 'number' && setFoodCount(value * foodSliderStep)}
                     aria-labelledby="discrete-slider"
                     valueLabelDisplay="auto"

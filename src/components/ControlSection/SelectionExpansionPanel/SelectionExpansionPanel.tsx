@@ -1,6 +1,7 @@
 import React from 'react';
 import { Slider, FormControlLabel, Radio, Mark } from '@material-ui/core';
 import { ExpansionPanel } from '../../index';
+import { checkResetExpansionSettings } from '../helpers';
 import { cn } from '@bem-react/classname';
 import './SelectionExpansionPanel.scss';
 
@@ -13,11 +14,8 @@ const SelectionExpansionPanel = ({
     const cl = cn('SelectionExpansionPanel');
 
     React.useEffect(() => {
-        if (selectionSettings.selectionDays !== daysCount) {
-            setDaysCount(selectionSettings.selectionDays);
-        }
-        if (selectionSettings.selectionSpeed !== speed) {
-            setSpeed(selectionSettings.selectionSpeed);
+        if (checkResetExpansionSettings(selectionSettings, settings)) {
+            setSettings(selectionSettings);
         }
     }, [selectionSettings]);
 
@@ -25,8 +23,7 @@ const SelectionExpansionPanel = ({
     const minDaysCount = 10;
     const maxDaysCount = 100;
 
-    const [daysCount, setDaysCount] = React.useState(selectionSettings.selectionDays);
-    const [speed, setSpeed] = React.useState(selectionSettings.selectionSpeed);
+    const [settings, setSettings] = React.useState(selectionSettings);
 
     const daysMarks: Mark[] = [
         { value: 10, label: 10 },
@@ -40,7 +37,7 @@ const SelectionExpansionPanel = ({
         <FormControlLabel
             key={`radio_${key}`}
             control={<Radio color="primary" size='small' />}
-            checked={speed === SelectionSpeed[key]}
+            checked={settings.selectionSpeed === SelectionSpeed[key]}
             onChange={() => onChangeSpeed(SelectionSpeed[key])}
             value={SelectionSpeed[key]}
             name="selection-speed"
@@ -49,9 +46,9 @@ const SelectionExpansionPanel = ({
         />
     ));
 
-    const onChangeSpeed = (newSpeed: SelectionSpeed) => {
-        setSpeed(newSpeed);
-        setSelectionSpeed(newSpeed);
+    const onChangeSpeed = (selectionSpeed: SelectionSpeed) => {
+        setSettings({ ...settings, selectionSpeed });
+        setSelectionSpeed(selectionSpeed);
     };
 
     return (
@@ -64,8 +61,8 @@ const SelectionExpansionPanel = ({
                 <div className='w-100'>
                     <span className={cl('Label')}>Selection days count</span>
                     <Slider
-                        value={daysCount}
-                        onChange={(e, value) => typeof value === 'number' && setDaysCount(value)}
+                        value={settings.selectionDays}
+                        onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, selectionDays: value })}
                         onChangeCommitted={(e, value) => typeof value === 'number' && setSelectionDaysCount(value)}
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"

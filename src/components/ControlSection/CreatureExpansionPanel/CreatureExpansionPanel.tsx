@@ -1,6 +1,7 @@
 import React from 'react';
 import { Slider, FormControlLabel, Switch, Mark } from '@material-ui/core';
 import { ExpansionPanel } from '../../index';
+import { checkResetExpansionSettings } from '../helpers';
 import { cn } from '@bem-react/classname';
 import './CreatureExpansionPanel.scss';
 
@@ -14,25 +15,14 @@ const CreatureExpansionPanel = ({
     const cl = cn('CreatureExpansionPanel');
 
     React.useEffect(() => {
-        if (creatureSettings.creatureCount !== countCreature) {
-            setCountCreature(creatureSettings.creatureCount);
-        }
-        if (creatureSettings.canMutate !== canMutate) {
-            setCanMutate(creatureSettings.canMutate);
-        }
-        if (creatureSettings.mutationChance !== mutationChance) {
-            setMutationChance(creatureSettings.mutationChance);
+        if (checkResetExpansionSettings(creatureSettings, settings)) {
+            setSettings(creatureSettings);
         }
     }, [creatureSettings]);
 
-    const [countCreature, setCountCreature] = React.useState(creatureSettings.creatureCount);
-    const [canMutate, setCanMutate] = React.useState(creatureSettings.canMutate);
-    const [mutationChance, setMutationChance] = React.useState(creatureSettings.mutationChance);
+    const [settings, setSettings] = React.useState(creatureSettings);
 
     const creatureSliderStep = 1;
-    const minCreatureCount = 1;
-    const maxCreatureCount = 10;
-
     const mutationChanceSliderStep = 0.1;
     const minMutationChance = 0.1;
     const maxMutationChance = 1;
@@ -50,15 +40,22 @@ const CreatureExpansionPanel = ({
         { value: 1, label: '100%' },
     ];
 
-    const foodMarks: Mark[] = [];
-
-    for (let i = minCreatureCount; i <= maxCreatureCount; i++) {
-        foodMarks.push({ value: i, label: i });
-    }
+    const creatureCountMarks: Mark[] = [
+        { value: 1, label: 1 },
+        { value: 2, label: 2 },
+        { value: 3, label: 3 },
+        { value: 4, label: 4 },
+        { value: 5, label: 5 },
+        { value: 6, label: 6 },
+        { value: 7, label: 7 },
+        { value: 8, label: 8 },
+        { value: 9, label: 9 },
+        { value: 10, label: 10 },
+    ];
 
     const onChangeCanMutate = () => {
-        setCanMutate(!canMutate);
-        setCreatureCanMutate(!canMutate);
+        setSettings({ ...settings, canMutate: !settings.canMutate });
+        setCreatureCanMutate(!settings.canMutate);
     };
 
     return (
@@ -72,7 +69,7 @@ const CreatureExpansionPanel = ({
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={canMutate}
+                                checked={settings.canMutate}
                                 onChange={onChangeCanMutate}
                                 name="mutationSwitch"
                                 color="primary"
@@ -91,16 +88,16 @@ const CreatureExpansionPanel = ({
                 <div className='w-100'>
                     <span className={cl('Label')}>Creature count</span>
                     <Slider
-                        value={countCreature}
-                        onChange={(e, value) => typeof value === 'number' && setCountCreature(value)}
+                        value={settings.creatureCount}
+                        onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, creatureCount: value })}
                         onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureCount(value * creatureSliderStep)}
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"
                         className={cl('Slider')}
                         step={creatureSliderStep}
-                        marks={foodMarks}
-                        min={minCreatureCount}
-                        max={maxCreatureCount}
+                        marks={creatureCountMarks}
+                        min={1}
+                        max={10}
                         disabled={disabled}
                     />
                 </div>
@@ -108,8 +105,8 @@ const CreatureExpansionPanel = ({
                 <div className='w-100'>
                     <span className={cl('Label')}>Mutation chance</span>
                     <Slider
-                        value={mutationChance}
-                        onChange={(e, value) => typeof value === 'number' && setMutationChance(value)}
+                        value={settings.mutationChance}
+                        onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, mutationChance: value })}
                         onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureMutationChance(value)}
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"
@@ -118,7 +115,7 @@ const CreatureExpansionPanel = ({
                         marks={mutationChanceMarks}
                         min={minMutationChance}
                         max={maxMutationChance}
-                        disabled={disabled || !canMutate}
+                        disabled={disabled || !settings.canMutate}
                     />
                 </div>
             </div>
