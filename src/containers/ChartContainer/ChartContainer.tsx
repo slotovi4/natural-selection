@@ -1,11 +1,13 @@
 import React from 'react';
 import { FormControlLabel, Switch } from '@material-ui/core';
-import { LineChart } from '../../components';
+import { LineChart, BarChart } from '../../components';
 import { connect } from 'react-redux';
 import { IRootState } from '../../redux/store';
 
-const ChartContainer = (props: IProps) => {
+const ChartContainer = ({ selectionResultData }: IProps) => {
     const [combineCharts, setCombineCharts] = React.useState(false);
+    const finalResult = selectionResultData.length ? selectionResultData[selectionResultData.length - 1] : null;
+    const finalLastResult = finalResult ? finalResult[finalResult.length - 1] : null;
 
     return (
         <div>
@@ -20,7 +22,11 @@ const ChartContainer = (props: IProps) => {
                 }
                 label="Combine charts"
             />
-            <LineChart combineCharts={combineCharts} {...props} />
+            <LineChart combineCharts={combineCharts} selectionResultData={selectionResultData} />
+
+            {finalLastResult ? (
+                <BarChart survivedCreatures={finalLastResult.survivedCreatures} />
+            ) : null}
         </div>
     );
 };

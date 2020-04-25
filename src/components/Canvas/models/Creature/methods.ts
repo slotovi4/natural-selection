@@ -34,10 +34,6 @@ const getOffspringCreatures = (creatureArray: Creature[]) => {
     return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome);
 };
 
-const getCreaturesSpeed = (creatureArray: Creature[]) => {
-    return creatureArray.map(creature => creature.getCreatureParams().velocity);
-};
-
 export const drawCreature = ({ ctx, area, creatureCount, selectionSpeed, mutationChance }: ICreateCreatureArrayProps) => {
     const creatureArray = createCreatureArray({ ctx, area, creatureCount, selectionSpeed, mutationChance });
 
@@ -77,10 +73,13 @@ export const getNextDayCreatureArray = ({ endDayCreatureArray, ctx, area, select
 };
 
 export const getDayResult = (endDayCreatureArray: Creature[]): IDayResult => {
+    const survivedCreatures = getSurvivedCreatures(endDayCreatureArray);
+
     return ({
         dieCount: getDeadCreatures(endDayCreatureArray).length,
-        survivedCount: getSurvivedCreatures(endDayCreatureArray).length,
+        survivedCount: survivedCreatures.length,
         offspringCount: getOffspringCreatures(endDayCreatureArray).length,
+        survivedCreatures: survivedCreatures.map(creature => creature.getCreatureParams())
     });
 };
 
@@ -88,6 +87,7 @@ export interface IDayResult {
     dieCount: number;
     survivedCount: number;
     offspringCount: number;
+    survivedCreatures: ICreatureParams[];
 }
 
 interface ICreateCreatureProps extends IDefaultProps {
@@ -108,4 +108,8 @@ interface IDefaultProps {
     ctx: CanvasRenderingContext2D;
     area: IArea;
     isPosterity?: boolean;
+}
+
+interface ICreatureParams {
+    velocity: number;
 }

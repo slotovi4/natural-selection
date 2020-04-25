@@ -71,4 +71,9 @@ export interface ISelectionResultData {
     dieCount: number;
     survivedCount: number;
     offspringCount: number;
+    survivedCreatures: ICreatureParams[];
+}
+
+interface ICreatureParams {
+    velocity: number;
 }
