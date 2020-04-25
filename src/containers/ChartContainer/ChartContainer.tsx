@@ -1,42 +1,25 @@
 import React from 'react';
-import { FormControlLabel, Switch, Card } from '@material-ui/core';
-import { LineChart, BarChart } from '../../components';
+import { LineChart, BarChart, SelectionDetails } from '../../components';
 import { connect } from 'react-redux';
 import { IRootState } from '../../redux/store';
-import { cn } from '@bem-react/classname';
-import './ChartContainer.scss';
 
 const ChartContainer = ({ selectionResultData }: IProps) => {
-    const cl = cn('ChartContainer');
-    const [combineCharts, setCombineCharts] = React.useState(false);
     const finalResult = selectionResultData.length ? selectionResultData[selectionResultData.length - 1] : null;
     const finalLastResult = finalResult ? finalResult[finalResult.length - 1] : null;
 
     return (
-        <div className={cl()}>
-            <section style={{width: '70%'}}>
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={combineCharts}
-                            onChange={() => setCombineCharts(!combineCharts)}
-                            name="combineChartsSwitch"
-                            color="primary"
-                        />
-                    }
-                    label="Combine charts"
-                />
-                <section>
-                    <LineChart combineCharts={combineCharts} selectionResultData={selectionResultData} />
-                </section>
+        <div className='d-flex'>
+            <section className='w-70'>
+                <LineChart selectionResultData={selectionResultData} />
 
-                <section>
-                    <BarChart survivedCreatures={finalLastResult ? finalLastResult.survivedCreatures : []} />
-                </section>
+                <BarChart survivedCreatures={finalLastResult ? finalLastResult.survivedCreatures : []} />
             </section>
-            <Card style={{width: '30%'}}>
-                <span>params</span>
-            </Card>
+
+            <section className='w-30'>
+                {finalLastResult ? (
+                    <SelectionDetails selectionResultData={finalLastResult} />
+                ) : null}
+            </section>
         </div>
     );
 };
