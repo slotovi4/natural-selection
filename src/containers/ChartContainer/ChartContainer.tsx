@@ -9,14 +9,16 @@ const ChartContainer = ({ selectionResultData }: IProps) => {
 
     return (
         <div className='d-flex'>
-            <section className='w-70'>    
+            <section className='w-70'>
                 <LineChart selectionResultData={selectionResultData} />
 
                 <BarChart survivedCreatures={finalLastResult ? finalLastResult.survivedCreatures : []} />
             </section>
 
             <section className='w-30'>
-                <SelectionDetails />
+                {finalLastResult ? (
+                    <SelectionDetails selectionResultData={finalLastResult} />
+                ) : null}
             </section>
         </div>
     );
