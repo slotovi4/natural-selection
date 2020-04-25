@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormControlLabel, Switch } from '@material-ui/core';
-import { Chart } from '../../components';
+import { LineChart } from '../../components';
 import { connect } from 'react-redux';
 import { IRootState } from '../../redux/store';
 
@@ -20,7 +20,7 @@ const ChartContainer = (props: IProps) => {
                 }
                 label="Combine charts"
             />
-            <Chart combineCharts={combineCharts} {...props} />
+            <LineChart combineCharts={combineCharts} {...props} />
         </div>
     );
 };

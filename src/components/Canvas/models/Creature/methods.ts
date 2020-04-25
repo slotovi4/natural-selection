@@ -35,7 +35,7 @@ const getOffspringCreatures = (creatureArray: Creature[]) => {
 };
 
 const getCreaturesSpeed = (creatureArray: Creature[]) => {
-    return creatureArray.filter(creature => creature.getCreatureParams().velocity);
+    return creatureArray.map(creature => creature.getCreatureParams().velocity);
 };
 
 export const drawCreature = ({ ctx, area, creatureCount, selectionSpeed, mutationChance }: ICreateCreatureArrayProps) => {
@@ -80,7 +80,7 @@ export const getDayResult = (endDayCreatureArray: Creature[]): IDayResult => {
     return ({
         dieCount: getDeadCreatures(endDayCreatureArray).length,
         survivedCount: getSurvivedCreatures(endDayCreatureArray).length,
-        offspringCount: getOffspringCreatures(endDayCreatureArray).length
+        offspringCount: getOffspringCreatures(endDayCreatureArray).length,
     });
 };
 
