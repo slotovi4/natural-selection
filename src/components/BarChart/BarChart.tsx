@@ -46,13 +46,11 @@ const BarChart = ({ survivedCreatures }: IProps) => {
     };
 
     return (
-        <div>
-            <Bar
-                data={data}
-                options={options}
-                height={400}
-            />
-        </div>
+        <Bar
+            data={data}
+            options={options}
+            height={400}
+        />
     );
 };
 

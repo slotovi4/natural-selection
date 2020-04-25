@@ -83,7 +83,7 @@ const LineChart = ({ selectionResultData, combineCharts }: IProps) => {
         },
         tooltips: {
             bodySpacing: 4,
-            mode: "nearest",
+            mode: "index",
             intersect: false,
             position: "nearest",
             xPadding: 10,
@@ -147,9 +147,11 @@ const LineChart = ({ selectionResultData, combineCharts }: IProps) => {
     });
 
     return (
-        <div>
-            <Line data={createChartData} options={options} />
-        </div>
+        <Line
+            data={createChartData}
+            options={options}
+            height={200}
+        />
     );
 };
 
