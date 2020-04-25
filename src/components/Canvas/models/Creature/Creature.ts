@@ -36,13 +36,14 @@ export class Creature {
     private step: number;
     private energy: number;
 
-    public constructor({ x, y, ctx, area, selectionSpeed, isPosterity }: IProps) {
+    public constructor({ x, y, ctx, area, selectionSpeed, mutationChance, isPosterity }: IProps) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
         this.area = area;
 
         this.selectionSpeed = selectionSpeed;
+        this.mutationChance = mutationChance;
         this.radius = creatureParams.radius;
         this.velocity = creatureParams.velocity * selectionSpeed;
         this.visibilityRadius = creatureParams.visibilityRadius;
@@ -55,7 +56,6 @@ export class Creature {
         this.isDie = false;
         this.reachedTheAreaCenter = false;
         this.noFoodForPosterity = false;
-        this.mutationChance = 0.1;
         this.isPosterity = isPosterity !== undefined ? isPosterity : false;
         this.isMutate = this.getIsMutate();
         this.fillStyle = this.getFillStyle();
@@ -376,5 +376,6 @@ interface IProps {
     ctx: CanvasRenderingContext2D;
     area: IArea;
     selectionSpeed: number;
+    mutationChance: number;
     isPosterity?: boolean;
 }

@@ -56,13 +56,13 @@ const selection = createModel({
 
 export default selection;
 
-interface IState {
+export interface IState {
     start: boolean;
     selectionSettings: ISelectionSettings;
     selectionResultData: ISelectionResultData[][];
 }
 
-interface ISelectionSettings {
+export interface ISelectionSettings {
     selectionDays: number;
     selectionSpeed: SelectionSpeed;
 }

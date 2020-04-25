@@ -72,6 +72,7 @@ export const renderNaturalSelectionWorld = ({
     creatureArray,
     foodControlParams,
     selectionControlParams,
+    creatureControlParams,
     setSelectionResultData,
 }: IRenderProps) => {
     const ctx = canvas.getContext('2d');
@@ -79,7 +80,7 @@ export const renderNaturalSelectionWorld = ({
     if (ctx) {
         const resultArray: IDayResult[] = [];
         const { foodCount } = foodControlParams;
-        const { selectionDays, selectionSpeed } = selectionControlParams;
+        const { selectionDays } = selectionControlParams;
 
         let day = 0;
         let dayEnd = false;
@@ -102,7 +103,13 @@ export const renderNaturalSelectionWorld = ({
                     resultArray.push(getDayResult(newCreatureArray));
 
                     newFoodArray = drawFood({ ctx, area, foodCount });
-                    newCreatureArray = getNextDayCreatureArray({ endDayCreatureArray: newCreatureArray, ctx, area, selectionSpeed });
+                    newCreatureArray = getNextDayCreatureArray({ 
+                        endDayCreatureArray: newCreatureArray, 
+                        ctx, 
+                        area, 
+                        ...selectionControlParams, 
+                        ...creatureControlParams 
+                    });
 
                     day += 1;
                 }
@@ -160,6 +167,8 @@ export interface IFoodControlParams {
 
 export interface ICreatureControlParams {
     creatureCount: number;
+    mutationChance: number;
+    canMutate: boolean;
 }
 
 export interface ISelectionControlParams {

@@ -2,12 +2,23 @@
     &-Label {
         min-width: max-content;
         padding-right: 10px;
-        font-size: 12px;
+        font-size: 12px!important;
+
+        &_secondary {
+            font-size: 12px;
+            color: #0000008a;
+        }
     }
 
     &-Slider {
         & span {
             font-size: 12px!important;
         }
+    }
+
+    &-Panel-Container {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
     }
 }

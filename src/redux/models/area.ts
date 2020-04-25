@@ -28,6 +28,6 @@ const area = createModel({
 
 export default area;
 
-interface IState {
+export interface IState {
     areaParams: IArea | null;
 }
