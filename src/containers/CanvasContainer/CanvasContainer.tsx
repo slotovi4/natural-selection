@@ -2,8 +2,9 @@ import React from 'react';
 import { Canvas } from '../../components';
 import { connect } from 'react-redux';
 import { IRootState, Dispatch } from '../../redux/store';
-import { IArea } from '../../components/Canvas/models/interface';
 import { ISelectionResultData } from '../../redux/models/selection';
+import { IState as IFoodSettings } from '../../redux/models/food';
+import { IState as IAreaSettings } from '../../redux/models/area';
 
 const CanvasContainer = (props: IProps) => <Canvas {...props} />;
 
@@ -16,8 +17,8 @@ const mapState = (state: IRootState) => ({
 
 const mapDispatch = (dispatch: Dispatch) => ({
     stopSelection: () => dispatch.selection.stopSelection(),
-    setArea: (area: IArea) => dispatch.area.setNewArea(area),
-    setMaxFoodCount: (maxFoodCount: number) => dispatch.food.setNewMaxFoodCount(maxFoodCount),
+    setArea: (area: IAreaSettings["areaParams"]) => dispatch.area.setNewArea(area),
+    setMaxFoodCount: (maxFoodCount: IFoodSettings["maxFoodCount"]) => dispatch.food.setNewMaxFoodCount(maxFoodCount),
     setSelectionResultData: (data: ISelectionResultData[]) => dispatch.selection.setNewSelectionResultData(data),
 });
 

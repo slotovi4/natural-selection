@@ -2,7 +2,7 @@ import React from 'react';
 import { ChartOptions, ChartDataSets, Chart as ChartJs } from 'chart.js';
 import { Line, LinearComponentProps } from 'react-chartjs-2';
 
-const Chart = ({ selectionResultData, combineCharts }: IProps) => {
+const LineChart = ({ selectionResultData, combineCharts }: IProps) => {
     const createChartData: LinearComponentProps["data"] = (canvas: HTMLCanvasElement) => {
         const ctx = canvas.getContext("2d");
 
@@ -13,7 +13,7 @@ const Chart = ({ selectionResultData, combineCharts }: IProps) => {
 
             const gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
             gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
-            gradientFill.addColorStop(1, "rgba(63, 81, 181, 0.40)");
+            gradientFill.addColorStop(1, "rgba(63, 81, 181, 0.4)");
 
             const dataSetsParams = {
                 borderColor: "#3f51b5",
@@ -83,7 +83,7 @@ const Chart = ({ selectionResultData, combineCharts }: IProps) => {
         },
         tooltips: {
             bodySpacing: 4,
-            mode: "nearest",
+            mode: "index",
             intersect: false,
             position: "nearest",
             xPadding: 10,
@@ -147,13 +147,15 @@ const Chart = ({ selectionResultData, combineCharts }: IProps) => {
     });
 
     return (
-        <div>
-            <Line data={createChartData} options={options} />
-        </div>
+        <Line
+            data={createChartData}
+            options={options}
+            height={200}
+        />
     );
 };
 
-export default Chart;
+export default LineChart;
 
 interface IProps {
     selectionResultData: IDayResult[][];

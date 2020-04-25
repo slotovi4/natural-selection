@@ -9,7 +9,7 @@ const FoodExpansionPanel = ({ foodSettings, setFoodCount, disabled }: IProps) =>
 
     React.useEffect(() => {
         if (foodSettings.foodCount !== countFood) {
-            setCountFood(foodSettings.minFoodCount);
+            setCountFood(foodSettings.foodCount);
         }
     }, [foodSettings]);
 

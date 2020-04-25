@@ -2,7 +2,7 @@ import { Food } from './Food';
 import { foodParams } from './config';
 import { IArea } from "../interface";
 
-const createFood = (ctx: CanvasRenderingContext2D, area: IArea) => {
+const createFood = ({ ctx, area }: IDefaultProps) => {
     const foodRadius = foodParams.radius;
     const randomAngle = Math.random() * 2 * Math.PI;
     const randomRadius = (area.radius - foodRadius) * Math.sqrt(Math.random());
@@ -10,7 +10,7 @@ const createFood = (ctx: CanvasRenderingContext2D, area: IArea) => {
     const x = Math.floor(randomRadius * Math.cos(randomAngle) + area.centerX);
     const y = Math.floor(randomRadius * Math.sin(randomAngle) + area.centerY);
 
-    return new Food(x, y, ctx);
+    return new Food({x, y, ctx});
 };
 
 /**
@@ -19,11 +19,11 @@ const createFood = (ctx: CanvasRenderingContext2D, area: IArea) => {
  * @param canvas 
  * @param areaRadius 
  */
-const createFoodArray = (ctx: CanvasRenderingContext2D, area: IArea, foodCount: number) => {
+const createFoodArray = ({ ctx, area, foodCount }: ICreateFoodProps) => {
     const foodArray: Food[] = [];
 
     for (let i = 0; i < foodCount; i++) {
-        foodArray.push(createFood(ctx, area));
+        foodArray.push(createFood({ ctx, area }));
     }
 
     return foodArray;
@@ -41,8 +41,8 @@ export const getMaxFoodCount = (area: IArea) => {
     return maxFoodCount / 10;
 };
 
-export const drawFood = (ctx: CanvasRenderingContext2D, area: IArea, foodCount: number) => {
-    const foodArray = createFoodArray(ctx, area, foodCount);
+export const drawFood = (props: ICreateFoodProps) => {
+    const foodArray = createFoodArray({ ...props });
 
     foodArray.forEach(food => {
         food.draw();
@@ -56,3 +56,12 @@ export const updateFood = (foodArray: Food[]) => {
         food.draw();
     });
 };
+
+interface ICreateFoodProps extends IDefaultProps {
+    foodCount: number;
+}
+
+interface IDefaultProps {
+    ctx: CanvasRenderingContext2D;
+    area: IArea;
+}

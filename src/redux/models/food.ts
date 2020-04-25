@@ -35,7 +35,7 @@ const food = createModel({
 
 export default food;
 
-interface IState {
+export interface IState {
     maxFoodCount: number;
     minFoodCount: number;
     foodCount: number;

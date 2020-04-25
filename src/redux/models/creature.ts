@@ -3,6 +3,8 @@ import { createModel } from '@rematch/core';
 
 const initialState: IState = {
     creatureCount: 3,
+    canMutate: true,
+    mutationChance: 0.1
 };
 
 const creature = createModel({
@@ -10,6 +12,12 @@ const creature = createModel({
     reducers: {
         setCreatureCount(state: IState, creatureCount: IState["creatureCount"]) {
             return { ...state, creatureCount };
+        },
+        setCanMutate(state: IState, canMutate: IState["canMutate"]) {
+            return { ...state, canMutate };
+        },
+        setMutationChance(state: IState, mutationChance: IState["mutationChance"]) {
+            return { ...state, mutationChance };
         },
         clearState() {
             return { ...initialState };
@@ -19,6 +27,12 @@ const creature = createModel({
         setNewCreatureCount(creatureCount: IState["creatureCount"]) {
             this.setCreatureCount(creatureCount);
         },
+        setNewCreatureCanMutate(canMutate: IState["canMutate"]) {
+            this.setCanMutate(canMutate);
+        },
+        setNewCreatureMutationChance(mutationChance: IState["mutationChance"]) {
+            this.setMutationChance(mutationChance);
+        },
         clearCreatureState() {
             this.clearState();
         },
@@ -27,6 +41,8 @@ const creature = createModel({
 
 export default creature;
 
-interface IState {
+export interface IState {
     creatureCount: number;
+    canMutate: boolean;
+    mutationChance: number;
 }

@@ -56,13 +56,13 @@ const selection = createModel({
 
 export default selection;
 
-interface IState {
+export interface IState {
     start: boolean;
     selectionSettings: ISelectionSettings;
     selectionResultData: ISelectionResultData[][];
 }
 
-interface ISelectionSettings {
+export interface ISelectionSettings {
     selectionDays: number;
     selectionSpeed: SelectionSpeed;
 }
@@ -71,4 +71,9 @@ export interface ISelectionResultData {
     dieCount: number;
     survivedCount: number;
     offspringCount: number;
+    survivedCreatures: ICreatureParams[];
+}
+
+interface ICreatureParams {
+    velocity: number;
 }
