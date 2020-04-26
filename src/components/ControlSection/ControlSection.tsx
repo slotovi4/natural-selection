@@ -30,7 +30,7 @@ const ControlSection = ({
             <FoodExpansionPanel disabled={disabled} {...foodProps} />
 
             <div className='p-2'>
-                <Button disabled={disabled} variant="contained" onClick={onStartClick}>Start</Button>
+                <Button disabled={disabled} variant="contained" color="primary" onClick={onStartClick}>Start</Button>
                 <Button disabled={disabled} variant="contained" onClick={onResetClick} className='ml-2'>Reset</Button>
             </div>
         </section>
