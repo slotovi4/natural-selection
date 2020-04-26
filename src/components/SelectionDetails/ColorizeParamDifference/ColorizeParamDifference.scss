@@ -1,0 +1,33 @@
+.ColorizeParamDifference {
+    display: flex;
+    align-items: baseline;
+    position: relative;
+
+    &-Icon {
+        width: 18px!important;
+        height: 18px!important;
+
+        &_up {
+            color: green;
+        }
+
+        &_down {
+            color: red;
+        }
+    }
+
+    &-Text {
+        font-size: 11px;
+        position: absolute;
+        left: 13px;
+        bottom: -5px;
+
+        &_up {
+            color: green;
+        }
+
+        &_down {
+            color: red;
+        }
+    }
+}
