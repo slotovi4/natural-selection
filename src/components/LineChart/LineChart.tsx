@@ -6,8 +6,8 @@ import { Line, LinearComponentProps } from 'react-chartjs-2';
 const LineChart = ({ selectionResultData }: IProps) => {
     const [combineCharts, setCombineCharts] = React.useState(false);
 
-    const createChartData: LinearComponentProps["data"] = (canvas: HTMLCanvasElement) => {
-        const ctx = canvas.getContext("2d");
+    const createChartData: LinearComponentProps['data'] = (canvas: HTMLCanvasElement) => {
+        const ctx = canvas.getContext('2d');
 
         if (ctx) {
             const gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
@@ -15,13 +15,13 @@ const LineChart = ({ selectionResultData }: IProps) => {
             gradientStroke.addColorStop(1, 'white');
 
             const gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
-            gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
-            gradientFill.addColorStop(1, "rgba(63, 81, 181, 0.4)");
+            gradientFill.addColorStop(0, 'rgba(128, 182, 244, 0)');
+            gradientFill.addColorStop(1, 'rgba(63, 81, 181, 0.4)');
 
             const dataSetsParams = {
-                borderColor: "#3f51b5",
-                pointBorderColor: "black",
-                pointBackgroundColor: "white",
+                borderColor: '#3f51b5',
+                pointBorderColor: 'black',
+                pointBackgroundColor: 'white',
                 pointBorderWidth: 2,
                 pointHoverRadius: 4,
                 pointHoverBorderWidth: 1,
@@ -63,12 +63,12 @@ const LineChart = ({ selectionResultData }: IProps) => {
                 labels: combineCharts ? labels.filter((e, j) => labels.indexOf(e) === j) : labels,
                 datasets: combineCharts ? combineDataSets : [
                     {
-                        label: "Survived count",
+                        label: 'Survived count',
                         data: survivedCount,
                         ...dataSetsParams
                     },
                     {
-                        label: "Offspring count",
+                        label: 'Offspring count',
                         data: offspringCount,
                         ...dataSetsParams
                     }
@@ -86,9 +86,9 @@ const LineChart = ({ selectionResultData }: IProps) => {
         },
         tooltips: {
             bodySpacing: 4,
-            mode: "index",
+            mode: 'index',
             intersect: false,
-            position: "nearest",
+            position: 'nearest',
             xPadding: 10,
             yPadding: 10,
             caretPadding: 10

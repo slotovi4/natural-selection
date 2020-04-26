@@ -17,8 +17,8 @@ const mapState = (state: IRootState) => ({
 
 const mapDispatch = (dispatch: Dispatch) => ({
     stopSelection: () => dispatch.selection.stopSelection(),
-    setArea: (area: IAreaSettings["areaParams"]) => dispatch.area.setNewArea(area),
-    setMaxFoodCount: (maxFoodCount: IFoodSettings["maxFoodCount"]) => dispatch.food.setNewMaxFoodCount(maxFoodCount),
+    setArea: (area: IAreaSettings['areaParams']) => dispatch.area.setNewArea(area),
+    setMaxFoodCount: (maxFoodCount: IFoodSettings['maxFoodCount']) => dispatch.food.setNewMaxFoodCount(maxFoodCount),
     setSelectionResultData: (data: ISelectionResultData[]) => dispatch.selection.setNewSelectionResultData(data),
 });
 

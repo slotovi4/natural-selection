@@ -18,7 +18,7 @@ const BarChart = ({ survivedCreatures }: IProps) => {
 
     creatureData = creatureData.sort((a, b) => a.velocity - b.velocity);
 
-    const data: ChartComponentProps["data"] = {
+    const data: ChartComponentProps['data'] = {
         labels: [...creatureData.map(e => `speed: ${e.velocity}`)],
         datasets: [
             {

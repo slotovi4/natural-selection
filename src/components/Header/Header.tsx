@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { AppBar, Typography, Container } from '@material-ui/core';
 import { cn } from '@bem-react/classname';
 import PublicIcon from '@material-ui/icons/Public';

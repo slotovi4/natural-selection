@@ -16,7 +16,7 @@ const area = createModel({
             return { ...initialState };
         },
     },
-    effects: dispatch => ({
+    effects: () => ({
         setNewArea(areaParams: IArea) {
             this.setArea(areaParams);
         },

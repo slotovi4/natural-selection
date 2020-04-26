@@ -10,27 +10,27 @@ const initialState: IState = {
 const creature = createModel({
     state: initialState,
     reducers: {
-        setCreatureCount(state: IState, creatureCount: IState["creatureCount"]) {
+        setCreatureCount(state: IState, creatureCount: IState['creatureCount']) {
             return { ...state, creatureCount };
         },
-        setCanMutate(state: IState, canMutate: IState["canMutate"]) {
+        setCanMutate(state: IState, canMutate: IState['canMutate']) {
             return { ...state, canMutate };
         },
-        setMutationChance(state: IState, mutationChance: IState["mutationChance"]) {
+        setMutationChance(state: IState, mutationChance: IState['mutationChance']) {
             return { ...state, mutationChance };
         },
         clearState() {
             return { ...initialState };
         },
     },
-    effects: dispatch => ({
-        setNewCreatureCount(creatureCount: IState["creatureCount"]) {
+    effects: () => ({
+        setNewCreatureCount(creatureCount: IState['creatureCount']) {
             this.setCreatureCount(creatureCount);
         },
-        setNewCreatureCanMutate(canMutate: IState["canMutate"]) {
+        setNewCreatureCanMutate(canMutate: IState['canMutate']) {
             this.setCanMutate(canMutate);
         },
-        setNewCreatureMutationChance(mutationChance: IState["mutationChance"]) {
+        setNewCreatureMutationChance(mutationChance: IState['mutationChance']) {
             this.setMutationChance(mutationChance);
         },
         clearCreatureState() {

@@ -14,13 +14,13 @@ const initialState: IState = {
 const selection = createModel({
     state: initialState,
     reducers: {
-        setStart(state: IState, start: IState["start"]) {
+        setStart(state: IState, start: IState['start']) {
             return { ...state, start };
         },
-        setSelectionDays(state: IState, selectionDays: ISelectionSettings["selectionDays"]) {
+        setSelectionDays(state: IState, selectionDays: ISelectionSettings['selectionDays']) {
             return { ...state, selectionSettings: { ...state.selectionSettings, selectionDays } };
         },
-        setSelectionSpeed(state: IState, selectionSpeed: ISelectionSettings["selectionSpeed"]) {
+        setSelectionSpeed(state: IState, selectionSpeed: ISelectionSettings['selectionSpeed']) {
             return { ...state, selectionSettings: { ...state.selectionSettings, selectionSpeed } };
         },
         setSelectionResultData(state: IState, selectionResultData: ISelectionResultData[]) {
@@ -32,17 +32,17 @@ const selection = createModel({
             };
         },
     },
-    effects: dispatch => ({
+    effects: () => ({
         startSelection() {
             this.setStart(true);
         },
         stopSelection() {
             this.setStart(false);
         },
-        setNewSelectionDays(selectionDays: ISelectionSettings["selectionDays"]) {
+        setNewSelectionDays(selectionDays: ISelectionSettings['selectionDays']) {
             this.setSelectionDays(selectionDays);
         },
-        setNewSelectionSpeed(selectionSpeed: ISelectionSettings["selectionSpeed"]) {
+        setNewSelectionSpeed(selectionSpeed: ISelectionSettings['selectionSpeed']) {
             this.setSelectionSpeed(selectionSpeed);
         },
         setNewSelectionResultData(selectionResultData: ISelectionResultData[]) {

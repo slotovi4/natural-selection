@@ -47,12 +47,12 @@ const mapState = (state: IRootState) => ({
 
 const mapDispatch = (dispatch: Dispatch) => ({
     setSelectionStart: () => dispatch.selection.startSelection(),
-    setFoodCount: (foodCount: IFoodSettings["foodCount"]) => dispatch.food.setNewFoodCount(foodCount),
-    setCreatureCount: (creatureCount: ICreatureSettings["creatureCount"]) => dispatch.creature.setNewCreatureCount(creatureCount),
-    setSelectionDaysCount: (daysCount: ISelectionSettings["selectionDays"]) => dispatch.selection.setNewSelectionDays(daysCount),
-    setSelectionSpeed: (selectionSpeed: ISelectionSettings["selectionSpeed"]) => dispatch.selection.setNewSelectionSpeed(selectionSpeed),
-    setCreatureCanMutate: (canMutate: ICreatureSettings["canMutate"]) => dispatch.creature.setNewCreatureCanMutate(canMutate),
-    setCreatureMutationChance: (mutationChance: ICreatureSettings["mutationChance"]) => dispatch.creature.setNewCreatureMutationChance(mutationChance),
+    setFoodCount: (foodCount: IFoodSettings['foodCount']) => dispatch.food.setNewFoodCount(foodCount),
+    setCreatureCount: (creatureCount: ICreatureSettings['creatureCount']) => dispatch.creature.setNewCreatureCount(creatureCount),
+    setSelectionDaysCount: (daysCount: ISelectionSettings['selectionDays']) => dispatch.selection.setNewSelectionDays(daysCount),
+    setSelectionSpeed: (selectionSpeed: ISelectionSettings['selectionSpeed']) => dispatch.selection.setNewSelectionSpeed(selectionSpeed),
+    setCreatureCanMutate: (canMutate: ICreatureSettings['canMutate']) => dispatch.creature.setNewCreatureCanMutate(canMutate),
+    setCreatureMutationChance: (mutationChance: ICreatureSettings['mutationChance']) => dispatch.creature.setNewCreatureMutationChance(mutationChance),
     clearSelectionState: () => dispatch.selection.clearSelectionState(),
     clearFoodState: () => dispatch.food.clearFoodState(),
     clearCreatureState: () => dispatch.creature.clearCreatureState(),

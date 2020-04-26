@@ -24,7 +24,7 @@ const Table = ({ rows, headers }: IProps) => {
                             {Object.keys(value).map((key, j) => (
                                 <TableCell
                                     key={`row_ceil_${key}_${i}`}
-                                    align={j !== Object.keys(value).length - 1 ? "left" : "right"}
+                                    align={j !== Object.keys(value).length - 1 ? 'left' : 'right'}
                                 >
                                     {value[key]}
                                 </TableCell>

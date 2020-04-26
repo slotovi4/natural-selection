@@ -34,7 +34,7 @@ const SelectionDetails = ({ selectionResultData, finalLastResult, previousSelect
         <Card className={cl()}>
             <span className={cl('Title')}>Показатели существ по итогу последней итерации естественного отбора</span>
             {renderRow('Средняя скорость: ', averageSpeed.toFixed(3), getParamChangeDifference(averageSpeed, previousAverageSpeed))}
-            {renderRow("Выжило: ", finalLastResult.survivedCount)}
+            {renderRow('Выжило: ', finalLastResult.survivedCount)}
             {renderRow('Погибло:', finalLastResult.dieCount)}
             {renderRow('Дало потомство:', finalLastResult.offspringCount)}
 

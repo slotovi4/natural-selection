@@ -1,10 +1,10 @@
-import React from "react";
-import { Route, Switch } from "react-router";
+import React from 'react';
+import { Route, Switch } from 'react-router';
 import { ConnectedRouter } from 'connected-react-router';
-import { Provider } from "react-redux";
-import { HomePage } from "./pages";
+import { Provider } from 'react-redux';
+import { HomePage } from './pages';
 import { Header } from './components';
-import { store, browserHistory } from "./redux/store";
+import { store, browserHistory } from './redux/store';
 
 const App = () => (
     <Provider store={store}>

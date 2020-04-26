@@ -4,7 +4,7 @@ import { IProps as ISelectionDetailsProps } from '../SelectionDetails';
 
 const TableDetails = ({ selectionResultData }: IProps) => {
     const headers: ITableHeader[] = [
-        { title: "Номер естественного отбора" },
+        { title: 'Номер естественного отбора' },
         { title: 'Количество итераций отбора' },
         { title: 'Средняя скорость существ' }
     ];
@@ -34,5 +34,5 @@ const TableDetails = ({ selectionResultData }: IProps) => {
 export default TableDetails;
 
 interface IProps {
-    selectionResultData: ISelectionDetailsProps["selectionResultData"];
+    selectionResultData: ISelectionDetailsProps['selectionResultData'];
 }
