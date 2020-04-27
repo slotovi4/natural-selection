@@ -1,13 +1,14 @@
 import { Creature } from './Creature';
 import { creatureParams } from './config';
-import { IArea, IFood } from "../interface";
+import { IArea, IFood } from '../interface';
 
 const createCreature = ({ ctx, area, selectionSpeed, isPosterity, mutationChance }: ICreateCreatureProps) => {
     const creatureRadius = creatureParams.radius;
     const randomAngle = Math.random() * 2 * Math.PI;
+    const R = area.radius - creatureRadius - 3;
 
-    const x = (area.radius - creatureRadius) * Math.cos(randomAngle) + area.centerX;
-    const y = (area.radius - creatureRadius) * Math.sin(randomAngle) + area.centerY;
+    const x = R * Math.cos(randomAngle) + area.centerX;
+    const y = R * Math.sin(randomAngle) + area.centerY;
 
     return new Creature({ x, y, ctx, area, selectionSpeed, isPosterity, mutationChance });
 };

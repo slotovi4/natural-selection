@@ -1,6 +1,6 @@
 import { Food } from './Food';
 import { foodParams } from './config';
-import { IArea } from "../interface";
+import { IArea } from '../interface';
 
 const createFood = ({ ctx, area }: IDefaultProps) => {
     const foodRadius = foodParams.radius;

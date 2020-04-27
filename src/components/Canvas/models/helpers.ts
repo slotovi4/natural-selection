@@ -1,4 +1,4 @@
-import { IPoint } from "./interface";
+import { IPoint } from './interface';
 
 export const calcPointDistance = (x1: number, y1: number, x2: number, y2: number) => {
     const xDist = x2 - x1;

@@ -4,7 +4,7 @@ import {
     getNearestPointFromPointsArray,
     getRandomColor
 } from '../helpers';
-import { IArea, IFood, IPoint } from "../interface";
+import { IArea, IFood, IPoint } from '../interface';
 import { creatureParams } from './config';
 
 export class Creature {
@@ -28,12 +28,9 @@ export class Creature {
     private dX: number;
     private dY: number;
     private velocity: number;
-    private stepDirectionCount: number;
-    private stepDirectionChangeNum: number;
     private reachedTheAreaCenter: boolean;
     private noFoodForPosterity: boolean;
     private energyIntensity: number;
-    private step: number;
     private energy: number;
     private isMutated: boolean;
 
@@ -50,8 +47,6 @@ export class Creature {
         this.visibilityRadius = creatureParams.visibilityRadius;
         this.isMutated = false;
 
-        this.step = 0;
-        this.stepDirectionCount = 0;
         this.grabbedFoodCount = 0;
         this.energyIntensity = 2;
         this.returnedToHome = false;
@@ -70,7 +65,6 @@ export class Creature {
         // dependence variables
         this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
         this.energy = this.replenishEnergy();
-        this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
         this.dX = this.randomDirection();
         this.dY = this.randomDirection();
     }
@@ -95,6 +89,12 @@ export class Creature {
         this.ctx.strokeStyle = strokeStyle;
         this.ctx.stroke();
         this.ctx.closePath();
+
+        // draw energy
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillText(`${Math.floor(this.energy)}`, this.x + this.radius + 2, this.y + (this.radius / 2.5));
+        this.ctx.closePath();
     }
 
     public update(foodArray: IFood[], dayEnd: boolean) {
@@ -112,12 +112,6 @@ export class Creature {
                 else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity) {
                     this.goHome();
                 }
-
-                if (this.reachedTheAreaCenter) {
-                    this.stepDirectionCount += 1;
-                }
-
-                this.step += 1;
             }
 
             // if returned to home
@@ -127,6 +121,7 @@ export class Creature {
 
             this.draw();
         } else if (this.ctx.fillStyle === creatureParams.fillStyle) {
+            // if die draw die color
             this.draw();
         }
 
@@ -156,7 +151,7 @@ export class Creature {
     }
 
     private goHome() {
-        if (!this.creatureInsideArea()) {
+        if (this.creatureOutsideArea()) {
             this.returnedToHome = true;
         } else {
             const nearestAreaExitPoint = this.getNearestAreaExitPoint();
@@ -201,41 +196,47 @@ export class Creature {
 
     private move() {
         // if creature position not on area center
-        if (!this.reachedTheAreaCenter) {
-            this.moveToAreaCenter();
-        }
+        // if (!this.reachedTheAreaCenter) {
+        //     this.moveToAreaCenter();
+        // }
 
         // if creature reached area center
-        if (this.creatureReachedAreaCenter() || this.reachedTheAreaCenter) {
-            this.moveToRandomDirection();
-        }
+        // if (this.creatureReachedAreaCenter() || this.reachedTheAreaCenter) {
+        this.moveToRandomDirection();
+        // }
     }
 
     private moveToRandomDirection() {
         this.reachedTheAreaCenter = true;
 
-        // create move direction
-        if (!(this.stepDirectionCount % this.stepDirectionChangeNum)) {
-            this.dX = this.randomDirection();
-            this.dY = this.randomDirection();
-            this.stepDirectionCount = 0;
-            this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
-        }
+        // random acceleration
+        this.randomAcceleration();
+
+        this.x += this.dX;
+        this.y += this.dY;
 
         // if creature outside area
-        if (!this.creatureInsideArea()) {
-            this.dX *= -1;
-            this.dY *= -1;
-            this.stepDirectionCount = 0;
+        if (this.creatureOutsideArea()) {
+            const dx = this.x - this.area.centerX;
+            const dy = this.y - this.area.centerY;
+            const theta = Math.atan2(dy, dx);
+            const R = this.area.radius - this.radius;
+
+            this.x = R * Math.cos(theta) + this.area.centerX;
+            this.y = R * Math.sin(theta) + this.area.centerY;
+
+            this.dX *= Math.random() > 0.5 ? 1 : -1;
+            this.dY *= Math.random() > 0.5 ? 1 : -1;
         }
 
         // move creature
-        this.x += this.dX;
-        this.y += this.dY;
         this.wasteOfEnergy();
     }
 
     private moveToThePoint(point: IPoint) {
+        this.dX = this.velocity;
+        this.dY = this.velocity;
+
         this.wasteOfEnergy();
 
         if (this.x > point.x) {
@@ -260,15 +261,12 @@ export class Creature {
 
     private resetState() {
         if (!this.checkDeath()) {
-            this.step = 0;
-            this.stepDirectionCount = 0;
             this.grabbedFoodCount = 0;
 
             this.reachedTheAreaCenter = false;
             this.returnedToHome = false;
             this.noFoodForPosterity = false;
 
-            this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
             this.dX = this.randomDirection();
             this.dY = this.randomDirection();
             this.energy = this.replenishEnergy();
@@ -288,10 +286,10 @@ export class Creature {
      * https://www.geeksforgeeks.org/check-if-a-circle-lies-inside-another-circle-or-not/
      * @param area 
      */
-    private creatureInsideArea() {
-        const pointDistance = calcPointDistance(this.x + this.dX, this.y + this.dY, this.area.centerX, this.area.centerY);
+    private creatureOutsideArea() {
+        const pointDistance = calcPointDistance(this.x, this.y, this.area.centerX, this.area.centerY);
 
-        return pointDistance + this.radius <= this.area.radius;
+        return pointDistance + this.radius > this.area.radius;
     }
 
     /**
@@ -319,6 +317,32 @@ export class Creature {
         return areaPoints;
     }
 
+    private randomAcceleration() {
+        const maxVelocity = this.velocity * 2;
+
+        this.dX += this.randomizeDValue();
+        this.dY += this.randomizeDValue();
+
+        if (this.dX > maxVelocity) {
+            this.dX = maxVelocity;
+        } else if (this.dX < -maxVelocity) {
+            this.dX = -maxVelocity;
+        }
+
+        if (this.dY > maxVelocity) {
+            this.dY = maxVelocity;
+        } else if (this.dY < -maxVelocity) {
+            this.dY = -maxVelocity;
+        }
+    }
+
+    private randomizeDValue(): number {
+        const randAccel = 0.3 * this.selectionSpeed;
+        const value = (1 - 2 * Math.random()) * randAccel;
+
+        return value === 0 ? this.randomizeDValue() : value;
+    }
+
     private moveToAreaCenter() {
         this.moveToThePoint({ x: this.area.centerX, y: this.area.centerY });
     }
@@ -327,9 +351,11 @@ export class Creature {
      * Расход энергии
      */
     private wasteOfEnergy() {
-        if (!(this.step % this.wasteEnergyPerMove)) {
-            this.energy -= 1 * this.selectionSpeed;
-        }
+        const xVelocity = Math.abs(this.dX);
+        const yVelocity = Math.abs(this.dY);
+        const velocity = (xVelocity + yVelocity) / 2;
+
+        this.energy -= (1 * velocity) / this.wasteEnergyPerMove; // * this.selectionSpeed;
     }
 
     private mutateVelocity() {
@@ -356,10 +382,6 @@ export class Creature {
         return randomIntFromRange(0, 1) ? this.velocity : -this.velocity;
     }
 
-    private randomStepDirectionChangeNum() {
-        return randomIntFromRange(Math.floor(30 / this.selectionSpeed), Math.floor(50 / this.selectionSpeed));
-    }
-
     private getIsMutate() {
         return this.isPosterity && !this.isMutated ? Math.random() <= this.mutationChance : false;
     }
@@ -369,7 +391,10 @@ export class Creature {
     }
 
     private mutateParam(defaultValue: number) {
-        return randomIntFromRange(defaultValue / 2, defaultValue * 2);
+        const min = defaultValue >= 2 ? defaultValue / 2 : 1;
+        const max = defaultValue >= 0.5 ? defaultValue * 2 : 1;
+
+        return randomIntFromRange(min, max);
     }
 }
 

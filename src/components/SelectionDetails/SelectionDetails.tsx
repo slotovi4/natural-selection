@@ -15,7 +15,7 @@ const SelectionDetails = ({ selectionResultData, finalLastResult, previousSelect
     const { survivedCreatures } = finalLastResult;
     const previousSurvivedCreatures = previousSelectionResultData ? previousSelectionResultData.survivedCreatures : null;
 
-    const averageSpeed = survivedCreatures.reduce((a, b) => a + b.velocity, 0) / survivedCreatures.length;
+    const averageSpeed = survivedCreatures.reduce((a, b) => a + b.velocity, 0) / survivedCreatures.length; // !!! nan проверка
     const previousAverageSpeed = previousSurvivedCreatures
         ? previousSurvivedCreatures.reduce((a, b) => a + b.velocity, 0) / previousSurvivedCreatures.length
         : null;
