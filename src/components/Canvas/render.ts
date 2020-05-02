@@ -94,7 +94,7 @@ export const renderNaturalSelectionWorld = ({
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 drawArea(ctx, canvas);
-                updateFood(newFoodArray);
+                newFoodArray = updateFood(newFoodArray);
                 newCreatureArray = updateCreature(newCreatureArray, newFoodArray, dayEnd);
 
                 dayEnd = checkEndDay(newCreatureArray);

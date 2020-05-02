@@ -2,7 +2,6 @@ import {
     calcPointDistance,
     randomIntFromRange,
     getNearestPointFromPointsArray,
-    getRandomColor
 } from '../helpers';
 import { IArea, IFood, IPoint } from '../interface';
 import { creatureParams } from './config';
@@ -15,26 +14,25 @@ export class Creature {
     public isDie: boolean;
     public grabbedFoodCount: number;
 
+    protected fillStyle: string;
+    protected velocity: number;
+    protected energyIntensity: number;
+    protected isMutated: boolean;
+    protected dX: number;
+    protected dY: number;
+    protected energy: number;
+
+    protected readonly mutationChance: number;
+
     private readonly visibilityRadius: number;
     private readonly wasteEnergyPerMove: number;
     private readonly selectionSpeed: number;
-    private readonly mutationChance: number;
-    private readonly isPosterity: boolean;
-    private readonly isMutate: boolean;
-    private readonly fillStyle: string;
     private readonly area: IArea;
     private readonly ctx: CanvasRenderingContext2D;
 
-    private dX: number;
-    private dY: number;
-    private velocity: number;
-    private reachedTheAreaCenter: boolean;
     private noFoodForPosterity: boolean;
-    private energyIntensity: number;
-    private energy: number;
-    private isMutated: boolean;
 
-    public constructor({ x, y, ctx, area, selectionSpeed, mutationChance, isPosterity }: IProps) {
+    public constructor({ x, y, ctx, area, selectionSpeed, mutationChance }: IProps) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
@@ -51,22 +49,12 @@ export class Creature {
         this.energyIntensity = 2;
         this.returnedToHome = false;
         this.isDie = false;
-        this.reachedTheAreaCenter = false;
         this.noFoodForPosterity = false;
-        this.isPosterity = isPosterity !== undefined ? isPosterity : false;
-        this.isMutate = this.getIsMutate();
-        this.fillStyle = this.getFillStyle();
-
-        // mutation
-        if (this.isMutate) {
-            this.mutateVelocity();
-        }
+        this.fillStyle = creatureParams.fillStyle;
+        this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
 
         // dependence variables
-        this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
-        this.energy = this.replenishEnergy();
-        this.dX = this.randomDirection();
-        this.dY = this.randomDirection();
+        this.setDependenceVariables();
     }
 
     public draw() {
@@ -95,6 +83,12 @@ export class Creature {
         this.ctx.fillStyle = 'black';
         this.ctx.fillText(`${Math.floor(this.energy)}`, this.x + this.radius + 2, this.y + (this.radius / 2.5));
         this.ctx.closePath();
+
+        // draw velocity
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillText(`${this.velocity}`, this.x - this.radius - 7, this.y + (this.radius / 2.5));
+        this.ctx.closePath();
     }
 
     public update(foodArray: IFood[], dayEnd: boolean) {
@@ -102,7 +96,11 @@ export class Creature {
             // if not returned to home
             if (!this.returnedToHome) {
                 if (!this.grabbedFoodCount) {
-                    this.searchFood(foodArray);
+                    if (foodArray.length) {
+                        this.searchFood(foodArray);
+                    } else {
+                        this.isDie = true;
+                    }
                 }
 
                 else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity) {
@@ -132,6 +130,20 @@ export class Creature {
         return {
             velocity: this.velocity / this.selectionSpeed,
         };
+    }
+
+    protected replenishEnergy() {
+        return this.energy = 100 * this.energyIntensity;
+    }
+
+    protected randomDirection() {
+        return randomIntFromRange(0, 1) ? this.velocity : -this.velocity;
+    }
+
+    protected setDependenceVariables() {
+        this.energy = this.replenishEnergy();
+        this.dX = this.randomDirection();
+        this.dY = this.randomDirection();
     }
 
     private searchFood(foodArray: IFood[]) {
@@ -173,7 +185,9 @@ export class Creature {
             // количество энергии требуемой для выхода
             const amountEnergyToExit = Math.floor((stepsCountToExitPoint * this.selectionSpeed) / this.wasteEnergyPerMove);
 
-            if (this.energy > amountEnergyToExit) {
+            // const res = (this.energy / this.wasteEnergyPerMove) * this.velocity > nearestAreaExitPointDistance;
+
+            if (this.energy > amountEnergyToExit && foodArray.length) {
                 this.searchFood(foodArray);
             } else {
                 this.noFoodForPosterity = true;
@@ -195,20 +209,6 @@ export class Creature {
     }
 
     private move() {
-        // if creature position not on area center
-        // if (!this.reachedTheAreaCenter) {
-        //     this.moveToAreaCenter();
-        // }
-
-        // if creature reached area center
-        // if (this.creatureReachedAreaCenter() || this.reachedTheAreaCenter) {
-        this.moveToRandomDirection();
-        // }
-    }
-
-    private moveToRandomDirection() {
-        this.reachedTheAreaCenter = true;
-
         // random acceleration
         this.randomAcceleration();
 
@@ -263,7 +263,6 @@ export class Creature {
         if (!this.checkDeath()) {
             this.grabbedFoodCount = 0;
 
-            this.reachedTheAreaCenter = false;
             this.returnedToHome = false;
             this.noFoodForPosterity = false;
 
@@ -290,14 +289,6 @@ export class Creature {
         const pointDistance = calcPointDistance(this.x, this.y, this.area.centerX, this.area.centerY);
 
         return pointDistance + this.radius > this.area.radius;
-    }
-
-    /**
-     * Проверка, дошла ли сущность до центра области
-     * @param area 
-     */
-    private creatureReachedAreaCenter() {
-        return calcPointDistance(this.x, this.y, this.area.centerX, this.area.centerY) <= this.radius * 2;
     }
 
     /**
@@ -343,10 +334,6 @@ export class Creature {
         return value === 0 ? this.randomizeDValue() : value;
     }
 
-    private moveToAreaCenter() {
-        this.moveToThePoint({ x: this.area.centerX, y: this.area.centerY });
-    }
-
     /**
      * Расход энергии
      */
@@ -355,15 +342,7 @@ export class Creature {
         const yVelocity = Math.abs(this.dY);
         const velocity = (xVelocity + yVelocity) / 2;
 
-        this.energy -= (1 * velocity) / this.wasteEnergyPerMove; // * this.selectionSpeed;
-    }
-
-    private mutateVelocity() {
-        const oldVelocity = this.velocity;
-
-        this.velocity = this.mutateParam(this.velocity);
-        this.energyIntensity *= oldVelocity / this.velocity;
-        this.isMutated = true;
+        this.energy -= (1 * velocity) / this.wasteEnergyPerMove;
     }
 
     private checkDeath() {
@@ -373,37 +352,13 @@ export class Creature {
 
         return this.isDie;
     }
-
-    private replenishEnergy() {
-        return this.energy = 100 * this.energyIntensity;
-    }
-
-    private randomDirection() {
-        return randomIntFromRange(0, 1) ? this.velocity : -this.velocity;
-    }
-
-    private getIsMutate() {
-        return this.isPosterity && !this.isMutated ? Math.random() <= this.mutationChance : false;
-    }
-
-    private getFillStyle() {
-        return this.isMutate ? getRandomColor() : creatureParams.fillStyle;
-    }
-
-    private mutateParam(defaultValue: number) {
-        const min = defaultValue >= 2 ? defaultValue / 2 : 1;
-        const max = defaultValue >= 0.5 ? defaultValue * 2 : 1;
-
-        return randomIntFromRange(min, max);
-    }
 }
 
-interface IProps {
+export interface IProps {
     x: number;
     y: number;
     ctx: CanvasRenderingContext2D;
     area: IArea;
     selectionSpeed: number;
     mutationChance: number;
-    isPosterity?: boolean;
 }
