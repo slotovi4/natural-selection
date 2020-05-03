@@ -58,13 +58,13 @@ export class Creature {
     }
 
     public draw() {
-        const { dieFillStyle, strokeStyle, lineWidth } = creatureParams;
+        const { strokeStyle, lineWidth } = creatureParams;
 
         // draw creature
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.ctx.save();
-        this.ctx.fillStyle = this.checkDeath() ? dieFillStyle : this.fillStyle;
+        this.ctx.fillStyle = this.fillStyle;
         this.ctx.fill();
         this.ctx.restore();
         this.ctx.closePath();
@@ -117,9 +117,6 @@ export class Creature {
                 this.resetState();
             }
 
-            this.draw();
-        } else if (this.ctx.fillStyle === creatureParams.fillStyle) {
-            // if die draw die color
             this.draw();
         }
 
@@ -229,15 +226,12 @@ export class Creature {
             this.dY *= Math.random() > 0.5 ? 1 : -1;
         }
 
-        // move creature
         this.wasteOfEnergy();
     }
 
     private moveToThePoint(point: IPoint) {
         this.dX = this.velocity;
         this.dY = this.velocity;
-
-        this.wasteOfEnergy();
 
         if (this.x > point.x) {
             this.x -= this.velocity;
@@ -250,10 +244,12 @@ export class Creature {
         } else {
             this.y += this.velocity;
         }
+
+        this.wasteOfEnergy();
     }
 
     private getNearestAreaExitPoint() {
-        const areaPoints = this.getAreaPoints();
+        const areaPoints = this.getExitAreaPoints();
         const nearestAreaExitPoint = getNearestPointFromPointsArray(areaPoints, { x: this.x, y: this.y });
 
         return nearestAreaExitPoint;
@@ -282,8 +278,6 @@ export class Creature {
 
     /**
      * Проверка, на нахождение сущности в пределах области
-     * https://www.geeksforgeeks.org/check-if-a-circle-lies-inside-another-circle-or-not/
-     * @param area 
      */
     private creatureOutsideArea() {
         const pointDistance = calcPointDistance(this.x, this.y, this.area.centerX, this.area.centerY);
@@ -294,7 +288,7 @@ export class Creature {
     /**
      * Получить точки выхода из области
      */
-    private getAreaPoints() {
+    private getExitAreaPoints() {
         const areaPoints = [];
         const steps = this.area.radius / 2;
 

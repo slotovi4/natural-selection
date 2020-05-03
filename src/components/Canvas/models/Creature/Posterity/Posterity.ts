@@ -1,5 +1,4 @@
 import { Creature, IProps as ICreatureProps } from '../Creature';
-import { getRandomColor } from '../../helpers';
 
 export class Posterity extends Creature {
     private readonly canMutate: boolean;
@@ -10,7 +9,6 @@ export class Posterity extends Creature {
         this.canMutate = canMutate && this.checkCanMutate();
 
         if (this.canMutate) {
-            this.fillStyle = getRandomColor();
             this.mutateVelocity();
         }
 
@@ -37,7 +35,7 @@ export class Posterity extends Creature {
         const min = defaultValue - inc;
         const max = defaultValue + inc;
 
-        const newValue = Math.round((Math.random() * (max - min) + min) * 10) / 10;
+        const newValue = Math.round((Math.random() * (max * 10 - min * 10) / 10 + (min * 10) / 10));
         const color = this.getColorRelativeToParameter(newValue, min, max);
         return { newValue, color };
     }

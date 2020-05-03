@@ -19,7 +19,7 @@ const createCreature = (props: ICreatureSettingsProps) => {
 };
 
 const createPosterity = (props: ICreatePosterityProps) => {
-    return new Posterity(getCreatureData({ ...props, canMutate: props.canMutate }));
+    return new Posterity({ ...getCreatureData(props), canMutate: props.canMutate });
 };
 
 const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed, mutationChance, canMutate }: ICreateCreatureArrayProps) => {

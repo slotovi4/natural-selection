@@ -4,7 +4,7 @@ import { createModel } from '@rematch/core';
 const initialState: IState = {
     creatureCount: 1,
     canMutate: true,
-    mutationChance: 0.6
+    mutationChance: 1
 };
 
 const creature = createModel({

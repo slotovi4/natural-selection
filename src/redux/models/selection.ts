@@ -7,7 +7,7 @@ const initialState: IState = {
     selectionResultData: [],
     selectionSettings: {
         selectionDays: 10,
-        selectionSpeed: SelectionSpeed.X1,
+        selectionSpeed: SelectionSpeed.X10,
     }
 };
 
