@@ -23,10 +23,10 @@ export class Creature {
     protected energy: number;
 
     protected readonly mutationChance: number;
+    protected readonly selectionSpeed: number;
 
     private readonly visibilityRadius: number;
     private readonly wasteEnergyPerMove: number;
-    private readonly selectionSpeed: number;
     private readonly area: IArea;
     private readonly ctx: CanvasRenderingContext2D;
 
@@ -87,7 +87,7 @@ export class Creature {
         // draw velocity
         this.ctx.beginPath();
         this.ctx.fillStyle = 'black';
-        this.ctx.fillText(`${this.velocity}`, this.x - this.radius - 7, this.y + (this.radius / 2.5));
+        this.ctx.fillText(`${(this.velocity / this.selectionSpeed)}`, this.x - this.radius - 7, this.y + (this.radius / 2.5));
         this.ctx.closePath();
     }
 
@@ -322,10 +322,13 @@ export class Creature {
     }
 
     private randomizeDValue(): number {
-        const randAccel = 0.3 * this.selectionSpeed;
-        const value = (1 - 2 * Math.random()) * randAccel;
+        const accel = this.velocity / this.selectionSpeed / 3; // чем меньше значение тем более прямые движения, чем больше тем больше поворотов
+        const value = (1 - 2 * Math.random()) * accel;
 
-        return value === 0 ? this.randomizeDValue() : value;
+        // const randomAngle = Math.random() * 2 * Math.PI;
+        // const direction = vector(cos(angle), sin(angle))
+
+        return value;
     }
 
     /**
