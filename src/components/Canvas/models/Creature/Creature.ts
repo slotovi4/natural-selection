@@ -107,10 +107,10 @@ export class Creature {
     public update(foodArray: IFood[], dayEnd: boolean) {
         const haveFood = foodArray.length > 0;
 
-        if (this.isDie && this.grabbedFoodCount === 1) {
-            console.log('bug');
-            console.log(this);
-        }
+        // if (this.isDie && this.grabbedFoodCount === 1) {
+        //     console.log('bug');
+        //     console.log(this);
+        // }
 
         if (!this.checkDeath()) {
             // if not returned to home
