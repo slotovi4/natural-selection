@@ -1,22 +1,32 @@
 import { Creature } from './Creature';
+import { Posterity } from './Posterity';
 import { creatureParams } from './config';
-import { IArea, IFood } from "../interface";
+import { IArea, IFood } from '../interface';
 
-const createCreature = ({ ctx, area, selectionSpeed, isPosterity, mutationChance }: ICreateCreatureProps) => {
+const getCreatureData = (props: ICreatureSettingsProps) => {
     const creatureRadius = creatureParams.radius;
     const randomAngle = Math.random() * 2 * Math.PI;
+    const R = props.area.radius - creatureRadius - 3;
 
-    const x = (area.radius - creatureRadius) * Math.cos(randomAngle) + area.centerX;
-    const y = (area.radius - creatureRadius) * Math.sin(randomAngle) + area.centerY;
+    const x = R * Math.cos(randomAngle) + props.area.centerX;
+    const y = R * Math.sin(randomAngle) + props.area.centerY;
 
-    return new Creature({ x, y, ctx, area, selectionSpeed, isPosterity, mutationChance });
+    return { x, y, ...props };
 };
 
-const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed, mutationChance }: ICreateCreatureArrayProps) => {
+const createCreature = (props: ICreatureSettingsProps) => {
+    return new Creature(getCreatureData(props));
+};
+
+const createPosterity = (props: ICreatePosterityProps) => {
+    return new Posterity({ ...getCreatureData(props), canMutate: props.canMutate });
+};
+
+const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed, mutationChance, canMutate }: ICreateCreatureArrayProps) => {
     const creatureArray: Creature[] = [];
 
     for (let i = 0; i < creatureCount; i++) {
-        creatureArray.push(createCreature({ ctx, area, selectionSpeed, mutationChance }));
+        creatureArray.push(createCreature({ ctx, area, selectionSpeed, mutationChance, canMutate }));
     }
 
     return creatureArray;
@@ -34,8 +44,8 @@ const getOffspringCreatures = (creatureArray: Creature[]) => {
     return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome);
 };
 
-export const drawCreature = ({ ctx, area, creatureCount, selectionSpeed, mutationChance }: ICreateCreatureArrayProps) => {
-    const creatureArray = createCreatureArray({ ctx, area, creatureCount, selectionSpeed, mutationChance });
+export const drawCreature = ({ ctx, area, creatureCount, selectionSpeed, mutationChance, canMutate }: ICreateCreatureArrayProps) => {
+    const creatureArray = createCreatureArray({ ctx, area, creatureCount, selectionSpeed, mutationChance, canMutate });
 
     creatureArray.forEach(creature => {
         creature.draw();
@@ -64,7 +74,7 @@ export const getNextDayCreatureArray = ({ endDayCreatureArray, ctx, area, select
     const offspringCreaturesCount = getOffspringCreatures(endDayCreatureArray).length;
 
     for (let i = 0; i < offspringCreaturesCount; i++) {
-        posterityCreaturesArray.push(createCreature({ ctx, area, selectionSpeed, mutationChance, isPosterity: canMutate }));
+        posterityCreaturesArray.push(createPosterity({ ctx, area, selectionSpeed, mutationChance, canMutate }));
     }
 
     nextDayCreatureArray.push(...survivedCreatures, ...posterityCreaturesArray);
@@ -90,16 +100,21 @@ export interface IDayResult {
     survivedCreatures: ICreatureParams[];
 }
 
-interface ICreateCreatureProps extends IDefaultProps {
+interface ICreatureSettingsProps extends IDefaultProps {
     selectionSpeed: number;
     mutationChance: number;
+    canMutate: boolean;
 }
 
-interface ICreateCreatureArrayProps extends ICreateCreatureProps {
+interface ICreatePosterityProps extends ICreatureSettingsProps {
+    canMutate: boolean;
+}
+
+interface ICreateCreatureArrayProps extends ICreatureSettingsProps {
     creatureCount: number;
 }
 
-interface IGetNextDayCreature extends ICreateCreatureProps {
+interface IGetNextDayCreature extends ICreatureSettingsProps {
     endDayCreatureArray: Creature[];
     canMutate: boolean;
 }
@@ -107,7 +122,6 @@ interface IGetNextDayCreature extends ICreateCreatureProps {
 interface IDefaultProps {
     ctx: CanvasRenderingContext2D;
     area: IArea;
-    isPosterity?: boolean;
 }
 
 interface ICreatureParams {

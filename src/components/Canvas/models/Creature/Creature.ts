@@ -2,9 +2,8 @@ import {
     calcPointDistance,
     randomIntFromRange,
     getNearestPointFromPointsArray,
-    getRandomColor
 } from '../helpers';
-import { IArea, IFood, IPoint } from "../interface";
+import { IArea, IFood, IPoint } from '../interface';
 import { creatureParams } from './config';
 
 export class Creature {
@@ -15,29 +14,26 @@ export class Creature {
     public isDie: boolean;
     public grabbedFoodCount: number;
 
+    protected fillStyle: string;
+    protected velocity: number;
+    protected energyIntensity: number;
+    protected isMutated: boolean;
+    protected dX: number;
+    protected dY: number;
+    protected energy: number;
+
+    protected readonly mutationChance: number;
+    protected readonly selectionSpeed: number;
+
     private readonly visibilityRadius: number;
-    private readonly wasteEnergyPerMove: number;
-    private readonly selectionSpeed: number;
-    private readonly mutationChance: number;
-    private readonly isPosterity: boolean;
-    private readonly isMutate: boolean;
-    private readonly fillStyle: string;
+    private readonly wasteEnergyVal: number;
+    private readonly exitAreaPoints: IPoint[];
     private readonly area: IArea;
     private readonly ctx: CanvasRenderingContext2D;
 
-    private dX: number;
-    private dY: number;
-    private velocity: number;
-    private stepDirectionCount: number;
-    private stepDirectionChangeNum: number;
-    private reachedTheAreaCenter: boolean;
     private noFoodForPosterity: boolean;
-    private energyIntensity: number;
-    private step: number;
-    private energy: number;
-    private isMutated: boolean;
 
-    public constructor({ x, y, ctx, area, selectionSpeed, mutationChance, isPosterity }: IProps) {
+    public constructor({ x, y, ctx, area, selectionSpeed, mutationChance }: IProps) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
@@ -50,39 +46,27 @@ export class Creature {
         this.visibilityRadius = creatureParams.visibilityRadius;
         this.isMutated = false;
 
-        this.step = 0;
-        this.stepDirectionCount = 0;
         this.grabbedFoodCount = 0;
         this.energyIntensity = 2;
         this.returnedToHome = false;
         this.isDie = false;
-        this.reachedTheAreaCenter = false;
         this.noFoodForPosterity = false;
-        this.isPosterity = isPosterity !== undefined ? isPosterity : false;
-        this.isMutate = this.getIsMutate();
-        this.fillStyle = this.getFillStyle();
-
-        // mutation
-        if (this.isMutate) {
-            this.mutateVelocity();
-        }
+        this.fillStyle = creatureParams.fillStyle;
+        this.wasteEnergyVal = 4;
+        this.exitAreaPoints = this.getExitAreaPoints();
 
         // dependence variables
-        this.wasteEnergyPerMove = Math.floor(this.area.radius / 60);
-        this.energy = this.replenishEnergy();
-        this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
-        this.dX = this.randomDirection();
-        this.dY = this.randomDirection();
+        this.setDependenceVariables();
     }
 
     public draw() {
-        const { dieFillStyle, strokeStyle, lineWidth } = creatureParams;
+        const { strokeStyle, lineWidth } = creatureParams;
 
         // draw creature
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.ctx.save();
-        this.ctx.fillStyle = this.checkDeath() ? dieFillStyle : this.fillStyle;
+        this.ctx.fillStyle = this.fillStyle;
         this.ctx.fill();
         this.ctx.restore();
         this.ctx.closePath();
@@ -95,38 +79,65 @@ export class Creature {
         this.ctx.strokeStyle = strokeStyle;
         this.ctx.stroke();
         this.ctx.closePath();
+
+
+        const tabSize = 15;
+        const infoX = this.x + this.radius + tabSize;
+        const infoY = this.y + this.radius - tabSize;
+
+        // draw energy
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillText(`e: ${Math.floor(this.energy)}`, infoX, infoY);
+        this.ctx.closePath();
+
+        // draw velocity
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillText(`s: ${(this.velocity / this.selectionSpeed)}`, infoX, infoY + tabSize);
+        this.ctx.closePath();
+
+        // draw grabbed food count
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillText(`f: ${this.grabbedFoodCount}`, infoX, infoY + tabSize * 2);
+        this.ctx.closePath();
     }
 
     public update(foodArray: IFood[], dayEnd: boolean) {
+        const haveFood = foodArray.length > 0;
+
+        // if (this.isDie && this.grabbedFoodCount === 1) {
+        //     console.log('bug');
+        //     console.log(this);
+        // }
+
         if (!this.checkDeath()) {
             // if not returned to home
             if (!this.returnedToHome) {
-                if (!this.grabbedFoodCount) {
-                    this.searchFood(foodArray);
+
+                if (this.grabbedFoodCount === 0) {
+                    if (haveFood) {
+                        this.searchFood(foodArray);
+                    } else {
+                        this.isDie = true;
+                    }
                 }
 
-                else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity) {
+                else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity && haveFood) {
                     this.tryFindFoodForPosterity(foodArray);
                 }
 
-                else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity) {
+                else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity || !haveFood) {
                     this.goHome();
                 }
-
-                if (this.reachedTheAreaCenter) {
-                    this.stepDirectionCount += 1;
-                }
-
-                this.step += 1;
             }
 
             // if returned to home
-            else if (this.returnedToHome && dayEnd) {
+            else if (dayEnd) {
                 this.resetState();
             }
 
-            this.draw();
-        } else if (this.ctx.fillStyle === creatureParams.fillStyle) {
             this.draw();
         }
 
@@ -136,7 +147,22 @@ export class Creature {
     public getCreatureParams() {
         return {
             velocity: this.velocity / this.selectionSpeed,
+            visibilityRadius: this.visibilityRadius
         };
+    }
+
+    protected replenishEnergy() {
+        return this.energy = 100 * this.energyIntensity;
+    }
+
+    protected randomDirection() {
+        return randomIntFromRange(0, 1) ? this.velocity : -this.velocity;
+    }
+
+    protected setDependenceVariables() {
+        this.energy = this.replenishEnergy();
+        this.dX = this.randomDirection();
+        this.dY = this.randomDirection();
     }
 
     private searchFood(foodArray: IFood[]) {
@@ -156,7 +182,7 @@ export class Creature {
     }
 
     private goHome() {
-        if (!this.creatureInsideArea()) {
+        if (this.creatureOutsideArea()) {
             this.returnedToHome = true;
         } else {
             const nearestAreaExitPoint = this.getNearestAreaExitPoint();
@@ -173,12 +199,14 @@ export class Creature {
         if (nearestAreaExitPoint) {
             // расстояние до ближайшей точки выхода
             const nearestAreaExitPointDistance = calcPointDistance(this.x, this.y, nearestAreaExitPoint.x, nearestAreaExitPoint.y);
-            // количество шагов до точки выхода
-            const stepsCountToExitPoint = Math.floor(nearestAreaExitPointDistance / this.velocity);
-            // количество энергии требуемой для выхода
-            const amountEnergyToExit = Math.floor((stepsCountToExitPoint * this.selectionSpeed) / this.wasteEnergyPerMove);
 
-            if (this.energy > amountEnergyToExit) {
+            const energyPerMove = this.getWasteEnergyPerMove();
+            const stepsCountToExitPoint = (Math.floor(this.energy) / energyPerMove) || 0; // количество шагов до точки выхода
+            const distanceCreatureCanTravel = stepsCountToExitPoint * this.velocity; // расстояние которое может пройти существо
+
+            const res = distanceCreatureCanTravel > nearestAreaExitPointDistance;
+
+            if (res && foodArray.length) {
                 this.searchFood(foodArray);
             } else {
                 this.noFoodForPosterity = true;
@@ -200,78 +228,56 @@ export class Creature {
     }
 
     private move() {
-        // if creature position not on area center
-        if (!this.reachedTheAreaCenter) {
-            this.moveToAreaCenter();
-        }
+        // random acceleration
+        const { dx, dy } = this.randomAcceleration();
 
-        // if creature reached area center
-        if (this.creatureReachedAreaCenter() || this.reachedTheAreaCenter) {
-            this.moveToRandomDirection();
-        }
-    }
-
-    private moveToRandomDirection() {
-        this.reachedTheAreaCenter = true;
-
-        // create move direction
-        if (!(this.stepDirectionCount % this.stepDirectionChangeNum)) {
-            this.dX = this.randomDirection();
-            this.dY = this.randomDirection();
-            this.stepDirectionCount = 0;
-            this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
-        }
+        this.x += dx;
+        this.y += dy;
 
         // if creature outside area
-        if (!this.creatureInsideArea()) {
-            this.dX *= -1;
-            this.dY *= -1;
-            this.stepDirectionCount = 0;
+        if (this.creatureOutsideArea()) {
+            const tDx = this.x - this.area.centerX;
+            const tDy = this.y - this.area.centerY;
+            const theta = Math.atan2(tDy, tDx);
+            const R = this.area.radius - this.radius;
+
+            this.x = R * Math.cos(theta) + this.area.centerX;
+            this.y = R * Math.sin(theta) + this.area.centerY;
+
+            this.dX *= Math.random() > 0.5 ? 1 : -1;
+            this.dY *= Math.random() > 0.5 ? 1 : -1;
         }
 
-        // move creature
-        this.x += this.dX;
-        this.y += this.dY;
         this.wasteOfEnergy();
     }
 
     private moveToThePoint(point: IPoint) {
+        this.dX = this.x > point.x ? -this.velocity : this.velocity;
+        this.dY = this.y > point.y ? -this.velocity : this.velocity;
+
+        if (this.x !== point.x) {
+            this.x += this.dX;
+        }
+        if (this.y !== point.y) {
+            this.y += this.dY;
+        }
+
         this.wasteOfEnergy();
-
-        if (this.x > point.x) {
-            this.x -= this.velocity;
-        } else {
-            this.x += this.velocity;
-        }
-
-        if (this.y > point.y) {
-            this.y -= this.velocity;
-        } else {
-            this.y += this.velocity;
-        }
     }
 
     private getNearestAreaExitPoint() {
-        const areaPoints = this.getAreaPoints();
-        const nearestAreaExitPoint = getNearestPointFromPointsArray(areaPoints, { x: this.x, y: this.y });
+        const nearestAreaExitPoint = getNearestPointFromPointsArray(this.exitAreaPoints, { x: this.x, y: this.y });
 
         return nearestAreaExitPoint;
     }
 
     private resetState() {
         if (!this.checkDeath()) {
-            this.step = 0;
-            this.stepDirectionCount = 0;
             this.grabbedFoodCount = 0;
-
-            this.reachedTheAreaCenter = false;
             this.returnedToHome = false;
             this.noFoodForPosterity = false;
 
-            this.stepDirectionChangeNum = this.randomStepDirectionChangeNum();
-            this.dX = this.randomDirection();
-            this.dY = this.randomDirection();
-            this.energy = this.replenishEnergy();
+            this.setDependenceVariables();
         }
     }
 
@@ -285,27 +291,17 @@ export class Creature {
 
     /**
      * Проверка, на нахождение сущности в пределах области
-     * https://www.geeksforgeeks.org/check-if-a-circle-lies-inside-another-circle-or-not/
-     * @param area 
      */
-    private creatureInsideArea() {
-        const pointDistance = calcPointDistance(this.x + this.dX, this.y + this.dY, this.area.centerX, this.area.centerY);
+    private creatureOutsideArea() {
+        const pointDistance = calcPointDistance(this.x, this.y, this.area.centerX, this.area.centerY);
 
-        return pointDistance + this.radius <= this.area.radius;
-    }
-
-    /**
-     * Проверка, дошла ли сущность до центра области
-     * @param area 
-     */
-    private creatureReachedAreaCenter() {
-        return calcPointDistance(this.x, this.y, this.area.centerX, this.area.centerY) <= this.radius * 2;
+        return pointDistance + this.radius >= this.area.radius;
     }
 
     /**
      * Получить точки выхода из области
      */
-    private getAreaPoints() {
+    private getExitAreaPoints() {
         const areaPoints = [];
         const steps = this.area.radius / 2;
 
@@ -319,25 +315,51 @@ export class Creature {
         return areaPoints;
     }
 
-    private moveToAreaCenter() {
-        this.moveToThePoint({ x: this.area.centerX, y: this.area.centerY });
+    private randomAcceleration() {
+        const maxVelocity = this.velocity * 2;
+
+        this.dX += this.randomizeDValue();
+        this.dY += this.randomizeDValue();
+
+        if (this.dX > maxVelocity) {
+            this.dX = maxVelocity;
+        } else if (this.dX < -maxVelocity) {
+            this.dX = -maxVelocity;
+        }
+
+        if (this.dY > maxVelocity) {
+            this.dY = maxVelocity;
+        } else if (this.dY < -maxVelocity) {
+            this.dY = -maxVelocity;
+        }
+
+        return { dx: this.dX, dy: this.dY };
+    }
+
+    private randomizeDValue(): number {
+        const accel = (this.velocity * (this.selectionSpeed / 2)) / 3; // чем меньше значение тем более прямые движения, чем больше тем больше поворотов
+        const value = (1 - 2 * Math.random()) * accel;
+
+        return value;
     }
 
     /**
      * Расход энергии
      */
     private wasteOfEnergy() {
-        if (!(this.step % this.wasteEnergyPerMove)) {
-            this.energy -= 1 * this.selectionSpeed;
-        }
+        this.energy -= this.getWasteEnergyPerMove();
     }
 
-    private mutateVelocity() {
-        const oldVelocity = this.velocity;
+    private getWasteEnergyPerMove() {
+        return Math.round((this.getVelocityFromD() / this.wasteEnergyVal) * 100) / 100;
+    }
 
-        this.velocity = this.mutateParam(this.velocity);
-        this.energyIntensity *= oldVelocity / this.velocity;
-        this.isMutated = true;
+    private getVelocityFromD() {
+        const xVelocity = Math.abs(this.dX);
+        const yVelocity = Math.abs(this.dY);
+        const velocity = (xVelocity + yVelocity) / 2;
+
+        return velocity;
     }
 
     private checkDeath() {
@@ -347,38 +369,13 @@ export class Creature {
 
         return this.isDie;
     }
-
-    private replenishEnergy() {
-        return this.energy = 100 * this.energyIntensity;
-    }
-
-    private randomDirection() {
-        return randomIntFromRange(0, 1) ? this.velocity : -this.velocity;
-    }
-
-    private randomStepDirectionChangeNum() {
-        return randomIntFromRange(Math.floor(30 / this.selectionSpeed), Math.floor(50 / this.selectionSpeed));
-    }
-
-    private getIsMutate() {
-        return this.isPosterity && !this.isMutated ? Math.random() <= this.mutationChance : false;
-    }
-
-    private getFillStyle() {
-        return this.isMutate ? getRandomColor() : creatureParams.fillStyle;
-    }
-
-    private mutateParam(defaultValue: number) {
-        return randomIntFromRange(defaultValue / 2, defaultValue * 2);
-    }
 }
 
-interface IProps {
+export interface IProps {
     x: number;
     y: number;
     ctx: CanvasRenderingContext2D;
     area: IArea;
     selectionSpeed: number;
     mutationChance: number;
-    isPosterity?: boolean;
 }

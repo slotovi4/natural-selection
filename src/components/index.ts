@@ -5,3 +5,4 @@ export { ExpansionPanel } from './ExpansionPanel';
 export { LineChart } from './LineChart';
 export { BarChart } from './BarChart';
 export { SelectionDetails } from './SelectionDetails';
+export { Table } from './Table';

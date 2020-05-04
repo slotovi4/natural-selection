@@ -20,7 +20,8 @@ const ControlSectionContainer = ({
     setSelectionDaysCount,
     setSelectionSpeed,
     setCreatureCanMutate,
-    setCreatureMutationChance
+    setCreatureMutationChance,
+    daysLeft,
 }: IProps) => {
     return (
         <ControlSection
@@ -31,6 +32,7 @@ const ControlSectionContainer = ({
                 clearCreatureState();
             }}
             disabled={start}
+            daysLeft={daysLeft}
             foodProps={{ foodSettings, setFoodCount }}
             creatureProps={{ creatureSettings, setCreatureCount, setCreatureCanMutate, setCreatureMutationChance }}
             selectionProps={{ selectionSettings, setSelectionDaysCount, setSelectionSpeed }}
@@ -43,16 +45,17 @@ const mapState = (state: IRootState) => ({
     foodSettings: state.food,
     creatureSettings: state.creature,
     selectionSettings: state.selection.selectionSettings,
+    daysLeft: state.selection.daysLeft,
 });
 
 const mapDispatch = (dispatch: Dispatch) => ({
     setSelectionStart: () => dispatch.selection.startSelection(),
-    setFoodCount: (foodCount: IFoodSettings["foodCount"]) => dispatch.food.setNewFoodCount(foodCount),
-    setCreatureCount: (creatureCount: ICreatureSettings["creatureCount"]) => dispatch.creature.setNewCreatureCount(creatureCount),
-    setSelectionDaysCount: (daysCount: ISelectionSettings["selectionDays"]) => dispatch.selection.setNewSelectionDays(daysCount),
-    setSelectionSpeed: (selectionSpeed: ISelectionSettings["selectionSpeed"]) => dispatch.selection.setNewSelectionSpeed(selectionSpeed),
-    setCreatureCanMutate: (canMutate: ICreatureSettings["canMutate"]) => dispatch.creature.setNewCreatureCanMutate(canMutate),
-    setCreatureMutationChance: (mutationChance: ICreatureSettings["mutationChance"]) => dispatch.creature.setNewCreatureMutationChance(mutationChance),
+    setFoodCount: (foodCount: IFoodSettings['foodCount']) => dispatch.food.setNewFoodCount(foodCount),
+    setCreatureCount: (creatureCount: ICreatureSettings['creatureCount']) => dispatch.creature.setNewCreatureCount(creatureCount),
+    setSelectionDaysCount: (daysCount: ISelectionSettings['selectionDays']) => dispatch.selection.setNewSelectionDays(daysCount),
+    setSelectionSpeed: (selectionSpeed: ISelectionSettings['selectionSpeed']) => dispatch.selection.setNewSelectionSpeed(selectionSpeed),
+    setCreatureCanMutate: (canMutate: ICreatureSettings['canMutate']) => dispatch.creature.setNewCreatureCanMutate(canMutate),
+    setCreatureMutationChance: (mutationChance: ICreatureSettings['mutationChance']) => dispatch.creature.setNewCreatureMutationChance(mutationChance),
     clearSelectionState: () => dispatch.selection.clearSelectionState(),
     clearFoodState: () => dispatch.food.clearFoodState(),
     clearCreatureState: () => dispatch.creature.clearCreatureState(),

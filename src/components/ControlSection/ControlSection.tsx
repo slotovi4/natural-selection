@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, CardMedia } from '@material-ui/core';
-import { SelectionExpansionPanel, ISelectionProps as SelectionExpansionPanelProps} from './SelectionExpansionPanel';
+import { Button, CardMedia, Tooltip } from '@material-ui/core';
+import { SelectionExpansionPanel, ISelectionProps as SelectionExpansionPanelProps } from './SelectionExpansionPanel';
 import { FoodExpansionPanel, IFoodProps as FoodExpansionPanelProps } from './FoodExpansionPanel';
 import { CreatureExpansionPanel, ICreatureProps as CreatureExpansionPanelProps } from './CreatureExpansionPanel';
 import { cn } from '@bem-react/classname';
@@ -13,6 +13,7 @@ const ControlSection = ({
     foodProps,
     creatureProps,
     selectionProps,
+    daysLeft,
     disabled,
 }: IProps) => {
     const cl = cn('ControlSection');
@@ -25,12 +26,18 @@ const ControlSection = ({
                 className={cl('Image')}
             />
 
+            {daysLeft ? (
+                <Tooltip title="Дней до конца отбора" aria-label="daysLeft">
+                    <span className={cl('Days-Left-Counter')}>{daysLeft}</span>
+                </Tooltip>
+            ) : null}
+
             <SelectionExpansionPanel disabled={disabled} {...selectionProps} />
             <CreatureExpansionPanel disabled={disabled} {...creatureProps} />
             <FoodExpansionPanel disabled={disabled} {...foodProps} />
 
             <div className='p-2'>
-                <Button disabled={disabled} variant="contained" onClick={onStartClick}>Start</Button>
+                <Button disabled={disabled} variant="contained" color="primary" onClick={onStartClick}>Start</Button>
                 <Button disabled={disabled} variant="contained" onClick={onResetClick} className='ml-2'>Reset</Button>
             </div>
         </section>
@@ -41,6 +48,7 @@ export default ControlSection;
 
 interface IProps {
     disabled: boolean;
+    daysLeft: number;
     foodProps: FoodExpansionPanelProps;
     creatureProps: CreatureExpansionPanelProps;
     selectionProps: SelectionExpansionPanelProps;

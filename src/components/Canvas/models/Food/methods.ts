@@ -1,6 +1,6 @@
 import { Food } from './Food';
 import { foodParams } from './config';
-import { IArea } from "../interface";
+import { IArea } from '../interface';
 
 const createFood = ({ ctx, area }: IDefaultProps) => {
     const foodRadius = foodParams.radius;
@@ -52,9 +52,13 @@ export const drawFood = (props: ICreateFoodProps) => {
 };
 
 export const updateFood = (foodArray: Food[]) => {
-    foodArray.forEach(food => {
+    const notEatenFood = foodArray.filter(food => !food.eaten);
+    
+    notEatenFood.forEach(food => {
         food.draw();
     });
+
+    return notEatenFood;
 };
 
 interface ICreateFoodProps extends IDefaultProps {

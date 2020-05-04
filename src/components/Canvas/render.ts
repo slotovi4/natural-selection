@@ -26,7 +26,7 @@ export const updateNaturalSelectionInitParams = ({
     area,
     foodControlParams,
     creatureControlParams,
-    selectionControlParams
+    selectionControlParams,
 }: IUpdateInitProps) => {
     const ctx = canvas.getContext('2d');
 
@@ -74,6 +74,7 @@ export const renderNaturalSelectionWorld = ({
     selectionControlParams,
     creatureControlParams,
     setSelectionResultData,
+    setDaysLeft,
 }: IRenderProps) => {
     const ctx = canvas.getContext('2d');
 
@@ -94,7 +95,7 @@ export const renderNaturalSelectionWorld = ({
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 drawArea(ctx, canvas);
-                updateFood(newFoodArray);
+                newFoodArray = updateFood(newFoodArray);
                 newCreatureArray = updateCreature(newCreatureArray, newFoodArray, dayEnd);
 
                 dayEnd = checkEndDay(newCreatureArray);
@@ -112,6 +113,7 @@ export const renderNaturalSelectionWorld = ({
                     });
 
                     day += 1;
+                    setDaysLeft(selectionDays - day);
                 }
 
                 requestAnimationFrame(animate);
@@ -128,6 +130,7 @@ export const renderNaturalSelectionWorld = ({
 interface IRenderProps extends IRenderAreaElements, IInitProps {
     stopSelection: () => void;
     setSelectionResultData: (data: IDayResult[]) => void;
+    setDaysLeft: (daysLeft: number) => void;
 }
 
 interface IUpdateInitProps extends IInitProps {
