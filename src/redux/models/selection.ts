@@ -4,6 +4,7 @@ import { SelectionSpeed } from '../../components/ControlSection/SelectionExpansi
 
 const initialState: IState = {
     start: false,
+    daysLeft: 0,
     selectionResultData: [],
     selectionSettings: {
         selectionDays: 30,
@@ -24,7 +25,10 @@ const selection = createModel({
             return { ...state, selectionSettings: { ...state.selectionSettings, selectionSpeed } };
         },
         setSelectionResultData(state: IState, selectionResultData: ISelectionResultData[]) {
-            return {...state, selectionResultData: [...state.selectionResultData, selectionResultData]};
+            return { ...state, selectionResultData: [...state.selectionResultData, selectionResultData] };
+        },
+        setDaysLeft(state: IState, daysLeft: IState['daysLeft']) {
+            return { ...state, daysLeft };
         },
         clearState() {
             return {
@@ -48,6 +52,9 @@ const selection = createModel({
         setNewSelectionResultData(selectionResultData: ISelectionResultData[]) {
             this.setSelectionResultData(selectionResultData);
         },
+        setNewDaysLeft(daysLeft: IState['daysLeft']) {
+            this.setDaysLeft(daysLeft);
+        },
         clearSelectionState() {
             this.clearState();
         },
@@ -58,6 +65,7 @@ export default selection;
 
 export interface IState {
     start: boolean;
+    daysLeft: number;
     selectionSettings: ISelectionSettings;
     selectionResultData: ISelectionResultData[][];
 }

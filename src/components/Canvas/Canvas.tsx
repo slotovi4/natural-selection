@@ -21,6 +21,7 @@ const Canvas = ({
     creatureControlParams,
     selectionControlParams,
     setSelectionResultData,
+    setDaysLeft,
     start,
 }: IProps) => {
     const [areaElements, setAreaElements] = React.useState<IRenderAreaElements | null>(null);
@@ -70,6 +71,7 @@ const Canvas = ({
                     creatureControlParams,
                     selectionControlParams,
                     setSelectionResultData,
+                    setDaysLeft,
                     ...areaElements
                 });
             } else {
@@ -97,4 +99,5 @@ interface IProps {
     setArea: (area: IArea) => void;
     setMaxFoodCount: (maxFoodCount: number) => void;
     setSelectionResultData: (data: IDayResult[]) => void;
+    setDaysLeft: (daysLeft: number) => void;
 }
