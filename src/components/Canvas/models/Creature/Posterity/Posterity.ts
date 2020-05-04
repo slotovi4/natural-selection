@@ -1,5 +1,5 @@
 import { Creature, IProps as ICreatureProps } from '../Creature';
-import { randomIntFromRange } from '../../helpers';
+import {randomIntFromRange} from '../../helpers';
 
 export class Posterity extends Creature {
     private readonly canMutate: boolean;
@@ -27,8 +27,8 @@ export class Posterity extends Creature {
 
         this.velocity = newValue;
         this.fillStyle = color;
-        this.energyIntensity *= oldVelocity / this.velocity;
-
+        this.energyIntensity *= Math.round((oldVelocity / newValue) * 100) / 100; // parseFloat((oldVelocity / this.velocity).toFixed(2));
+        this.velocity = newValue;
         this.isMutated = true;
     }
 

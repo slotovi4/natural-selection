@@ -22,12 +22,12 @@ export const getNearestPointFromPointsArray = <T extends IPoint, N extends IPoin
 
     for (let i = 0; i < length; i++) {
         const point = pointsArray[i];
-        const foodDistance = calcPointDistance(parPoint.x, parPoint.y, point.x, point.y);
 
         if (nearestPoint) {
+            const pointDistance = calcPointDistance(parPoint.x, parPoint.y, point.x, point.y);
             const nearestPointDistance = calcPointDistance(parPoint.x, parPoint.y, nearestPoint.x, nearestPoint.y);
 
-            if (nearestPointDistance > foodDistance) {
+            if (nearestPointDistance > pointDistance) {
                 nearestPoint = point;
             }
         } else {
