@@ -7,7 +7,7 @@ const initialState: IState = {
     daysLeft: 0,
     selectionResultData: [],
     selectionSettings: {
-        selectionDays: 30,
+        selectionDays: 10,
         selectionSpeed: SelectionSpeed.X10,
     }
 };
@@ -84,4 +84,5 @@ export interface ISelectionResultData {
 
 interface ICreatureParams {
     velocity: number;
+    visibilityRadius: number;
 }

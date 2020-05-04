@@ -147,6 +147,7 @@ export class Creature {
     public getCreatureParams() {
         return {
             velocity: this.velocity / this.selectionSpeed,
+            visibilityRadius: this.visibilityRadius
         };
     }
 

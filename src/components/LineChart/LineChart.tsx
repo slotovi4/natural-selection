@@ -101,19 +101,10 @@ const LineChart = ({ selectionResultData }: IProps) => {
                     min: 0,
                     stepSize: 1,
                 },
-                // gridLines: {
-                //     zeroLineColor: "transparent",
-                //     drawTicks: false,
-                //     display: false,
-                //     drawBorder: false
-                // }
             }],
             xAxes: [{
                 display: true,
             }]
-        },
-        layout: {
-            padding: 20,
         },
     };
 
@@ -146,28 +137,34 @@ const LineChart = ({ selectionResultData }: IProps) => {
     };
 
     ChartJs.pluginService.register({
-        afterDraw: drawChartDividingLine
+        beforeDraw: drawChartDividingLine
     });
 
     return (
-        <section>
-            <FormControlLabel
-                control={
-                    <Switch
-                        checked={combineCharts}
-                        onChange={() => setCombineCharts(!combineCharts)}
-                        name="combineChartsSwitch"
-                        color="primary"
+        <section className='w-100'>
+            {selectionResultData.length ? (
+                <>
+                    {selectionResultData.length > 1 ? (
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={combineCharts}
+                                    onChange={() => setCombineCharts(!combineCharts)}
+                                    name="combineChartsSwitch"
+                                    color="primary"
+                                />
+                            }
+                            label="Combine survive charts"
+                        />
+                    ) : null}
+
+                    <Line
+                        data={createChartData}
+                        options={options}
+                        height={200}
                     />
-                }
-                label="Combine charts"
-            />
-            
-            <Line
-                data={createChartData}
-                options={options}
-                height={200}
-            />
+                </>
+            ) : null}
         </section>
     );
 };
