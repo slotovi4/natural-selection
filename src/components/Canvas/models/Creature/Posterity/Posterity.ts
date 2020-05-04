@@ -23,12 +23,11 @@ export class Posterity extends Creature {
 
     private mutateVelocity() {
         const oldVelocity = this.velocity;
-        const { newValue, color } = this.mutateParam(this.velocity, true);
+        const { newValue, color } = this.mutateParam(oldVelocity, true);
 
         this.velocity = newValue;
         this.fillStyle = color;
-        this.energyIntensity *= Math.round((oldVelocity / newValue) * 100) / 100; // parseFloat((oldVelocity / this.velocity).toFixed(2));
-        this.velocity = newValue;
+        this.energyIntensity *= oldVelocity / this.velocity; // Math.round((oldVelocity / this.velocity) * 100) / 100;
         this.isMutated = true;
     }
 

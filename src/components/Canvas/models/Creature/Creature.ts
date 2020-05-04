@@ -107,7 +107,7 @@ export class Creature {
     public update(foodArray: IFood[], dayEnd: boolean) {
         const haveFood = foodArray.length > 0;
 
-        if (this.isDie && this.grabbedFoodCount) {
+        if (this.isDie && this.grabbedFoodCount === 1) {
             console.log('bug');
             console.log(this);
         }
@@ -124,7 +124,7 @@ export class Creature {
                     }
                 }
 
-                else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity) {
+                else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity && haveFood) {
                     this.tryFindFoodForPosterity(foodArray);
                 }
 
@@ -134,7 +134,7 @@ export class Creature {
             }
 
             // if returned to home
-            else if (this.returnedToHome && dayEnd) {
+            else if (dayEnd) {
                 this.resetState();
             }
 
@@ -200,10 +200,10 @@ export class Creature {
             const nearestAreaExitPointDistance = calcPointDistance(this.x, this.y, nearestAreaExitPoint.x, nearestAreaExitPoint.y);
 
             const energyPerMove = this.getWasteEnergyPerMove();
-            const stepsCountToExitPoint = this.energy / energyPerMove; // количество шагов до точки выхода
+            const stepsCountToExitPoint = (Math.floor(this.energy) / energyPerMove) || 0; // количество шагов до точки выхода
             const distanceCreatureCanTravel = stepsCountToExitPoint * this.velocity; // расстояние которое может пройти существо
 
-            const res = distanceCreatureCanTravel >= nearestAreaExitPointDistance;
+            const res = distanceCreatureCanTravel > nearestAreaExitPointDistance;
 
             if (res && foodArray.length) {
                 this.searchFood(foodArray);
@@ -254,8 +254,12 @@ export class Creature {
         this.dX = this.x > point.x ? -this.velocity : this.velocity;
         this.dY = this.y > point.y ? -this.velocity : this.velocity;
 
-        this.x += this.dX;
-        this.y += this.dY;
+        if (this.x !== point.x) {
+            this.x += this.dX;
+        }
+        if (this.y !== point.y) {
+            this.y += this.dY;
+        }
 
         this.wasteOfEnergy();
     }
@@ -269,13 +273,10 @@ export class Creature {
     private resetState() {
         if (!this.checkDeath()) {
             this.grabbedFoodCount = 0;
-
             this.returnedToHome = false;
             this.noFoodForPosterity = false;
 
-            this.dX = this.randomDirection();
-            this.dY = this.randomDirection();
-            this.energy = this.replenishEnergy();
+            this.setDependenceVariables();
         }
     }
 
@@ -361,7 +362,7 @@ export class Creature {
     }
 
     private checkDeath() {
-        if (this.energy < 0) {
+        if (this.energy <= 0) {
             this.isDie = true;
         }
 
