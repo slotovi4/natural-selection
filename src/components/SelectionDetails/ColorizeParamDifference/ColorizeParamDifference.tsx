@@ -11,9 +11,10 @@ const ColorizeParamDifference = ({ paramDifference }: IProps) => {
         <div className={cl()}>
             {paramDifference > 0
                 ? <ArrowUpwardIcon className={cl('Icon', { up: true })} />
-                : <ArrowDownwardIcon className={cl('Icon', { down: true })} />}
+                : <ArrowDownwardIcon className={cl('Icon', { down: true })} />
+            }
             <span className={cl('Text', { up: paramDifference > 0, down: paramDifference < 0 })}>
-                {paramDifference.toFixed(3)}
+                {parseFloat(paramDifference.toFixed(2))}
             </span>
         </div>
     ) : null;
