@@ -8,7 +8,14 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { cn } from '@bem-react/classname';
 import './ExpansionPanel.scss';
 
-const ExpansionPanel = ({ children, id, title, secondaryText, disabled }: IProps) => {
+const ExpansionPanel = ({
+    children,
+    id,
+    title,
+    secondaryText,
+    disabled,
+    contentClassName
+}: IProps) => {
     const cl = cn('ExpansionPanel');
 
     return (
@@ -23,7 +30,7 @@ const ExpansionPanel = ({ children, id, title, secondaryText, disabled }: IProps
                     <span className={cl('Text', { secondary: true })}>{secondaryText}</span>
                 </div>
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            <ExpansionPanelDetails className={contentClassName}>
                 {children}
             </ExpansionPanelDetails>
         </MaterialExpansionPanel>
@@ -38,4 +45,5 @@ interface IProps {
     id: string;
     disabled?: boolean;
     secondaryText?: string;
+    contentClassName?: string;
 }

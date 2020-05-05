@@ -103,11 +103,13 @@ const BarChart = ({ survivedCreatures }: IProps) => {
             ) : null}
 
             {barData ? (
-                <Bar
-                    data={barData}
-                    options={options}
-                    height={400}
-                />
+                <div>
+                    <Bar
+                        data={barData}
+                        options={options}
+                        height={400}
+                    />
+                </div>
             ) : null}
         </section>
     );

@@ -4,8 +4,10 @@ import {
     Dialog,
     Button,
 } from '@material-ui/core';
+import { ExpansionPanel } from '../ExpansionPanel';
 import { TableDetails } from './TableDetails';
-import { ColorizeParamDifference } from './ColorizeParamDifference';
+import { ColorizeParamDifference } from '../ColorizeParamDifference';
+import { getParamAverageValue, getParamChangeDifference } from './helpers';
 import { cn } from '@bem-react/classname';
 import './SelectionDetails.scss';
 
@@ -39,16 +41,6 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
         </div>
     );
 
-    const getParamChangeDifference = (averageArr: number[]) => {
-        const oldAverageValue = getParamAverageValue(averageArr.filter((e,i) => i !== averageArr.length - 1));
-        const currentAverageValues = getParamAverageValue(averageArr);
-        return currentAverageValues - oldAverageValue;
-    };
-
-    const getParamAverageValue = (averageArr: number[]) => {
-        return averageArr.reduce((a, b) => a + b, 0) / averageArr.length;
-    };
-
     return (
         <Card className={cl()}>
             <span className={cl('Title')}>Показатели существ по итогу последних дней естественного отбора</span>
@@ -70,9 +62,17 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
                 onClose={() => setOpenDetails(false)}
                 fullWidth
             >
-                <TableDetails
-                    selectionResultData={selectionResultData}
-                />
+                {selectionResultData.map((selection, i) => (
+                    <ExpansionPanel
+                        title={`отбор №${i}`}
+                        secondaryText={`${selection.length} дней`}
+                        key={`expansion_selection_${i}`}
+                        id={`expansion_selection_${i}`}
+                        contentClassName='p-0'
+                    >
+                        <TableDetails selection={selection} />
+                    </ExpansionPanel>
+                ))}
             </Dialog>
         </Card>
     );
@@ -80,11 +80,11 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
 
 export default SelectionDetails;
 
-export interface IProps {
+interface IProps {
     selectionResultData: ISelectionResultData[][];
 }
 
-interface ISelectionResultData {
+export interface ISelectionResultData {
     dieCount: number;
     survivedCount: number;
     offspringCount: number;
@@ -93,4 +93,5 @@ interface ISelectionResultData {
 
 interface ICreatureParams {
     velocity: number;
+    visibilityRadius: number;
 }

@@ -158,11 +158,13 @@ const LineChart = ({ selectionResultData }: IProps) => {
                         />
                     ) : null}
 
-                    <Line
-                        data={createChartData}
-                        options={options}
-                        height={200}
-                    />
+                    <div>
+                        <Line
+                            data={createChartData}
+                            options={options}
+                            height={200}
+                        />
+                    </div>
                 </>
             ) : null}
         </section>
