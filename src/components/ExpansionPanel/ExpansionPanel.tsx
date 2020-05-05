@@ -8,22 +8,33 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { cn } from '@bem-react/classname';
 import './ExpansionPanel.scss';
 
-const ExpansionPanel = ({ children, id, title, secondaryText, disabled }: IProps) => {
+const ExpansionPanel = ({
+    children,
+    id,
+    title,
+    secondaryText,
+    disabled,
+    contentClassName,
+    secondaryChild,
+    expand,
+    gray,
+}: IProps) => {
     const cl = cn('ExpansionPanel');
 
     return (
-        <MaterialExpansionPanel disabled={disabled}>
+        <MaterialExpansionPanel className={cl({ gray })} disabled={disabled}>
             <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="controlSelection"
+                aria-label={expand ? 'Expand' : undefined}
                 id={id}
             >
                 <div className={cl('Expansion-Header')}>
                     <span className={cl('Title')}>{title}</span>
-                    <span className={cl('Text', { secondary: true })}>{secondaryText}</span>
+                    {secondaryChild ? secondaryChild : <span className={cl('Text', { secondary: true })}>{secondaryText}</span>}
                 </div>
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            <ExpansionPanelDetails className={contentClassName}>
                 {children}
             </ExpansionPanelDetails>
         </MaterialExpansionPanel>
@@ -37,5 +48,9 @@ interface IProps {
     title: string;
     id: string;
     disabled?: boolean;
+    secondaryChild?: React.ReactNode;
     secondaryText?: string;
+    contentClassName?: string;
+    expand?: boolean;
+    gray?: boolean;
 }

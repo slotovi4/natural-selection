@@ -46,13 +46,13 @@ const LineChart = ({ selectionResultData }: IProps) => {
 
                 if (combineCharts) {
                     combineDataSets.push({
-                        label: `Survived count (selection: ${i})`,
+                        label: `Survived count (selection: ${i + 1})`,
                         data: survived,
                         ...dataSetsParams
                     });
 
                     combineDataSets.push({
-                        label: `Offspring count (selection: ${i})`,
+                        label: `Offspring count (selection: ${i + 1})`,
                         data: offspring,
                         ...dataSetsParams
                     });
@@ -158,11 +158,13 @@ const LineChart = ({ selectionResultData }: IProps) => {
                         />
                     ) : null}
 
-                    <Line
-                        data={createChartData}
-                        options={options}
-                        height={200}
-                    />
+                    <div>
+                        <Line
+                            data={createChartData}
+                            options={options}
+                            height={200}
+                        />
+                    </div>
                 </>
             ) : null}
         </section>

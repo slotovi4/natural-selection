@@ -42,11 +42,11 @@ const FoodExpansionPanel = ({ foodSettings, setFoodCount, disabled }: IProps) =>
     return (
         <ExpansionPanel
             id='food'
-            title='Food settings'
-            secondaryText='Настройки пищи'
+            title='Пища'
+            secondaryText='Настройки пищи для существ'
         >
             <div className='w-100'>
-                <span className={cl('Label')}>Food count</span>
+                <span className={cl('Label')}>Количество пищи</span>
                 <Slider
                     value={settings.foodCount}
                     onChange={(e, value) => typeof value === 'number' && setSettings({...settings, foodCount: value})}

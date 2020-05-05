@@ -1,4 +1,4 @@
-import { Creature } from './Creature';
+import { Creature, ICreatureParams } from './Creature';
 import { Posterity } from './Posterity';
 import { creatureParams } from './config';
 import { IArea, IFood } from '../interface';
@@ -19,7 +19,7 @@ const createCreature = (props: ICreatureSettingsProps) => {
 };
 
 const createPosterity = (props: ICreatePosterityProps) => {
-    return new Posterity({ ...getCreatureData(props), canMutate: props.canMutate });
+    return new Posterity({ ...getCreatureData(props), ...props });
 };
 
 const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed, mutationChance, canMutate }: ICreateCreatureArrayProps) => {
@@ -66,15 +66,23 @@ export const updateCreature = (creatureArray: Creature[], foodArray: IFood[], da
 
 export const checkEndDay = (creatureArray: Creature[]) => creatureArray.every(creature => creature.isDie || creature.returnedToHome);
 
-export const getNextDayCreatureArray = ({ endDayCreatureArray, ctx, area, selectionSpeed, mutationChance, canMutate }: IGetNextDayCreature) => {
+export const getNextDayCreatureArray = ({ endDayCreatureArray, ...props }: IGetNextDayCreature) => {
     const nextDayCreatureArray = [];
     const posterityCreaturesArray = [];
 
     const survivedCreatures = getSurvivedCreatures(endDayCreatureArray);
-    const offspringCreaturesCount = getOffspringCreatures(endDayCreatureArray).length;
+    const offspringCreatures = getOffspringCreatures(endDayCreatureArray);
+    const offspringCreaturesCount = offspringCreatures.length;
 
     for (let i = 0; i < offspringCreaturesCount; i++) {
-        posterityCreaturesArray.push(createPosterity({ ctx, area, selectionSpeed, mutationChance, canMutate }));
+        const { visibilityRadius, velocity, energyIntensity } = offspringCreatures[i].getCreatureParams();
+
+        posterityCreaturesArray.push(createPosterity({
+            ...props,
+            parentVelocity: velocity,
+            parentVisibilityRadius: visibilityRadius,
+            parentEnergyIntensity: energyIntensity
+        }));
     }
 
     nextDayCreatureArray.push(...survivedCreatures, ...posterityCreaturesArray);
@@ -108,6 +116,9 @@ interface ICreatureSettingsProps extends IDefaultProps {
 
 interface ICreatePosterityProps extends ICreatureSettingsProps {
     canMutate: boolean;
+    parentVelocity: number;
+    parentVisibilityRadius: number;
+    parentEnergyIntensity: number;
 }
 
 interface ICreateCreatureArrayProps extends ICreatureSettingsProps {
@@ -122,8 +133,4 @@ interface IGetNextDayCreature extends ICreatureSettingsProps {
 interface IDefaultProps {
     ctx: CanvasRenderingContext2D;
     area: IArea;
-}
-
-interface ICreatureParams {
-    velocity: number;
 }

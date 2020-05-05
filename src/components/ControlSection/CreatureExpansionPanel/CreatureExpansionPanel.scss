@@ -1,4 +1,8 @@
 .CreatureExpansionPanel {
+    &-Content {
+        padding: 8px 24px 24px;
+    }
+
     &-Label {
         min-width: max-content;
         padding-right: 10px;

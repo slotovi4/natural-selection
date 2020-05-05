@@ -9,13 +9,23 @@ const BarChart = ({ survivedCreatures }: IProps) => {
     const dataSet = dataSets ? dataSets[selectedDataSet] : null;
 
     React.useEffect(() => {
-        if (survivedCreatures.length) {
-            const velocityArr = survivedCreatures.map(creature => creature.velocity);
-            const visibilityRadiusArr = survivedCreatures.map(creature => creature.visibilityRadius);
+        const { length } = survivedCreatures;
+
+        if (length) {
+            const velocityArr: number[] = [];
+            const visibilityRadiusArr: number[] = [];
+            const energyArr: number[] = [];
+
+            for (let i = 0; i < length; i++) {
+                const { velocity, visibilityRadius, energyIntensity } = survivedCreatures[i];
+                velocityArr.push(velocity);
+                visibilityRadiusArr.push(visibilityRadius);
+                energyArr.push(energyIntensity);
+            }
 
             const data = createDataSets({
-                valuesArr: [velocityArr, visibilityRadiusArr],
-                valuesNames: ['velocity', 'visibilityRadius']
+                valuesArr: [velocityArr, visibilityRadiusArr, energyArr],
+                valuesNames: ['velocity', 'visibilityRadius', 'energyIntensity']
             });
 
             setDataSets(data);
@@ -50,11 +60,15 @@ const BarChart = ({ survivedCreatures }: IProps) => {
 
     const checkValueName = (name: ValueName) => {
         if (name === 'velocity') {
-            return 'speed';
+            return 'скорость';
         }
 
         if (name === 'visibilityRadius') {
-            return 'visibility radius';
+            return 'чувствительность';
+        }
+
+        if (name === 'energyIntensity') {
+            return 'энергия';
         }
 
         return name;
@@ -63,7 +77,7 @@ const BarChart = ({ survivedCreatures }: IProps) => {
     const barData: ChartComponentProps['data'] | null = dataSet ? {
         labels: [...dataSet.data.map(e => `${dataSet.name}: ${e.value}`)],
         datasets: [{
-            label: `Creature ${dataSet.name} mutation`,
+            label: `Мутация параметра - ${dataSet.name}`,
             backgroundColor: 'rgba(63, 81, 181, 0.4)',
             borderColor: '#3f51b5',
             borderWidth: 1,
@@ -103,11 +117,13 @@ const BarChart = ({ survivedCreatures }: IProps) => {
             ) : null}
 
             {barData ? (
-                <Bar
-                    data={barData}
-                    options={options}
-                    height={400}
-                />
+                <div>
+                    <Bar
+                        data={barData}
+                        options={options}
+                        height={400}
+                    />
+                </div>
             ) : null}
         </section>
     );
@@ -122,6 +138,7 @@ interface IProps {
 interface ICreatureParams {
     velocity: number;
     visibilityRadius: number;
+    energyIntensity: number;
 }
 
 interface ICreatureData {

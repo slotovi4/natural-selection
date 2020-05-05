@@ -17,15 +17,17 @@ export class Creature {
     protected fillStyle: string;
     protected velocity: number;
     protected energyIntensity: number;
+    protected energyIntensityScale: number;
     protected isMutated: boolean;
     protected dX: number;
     protected dY: number;
     protected energy: number;
+    protected visibilityRadius: number;
 
     protected readonly mutationChance: number;
     protected readonly selectionSpeed: number;
+    protected readonly visibilityAreaSize: number;
 
-    private readonly visibilityRadius: number;
     private readonly wasteEnergyVal: number;
     private readonly exitAreaPoints: IPoint[];
     private readonly area: IArea;
@@ -39,15 +41,17 @@ export class Creature {
         this.ctx = ctx;
         this.area = area;
 
+        this.energyIntensityScale = 2;
         this.selectionSpeed = selectionSpeed;
         this.mutationChance = mutationChance;
         this.radius = creatureParams.radius;
         this.velocity = creatureParams.velocity * selectionSpeed;
-        this.visibilityRadius = creatureParams.visibilityRadius;
+        this.energyIntensity = creatureParams.energyIntensity * this.energyIntensityScale;
+        this.visibilityAreaSize = creatureParams.visibilityAreaSize;
+        this.visibilityRadius = creatureParams.visibilityRadius * this.visibilityAreaSize;
         this.isMutated = false;
 
         this.grabbedFoodCount = 0;
-        this.energyIntensity = 2;
         this.returnedToHome = false;
         this.isDie = false;
         this.noFoodForPosterity = false;
@@ -144,15 +148,16 @@ export class Creature {
         return this;
     }
 
-    public getCreatureParams() {
+    public getCreatureParams(): ICreatureParams {
         return {
             velocity: this.velocity / this.selectionSpeed,
-            visibilityRadius: this.visibilityRadius
+            visibilityRadius: parseFloat((this.visibilityRadius / this.visibilityAreaSize).toFixed(1)),
+            energyIntensity: parseFloat((this.energyIntensity / 2).toFixed(1))
         };
     }
 
     protected replenishEnergy() {
-        return this.energy = 100 * this.energyIntensity;
+        return 100 * this.energyIntensity;
     }
 
     protected randomDirection() {
@@ -351,7 +356,9 @@ export class Creature {
     }
 
     private getWasteEnergyPerMove() {
-        return Math.round((this.getVelocityFromD() / this.wasteEnergyVal) * 100) / 100;
+        const velocity = this.getVelocityFromD();
+        const visibility = Math.pow(this.visibilityRadius / this.visibilityAreaSize, 3);
+        return Math.round(((velocity / this.wasteEnergyVal) + visibility) * 100) / 100;
     }
 
     private getVelocityFromD() {
@@ -378,4 +385,10 @@ export interface IProps {
     area: IArea;
     selectionSpeed: number;
     mutationChance: number;
+}
+
+export interface ICreatureParams {
+    velocity: number;
+    visibilityRadius: number;
+    energyIntensity: number;
 }

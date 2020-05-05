@@ -7,13 +7,14 @@ import './ColorizeParamDifference.scss';
 const ColorizeParamDifference = ({ paramDifference }: IProps) => {
     const cl = cn('ColorizeParamDifference');
 
-    return paramDifference ? (
+    return paramDifference && parseFloat(paramDifference.toFixed(2)) ? (
         <div className={cl()}>
             {paramDifference > 0
                 ? <ArrowUpwardIcon className={cl('Icon', { up: true })} />
-                : <ArrowDownwardIcon className={cl('Icon', { down: true })} />}
+                : <ArrowDownwardIcon className={cl('Icon', { down: true })} />
+            }
             <span className={cl('Text', { up: paramDifference > 0, down: paramDifference < 0 })}>
-                {paramDifference.toFixed(3)}
+                {parseFloat(paramDifference.toFixed(2))}
             </span>
         </div>
     ) : null;

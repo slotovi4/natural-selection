@@ -4,13 +4,17 @@ import { randomIntFromRange } from '../../helpers';
 export class Posterity extends Creature {
     private readonly canMutate: boolean;
 
-    public constructor({ canMutate, ...props }: IProps) {
+    public constructor({ canMutate, parentVelocity, parentVisibilityRadius, parentEnergyIntensity, ...props }: IProps) {
         super(props);
 
+        this.velocity *= parentVelocity;
+        this.visibilityRadius = parentVisibilityRadius * this.visibilityAreaSize;
+        this.energyIntensity = parentEnergyIntensity * this.energyIntensityScale;
         this.canMutate = canMutate && this.checkCanMutate();
 
         if (this.canMutate) {
             this.mutateVelocity();
+            // this.mutateVisibilityRadius();
         }
 
         // dependence variables
@@ -27,9 +31,17 @@ export class Posterity extends Creature {
 
         this.velocity = newValue;
         this.fillStyle = color;
-        this.energyIntensity = this.energyIntensity * (oldVelocity / this.velocity); // Math.round((oldVelocity / this.velocity) * 100) / 100;
-        this.isMutated = true;
+        this.energyIntensity *= (oldVelocity / this.velocity);
     }
+
+    // private mutateVisibilityRadius() {
+    //     const oldVisibility = this.visibilityRadius;
+    //     const { newValue, color } = this.mutateParam(oldVisibility);
+        
+    //     this.visibilityRadius = newValue;
+    //     // this.fillStyle = color;
+    //     this.energyIntensity *= (oldVisibility / this.visibilityRadius);
+    // }
 
     private mutateParam(defaultValue: number, includeSelectionSpeed?: boolean) {
         const selectionSpeed = includeSelectionSpeed ? this.selectionSpeed : 1;
@@ -40,6 +52,8 @@ export class Posterity extends Creature {
 
         const newValue = val || defaultValue; // IF 0 -> defaultValue
         const color = this.getColorRelativeToParameter(newValue, max);
+
+        this.isMutated = true;
 
         return { newValue, color };
     }
@@ -53,4 +67,7 @@ export class Posterity extends Creature {
 
 interface IProps extends ICreatureProps {
     canMutate: boolean;
+    parentVelocity: number;
+    parentVisibilityRadius: number;
+    parentEnergyIntensity: number;
 }
