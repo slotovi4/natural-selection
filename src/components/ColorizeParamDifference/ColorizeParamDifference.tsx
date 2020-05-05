@@ -7,7 +7,7 @@ import './ColorizeParamDifference.scss';
 const ColorizeParamDifference = ({ paramDifference }: IProps) => {
     const cl = cn('ColorizeParamDifference');
 
-    return paramDifference ? (
+    return paramDifference && parseFloat(paramDifference.toFixed(2)) ? (
         <div className={cl()}>
             {paramDifference > 0
                 ? <ArrowUpwardIcon className={cl('Icon', { up: true })} />

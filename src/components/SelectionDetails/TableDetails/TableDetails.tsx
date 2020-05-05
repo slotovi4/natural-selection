@@ -7,7 +7,7 @@ const TableDetails = ({ selection }: IProps) => {
     const headers: ITableHeader[] = [
         { title: 'День' },
         { title: 'Средняя скорость' },
-        { title: 'Средний радиус чувствительности' },
+        { title: 'Средняя чувствительность' },
         { title: 'Выжило' },
         { title: 'Дало потомство' },
         { title: 'Погибло' },
@@ -24,7 +24,7 @@ const TableDetails = ({ selection }: IProps) => {
             value: {
                 day: `${i + 1}`,
                 velocity: parseFloat(averageVelocity.toFixed(2)),
-                visibilityRadius: averageVisibilityRadius,
+                visibilityRadius: parseFloat(averageVisibilityRadius.toFixed(2)),
                 survivedCount,
                 offspringCount,
                 dieCount

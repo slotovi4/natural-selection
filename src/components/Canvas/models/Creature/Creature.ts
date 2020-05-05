@@ -21,12 +21,13 @@ export class Creature {
     protected dX: number;
     protected dY: number;
     protected energy: number;
+    protected visibilityRadius: number;
 
     protected readonly mutationChance: number;
     protected readonly selectionSpeed: number;
 
-    private readonly visibilityRadius: number;
     private readonly wasteEnergyVal: number;
+    private readonly visibilityAreaSize: number;
     private readonly exitAreaPoints: IPoint[];
     private readonly area: IArea;
     private readonly ctx: CanvasRenderingContext2D;
@@ -43,7 +44,8 @@ export class Creature {
         this.mutationChance = mutationChance;
         this.radius = creatureParams.radius;
         this.velocity = creatureParams.velocity * selectionSpeed;
-        this.visibilityRadius = creatureParams.visibilityRadius;
+        this.visibilityAreaSize = creatureParams.visibilityAreaSize;
+        this.visibilityRadius = creatureParams.visibilityRadius * this.visibilityAreaSize;
         this.isMutated = false;
 
         this.grabbedFoodCount = 0;
@@ -147,7 +149,7 @@ export class Creature {
     public getCreatureParams() {
         return {
             velocity: this.velocity / this.selectionSpeed,
-            visibilityRadius: this.visibilityRadius
+            visibilityRadius: parseFloat((this.visibilityRadius / this.visibilityAreaSize).toFixed(1))
         };
     }
 
@@ -351,7 +353,9 @@ export class Creature {
     }
 
     private getWasteEnergyPerMove() {
-        return Math.round((this.getVelocityFromD() / this.wasteEnergyVal) * 100) / 100;
+        const velocity = this.getVelocityFromD();
+        const visibility = this.visibilityRadius / this.visibilityAreaSize;
+        return Math.round((((velocity + visibility) / 2) / this.wasteEnergyVal) * 100) / 100;
     }
 
     private getVelocityFromD() {

@@ -21,6 +21,7 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
     const dieCreaturesCount: number[] = [];
     const offspringCreaturesCount: number[] = [];
     const averageSpeedArr: number[] = [];
+    const averageVisibilityArr: number[] = [];
 
     for (let i = 0; i < length; i++) {
         const dayData = lastDaysArr[i];
@@ -31,6 +32,7 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
         dieCreaturesCount.push(dayData.dieCount);
         offspringCreaturesCount.push(dayData.offspringCount);
         averageSpeedArr.push(daySurvivedCreatures.reduce((a, b) => a + b.velocity, 0) / daySurvivedCreatures.length);
+        averageVisibilityArr.push(daySurvivedCreatures.reduce((a, b) => a + b.visibilityRadius, 0) / daySurvivedCreatures.length);
     }
 
     const renderRow = (title: string, value: number, paramDifference?: number) => (
@@ -43,8 +45,9 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
 
     return (
         <Card className={cl()}>
-            <span className={cl('Title')}>Показатели существ по итогу последних дней естественного отбора</span>
+            <span className={cl('Title')}>Показатели существ по итогу последних дней естественных отборов</span>
             {renderRow('Средняя скорость: ', getParamAverageValue(averageSpeedArr), getParamChangeDifference(averageSpeedArr))}
+            {renderRow('Средняя чувствительность: ', getParamAverageValue(averageVisibilityArr), getParamChangeDifference(averageVisibilityArr))}
             {renderRow('Выжило: ', getParamAverageValue(survivedCreaturesCount), getParamChangeDifference(survivedCreaturesCount))}
             {renderRow('Погибло:', getParamAverageValue(dieCreaturesCount), getParamChangeDifference(dieCreaturesCount))}
             {renderRow('Дало потомство:', getParamAverageValue(offspringCreaturesCount), getParamChangeDifference(offspringCreaturesCount))}

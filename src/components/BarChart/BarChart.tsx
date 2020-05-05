@@ -54,7 +54,7 @@ const BarChart = ({ survivedCreatures }: IProps) => {
         }
 
         if (name === 'visibilityRadius') {
-            return 'visibility radius';
+            return 'visibility';
         }
 
         return name;

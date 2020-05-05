@@ -11,6 +11,7 @@ export class Posterity extends Creature {
 
         if (this.canMutate) {
             this.mutateVelocity();
+            this.mutateVisibilityRadius();
         }
 
         // dependence variables
@@ -27,8 +28,16 @@ export class Posterity extends Creature {
 
         this.velocity = newValue;
         this.fillStyle = color;
-        this.energyIntensity = this.energyIntensity * (oldVelocity / this.velocity); // Math.round((oldVelocity / this.velocity) * 100) / 100;
-        this.isMutated = true;
+        this.energyIntensity *= (oldVelocity / this.velocity);
+    }
+
+    private mutateVisibilityRadius() {
+        const oldVisibility = this.visibilityRadius;
+        const { newValue, color } = this.mutateParam(oldVisibility);
+        
+        this.visibilityRadius = newValue;
+        // this.fillStyle = color;
+        this.energyIntensity *= (oldVisibility / this.visibilityRadius);
     }
 
     private mutateParam(defaultValue: number, includeSelectionSpeed?: boolean) {
@@ -40,6 +49,8 @@ export class Posterity extends Creature {
 
         const newValue = val || defaultValue; // IF 0 -> defaultValue
         const color = this.getColorRelativeToParameter(newValue, max);
+
+        this.isMutated = true;
 
         return { newValue, color };
     }
