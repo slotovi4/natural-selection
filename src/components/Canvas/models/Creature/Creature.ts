@@ -25,9 +25,9 @@ export class Creature {
 
     protected readonly mutationChance: number;
     protected readonly selectionSpeed: number;
+    protected readonly visibilityAreaSize: number;
 
     private readonly wasteEnergyVal: number;
-    private readonly visibilityAreaSize: number;
     private readonly exitAreaPoints: IPoint[];
     private readonly area: IArea;
     private readonly ctx: CanvasRenderingContext2D;

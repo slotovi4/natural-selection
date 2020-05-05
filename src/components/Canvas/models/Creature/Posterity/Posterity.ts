@@ -4,14 +4,16 @@ import { randomIntFromRange } from '../../helpers';
 export class Posterity extends Creature {
     private readonly canMutate: boolean;
 
-    public constructor({ canMutate, ...props }: IProps) {
+    public constructor({ canMutate, parentVelocity, parentVisibilityRadius, ...props }: IProps) {
         super(props);
 
+        this.velocity *= parentVelocity;
+        this.visibilityRadius = parentVisibilityRadius * this.visibilityAreaSize;
         this.canMutate = canMutate && this.checkCanMutate();
 
         if (this.canMutate) {
             this.mutateVelocity();
-            this.mutateVisibilityRadius();
+            // this.mutateVisibilityRadius();
         }
 
         // dependence variables
@@ -64,4 +66,6 @@ export class Posterity extends Creature {
 
 interface IProps extends ICreatureProps {
     canMutate: boolean;
+    parentVelocity: number;
+    parentVisibilityRadius: number;
 }

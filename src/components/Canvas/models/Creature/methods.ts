@@ -19,7 +19,7 @@ const createCreature = (props: ICreatureSettingsProps) => {
 };
 
 const createPosterity = (props: ICreatePosterityProps) => {
-    return new Posterity({ ...getCreatureData(props), canMutate: props.canMutate });
+    return new Posterity({ ...getCreatureData(props), ...props });
 };
 
 const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed, mutationChance, canMutate }: ICreateCreatureArrayProps) => {
@@ -66,15 +66,22 @@ export const updateCreature = (creatureArray: Creature[], foodArray: IFood[], da
 
 export const checkEndDay = (creatureArray: Creature[]) => creatureArray.every(creature => creature.isDie || creature.returnedToHome);
 
-export const getNextDayCreatureArray = ({ endDayCreatureArray, ctx, area, selectionSpeed, mutationChance, canMutate }: IGetNextDayCreature) => {
+export const getNextDayCreatureArray = ({ endDayCreatureArray, ...props }: IGetNextDayCreature) => {
     const nextDayCreatureArray = [];
     const posterityCreaturesArray = [];
 
     const survivedCreatures = getSurvivedCreatures(endDayCreatureArray);
-    const offspringCreaturesCount = getOffspringCreatures(endDayCreatureArray).length;
+    const offspringCreatures = getOffspringCreatures(endDayCreatureArray);
+    const offspringCreaturesCount = offspringCreatures.length;
 
     for (let i = 0; i < offspringCreaturesCount; i++) {
-        posterityCreaturesArray.push(createPosterity({ ctx, area, selectionSpeed, mutationChance, canMutate }));
+        const { visibilityRadius, velocity } = offspringCreatures[i].getCreatureParams();
+
+        posterityCreaturesArray.push(createPosterity({
+            ...props,
+            parentVelocity: velocity,
+            parentVisibilityRadius: visibilityRadius
+        }));
     }
 
     nextDayCreatureArray.push(...survivedCreatures, ...posterityCreaturesArray);
@@ -108,6 +115,8 @@ interface ICreatureSettingsProps extends IDefaultProps {
 
 interface ICreatePosterityProps extends ICreatureSettingsProps {
     canMutate: boolean;
+    parentVelocity: number;
+    parentVisibilityRadius: number;
 }
 
 interface ICreateCreatureArrayProps extends ICreatureSettingsProps {
