@@ -14,20 +14,24 @@ const ExpansionPanel = ({
     title,
     secondaryText,
     disabled,
-    contentClassName
+    contentClassName,
+    secondaryChild,
+    expand,
+    gray,
 }: IProps) => {
     const cl = cn('ExpansionPanel');
 
     return (
-        <MaterialExpansionPanel disabled={disabled}>
+        <MaterialExpansionPanel className={cl({ gray })} disabled={disabled}>
             <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="controlSelection"
+                aria-label={expand ? 'Expand' : undefined}
                 id={id}
             >
                 <div className={cl('Expansion-Header')}>
                     <span className={cl('Title')}>{title}</span>
-                    <span className={cl('Text', { secondary: true })}>{secondaryText}</span>
+                    {secondaryChild ? secondaryChild : <span className={cl('Text', { secondary: true })}>{secondaryText}</span>}
                 </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails className={contentClassName}>
@@ -44,6 +48,9 @@ interface IProps {
     title: string;
     id: string;
     disabled?: boolean;
+    secondaryChild?: React.ReactNode;
     secondaryText?: string;
     contentClassName?: string;
+    expand?: boolean;
+    gray?: boolean;
 }

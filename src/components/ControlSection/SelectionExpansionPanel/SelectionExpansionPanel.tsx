@@ -54,12 +54,12 @@ const SelectionExpansionPanel = ({
     return (
         <ExpansionPanel
             id='selection'
-            title='Selection settings'
+            title='Отбор'
             secondaryText='Глобальные настройки естественного отбора'
         >
             <div className={cl('Panel-Container')}>
                 <div className='w-100'>
-                    <span className={cl('Label')}>Selection days count</span>
+                    <span className={cl('Label')}>Количество дней отбора</span>
                     <Slider
                         value={settings.selectionDays}
                         onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, selectionDays: value })}
@@ -76,7 +76,7 @@ const SelectionExpansionPanel = ({
                 </div>
 
                 <div className='w-100'>
-                    <span className={`${cl('Label')} pr-3`}>Selection speed</span>
+                    <span className={`${cl('Label')} pr-3`}>Скорость отбора</span>
                     {renderRadios()}
                 </div>
             </div>

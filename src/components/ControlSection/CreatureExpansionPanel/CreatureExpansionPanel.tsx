@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slider, FormControlLabel, Switch, Mark } from '@material-ui/core';
+import { Slider, Switch, Mark } from '@material-ui/core';
 import { ExpansionPanel } from '../../index';
 import { checkResetExpansionSettings } from '../helpers';
 import { cn } from '@bem-react/classname';
@@ -61,62 +61,64 @@ const CreatureExpansionPanel = ({
     return (
         <ExpansionPanel
             id='creature'
-            title='Creature settings'
+            title='Существо'
             secondaryText='Настройки существ обитающих в среде'
+            contentClassName='p-0'
         >
             <div className={cl('Panel-Container')}>
-                <div className='w-100'>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={settings.canMutate}
-                                onChange={onChangeCanMutate}
-                                name="mutationSwitch"
-                                color="primary"
-                                disabled={disabled}
-                            />
-                        }
-                        label={(
-                            <div>
-                                <span className={cl('Label')}>Mutation</span>
-                                <span className={cl('Label', { secondary: true })}>Возможна ли мутация существа</span>
-                            </div>
-                        )}
-                    />
-                </div>
+                <ExpansionPanel
+                    id='mutation'
+                    title='Мутация существа'
+                    disabled={disabled}
+                    expand
+                    gray
+                    secondaryChild={(
+                        <Switch
+                            checked={settings.canMutate}
+                            onChange={onChangeCanMutate}
+                            name="mutationSwitch"
+                            color="primary"
+                            disabled={disabled}
+                            onClick={(event) => event.stopPropagation()}
+                            onFocus={(event) => event.stopPropagation()}
+                        />
+                    )}
+                >
+                    <div className='w-100'>
+                        <span className={cl('Label')}>Шанс мутации</span>
+                        <Slider
+                            value={settings.mutationChance}
+                            onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, mutationChance: value })}
+                            onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureMutationChance(value)}
+                            aria-labelledby="discrete-slider"
+                            valueLabelDisplay="auto"
+                            className={cl('Slider')}
+                            step={mutationChanceSliderStep}
+                            marks={mutationChanceMarks}
+                            min={minMutationChance}
+                            max={maxMutationChance}
+                            disabled={!settings.canMutate || disabled}
+                        />
+                    </div>
+                </ExpansionPanel>
 
-                <div className='w-100'>
-                    <span className={cl('Label')}>Creature count</span>
-                    <Slider
-                        value={settings.creatureCount}
-                        onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, creatureCount: value })}
-                        onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureCount(value * creatureSliderStep)}
-                        aria-labelledby="discrete-slider"
-                        valueLabelDisplay="auto"
-                        className={cl('Slider')}
-                        step={creatureSliderStep}
-                        marks={creatureCountMarks}
-                        min={1}
-                        max={10}
-                        disabled={disabled}
-                    />
-                </div>
-
-                <div className='w-100'>
-                    <span className={cl('Label')}>Mutation chance</span>
-                    <Slider
-                        value={settings.mutationChance}
-                        onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, mutationChance: value })}
-                        onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureMutationChance(value)}
-                        aria-labelledby="discrete-slider"
-                        valueLabelDisplay="auto"
-                        className={cl('Slider')}
-                        step={mutationChanceSliderStep}
-                        marks={mutationChanceMarks}
-                        min={minMutationChance}
-                        max={maxMutationChance}
-                        disabled={disabled || !settings.canMutate}
-                    />
+                <div className={cl('Content')}>
+                    <div className='w-100'>
+                        <span className={cl('Label')}>Начальное количество существ</span>
+                        <Slider
+                            value={settings.creatureCount}
+                            onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, creatureCount: value })}
+                            onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureCount(value * creatureSliderStep)}
+                            aria-labelledby="discrete-slider"
+                            valueLabelDisplay="auto"
+                            className={cl('Slider')}
+                            step={creatureSliderStep}
+                            marks={creatureCountMarks}
+                            min={1}
+                            max={10}
+                            disabled={disabled}
+                        />
+                    </div>
                 </div>
             </div>
         </ExpansionPanel>
