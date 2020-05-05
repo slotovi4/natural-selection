@@ -46,13 +46,13 @@ const LineChart = ({ selectionResultData }: IProps) => {
 
                 if (combineCharts) {
                     combineDataSets.push({
-                        label: `Survived count (selection: ${i})`,
+                        label: `Survived count (selection: ${i + 1})`,
                         data: survived,
                         ...dataSetsParams
                     });
 
                     combineDataSets.push({
-                        label: `Offspring count (selection: ${i})`,
+                        label: `Offspring count (selection: ${i + 1})`,
                         data: offspring,
                         ...dataSetsParams
                     });

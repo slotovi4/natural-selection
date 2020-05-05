@@ -64,7 +64,7 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
             >
                 {selectionResultData.map((selection, i) => (
                     <ExpansionPanel
-                        title={`отбор №${i}`}
+                        title={`отбор №${i + 1}`}
                         secondaryText={`${selection.length} дней`}
                         key={`expansion_selection_${i}`}
                         id={`expansion_selection_${i}`}
