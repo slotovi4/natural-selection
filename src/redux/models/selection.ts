@@ -85,4 +85,5 @@ export interface ISelectionResultData {
 interface ICreatureParams {
     velocity: number;
     visibilityRadius: number;
+    energyIntensity: number;
 }

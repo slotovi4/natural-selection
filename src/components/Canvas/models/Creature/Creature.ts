@@ -17,6 +17,7 @@ export class Creature {
     protected fillStyle: string;
     protected velocity: number;
     protected energyIntensity: number;
+    protected energyIntensityScale: number;
     protected isMutated: boolean;
     protected dX: number;
     protected dY: number;
@@ -40,16 +41,17 @@ export class Creature {
         this.ctx = ctx;
         this.area = area;
 
+        this.energyIntensityScale = 2;
         this.selectionSpeed = selectionSpeed;
         this.mutationChance = mutationChance;
         this.radius = creatureParams.radius;
         this.velocity = creatureParams.velocity * selectionSpeed;
+        this.energyIntensity = creatureParams.energyIntensity * this.energyIntensityScale;
         this.visibilityAreaSize = creatureParams.visibilityAreaSize;
         this.visibilityRadius = creatureParams.visibilityRadius * this.visibilityAreaSize;
         this.isMutated = false;
 
         this.grabbedFoodCount = 0;
-        this.energyIntensity = 2;
         this.returnedToHome = false;
         this.isDie = false;
         this.noFoodForPosterity = false;
@@ -146,15 +148,16 @@ export class Creature {
         return this;
     }
 
-    public getCreatureParams() {
+    public getCreatureParams(): ICreatureParams {
         return {
             velocity: this.velocity / this.selectionSpeed,
-            visibilityRadius: parseFloat((this.visibilityRadius / this.visibilityAreaSize).toFixed(1))
+            visibilityRadius: parseFloat((this.visibilityRadius / this.visibilityAreaSize).toFixed(1)),
+            energyIntensity: parseFloat((this.energyIntensity / 2).toFixed(1))
         };
     }
 
     protected replenishEnergy() {
-        return this.energy = 100 * this.energyIntensity;
+        return 100 * this.energyIntensity;
     }
 
     protected randomDirection() {
@@ -354,8 +357,8 @@ export class Creature {
 
     private getWasteEnergyPerMove() {
         const velocity = this.getVelocityFromD();
-        const visibility = this.visibilityRadius / this.visibilityAreaSize;
-        return Math.round((((velocity + visibility) / 2) / this.wasteEnergyVal) * 100) / 100;
+        const visibility = Math.pow(this.visibilityRadius / this.visibilityAreaSize, 3);
+        return Math.round(((velocity / this.wasteEnergyVal) + visibility) * 100) / 100;
     }
 
     private getVelocityFromD() {
@@ -382,4 +385,10 @@ export interface IProps {
     area: IArea;
     selectionSpeed: number;
     mutationChance: number;
+}
+
+export interface ICreatureParams {
+    velocity: number;
+    visibilityRadius: number;
+    energyIntensity: number;
 }

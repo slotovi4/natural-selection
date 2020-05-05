@@ -4,11 +4,12 @@ import { randomIntFromRange } from '../../helpers';
 export class Posterity extends Creature {
     private readonly canMutate: boolean;
 
-    public constructor({ canMutate, parentVelocity, parentVisibilityRadius, ...props }: IProps) {
+    public constructor({ canMutate, parentVelocity, parentVisibilityRadius, parentEnergyIntensity, ...props }: IProps) {
         super(props);
 
         this.velocity *= parentVelocity;
         this.visibilityRadius = parentVisibilityRadius * this.visibilityAreaSize;
+        this.energyIntensity = parentEnergyIntensity * this.energyIntensityScale;
         this.canMutate = canMutate && this.checkCanMutate();
 
         if (this.canMutate) {
@@ -33,14 +34,14 @@ export class Posterity extends Creature {
         this.energyIntensity *= (oldVelocity / this.velocity);
     }
 
-    private mutateVisibilityRadius() {
-        const oldVisibility = this.visibilityRadius;
-        const { newValue, color } = this.mutateParam(oldVisibility);
+    // private mutateVisibilityRadius() {
+    //     const oldVisibility = this.visibilityRadius;
+    //     const { newValue, color } = this.mutateParam(oldVisibility);
         
-        this.visibilityRadius = newValue;
-        // this.fillStyle = color;
-        this.energyIntensity *= (oldVisibility / this.visibilityRadius);
-    }
+    //     this.visibilityRadius = newValue;
+    //     // this.fillStyle = color;
+    //     this.energyIntensity *= (oldVisibility / this.visibilityRadius);
+    // }
 
     private mutateParam(defaultValue: number, includeSelectionSpeed?: boolean) {
         const selectionSpeed = includeSelectionSpeed ? this.selectionSpeed : 1;
@@ -68,4 +69,5 @@ interface IProps extends ICreatureProps {
     canMutate: boolean;
     parentVelocity: number;
     parentVisibilityRadius: number;
+    parentEnergyIntensity: number;
 }
