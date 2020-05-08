@@ -15,7 +15,7 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
 
     return (
         <Card className={cl()}>
-            <span className={cl('Title')}>Показатели существ по итогу последних дней естественных отборов</span>
+            <span className={cl('Title')}>Средние показатели существ по итогу последних дней естественных отборов</span>
             <DetailsRows lastSelectionDaysArr={selectionResultData.map(selection => selection[selection.length - 1])} />
 
             <Button

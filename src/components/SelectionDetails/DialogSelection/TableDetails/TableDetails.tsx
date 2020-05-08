@@ -14,11 +14,10 @@ const TableDetails = ({ selection }: IProps) => {
     ];
 
     const rows: ITableRow[] = selection.map((selectionResult, i) => {
-        const averageVelocity = getParamAverageValue(selectionResult.survivedCreatures.map(e => e.velocity));
-        const averageVisibilityRadius = getParamAverageValue(selectionResult.survivedCreatures.map(e => e.visibilityRadius));
-        const { survivedCount } = selectionResult;
-        const { offspringCount } = selectionResult;
-        const { dieCount } = selectionResult;
+        const { survivedCreatures, survivedCount, offspringCount, dieCount } = selectionResult;
+
+        const averageVelocity = getParamAverageValue(survivedCreatures.map(e => e.velocity));
+        const averageVisibilityRadius = getParamAverageValue(survivedCreatures.map(e => e.visibilityRadius));
 
         return ({
             value: {
