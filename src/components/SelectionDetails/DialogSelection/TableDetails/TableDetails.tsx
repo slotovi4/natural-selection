@@ -1,7 +1,7 @@
 import React from 'react';
-import { Table, ITableHeader, ITableRow } from '../../Table';
-import { ISelectionResultData } from '../SelectionDetails';
-import { getParamAverageValue } from '../../helpers';
+import { Table, ITableHeader, ITableRow } from '../../../Table';
+import { ISelectionResultData } from '../../SelectionDetails';
+import { getParamAverageValue } from '../../../helpers';
 
 const TableDetails = ({ selection }: IProps) => {
     const headers: ITableHeader[] = [

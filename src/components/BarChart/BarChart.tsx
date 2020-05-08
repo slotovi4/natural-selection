@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonGroup } from '@material-ui/core';
 import { ChartOptions } from 'chart.js';
 import { Bar, ChartComponentProps } from 'react-chartjs-2';
-import {getParamAverageValue} from '../helpers';
+import { getParamAverageValue, fixValue } from '../helpers';
 
 const BarChart = ({ selectionResultData }: IProps) => {
     const [dataSets, setDataSets] = React.useState<ICreatureResult[] | null>(null);
@@ -18,11 +18,11 @@ const BarChart = ({ selectionResultData }: IProps) => {
             const averageEnergyIntensityArr: number[] = [];
 
             for (let i = 0; i < length; i++) {
-                const arr = selectionResultData[i];
-                const arrLength = selectionResultData[i].length;
+                const selectionCreatures = selectionResultData[i];
+                const arrLength = selectionCreatures.length;
 
                 for (let j = 0; j < arrLength; j++) {
-                    const { survivedCreatures } = arr[j];
+                    const { survivedCreatures } = selectionCreatures[j];
 
                     averageVelocityArr.push(getParamAverageValue(survivedCreatures.map(e => e.velocity)));
                     averageVisibilityRadiusArr.push(getParamAverageValue(survivedCreatures.map(e => e.visibilityRadius)));
@@ -46,16 +46,14 @@ const BarChart = ({ selectionResultData }: IProps) => {
         for (let j = 0; j < length; j++) {
             const paramName = data.valuesNames[j];
             const paramsArr = data.valuesArr[j];
-            const uniqueParamsArr = paramsArr.filter((e, i) => paramsArr.indexOf(e) === i);
-            const creatureData: number[] = [];
+            const creatureData: number[] = paramsArr.map(param => fixValue(param));
 
-            for (let i = 0; i < uniqueParamsArr.length; i++) {
-                const paramValue = parseFloat(uniqueParamsArr[i].toFixed(2));
-
-                creatureData.push(paramValue);
-            }
-
-            creatureDataArr = [...creatureDataArr, { data: creatureData, name: checkValueName(paramName) }];
+            creatureDataArr = [
+                ...creatureDataArr, 
+                { 
+                    data: creatureData, 
+                    name: checkValueName(paramName) 
+                }];
         }
 
         return creatureDataArr;

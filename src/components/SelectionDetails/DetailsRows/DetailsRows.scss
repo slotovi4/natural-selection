@@ -1,0 +1,9 @@
+.DetailsRows {
+    &-Row {
+        display: flex;
+        font-size: 14px;
+        padding: 4px 0;
+        user-select: none;
+        justify-content: space-between;
+    }
+}

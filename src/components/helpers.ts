@@ -7,3 +7,5 @@ export const getParamChangeDifference = (averageArr: number[]) => {
 export const getParamAverageValue = (averageArr: number[]) => {
     return averageArr.reduce((a, b) => a + b, 0) / averageArr.length;
 };
+
+export const fixValue = (value: number) => parseFloat(value.toFixed(2)); 
