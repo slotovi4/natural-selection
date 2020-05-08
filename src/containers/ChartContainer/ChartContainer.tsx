@@ -7,11 +7,11 @@ const ChartContainer = ({ selectionResultData }: IProps) => {
     return (
         <div className='d-flex'>
             <section className='w-70'>
-                <div className='mt-5'>
+                <div className='mt-3'>
                     <LineChart selectionResultData={selectionResultData} />
                 </div>
 
-                <div className='mt-5'>
+                <div className='mt-3'>
                     <BarChart selectionResultData={selectionResultData} />
                 </div>
             </section>

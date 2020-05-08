@@ -154,7 +154,7 @@ const LineChart = ({ selectionResultData }: IProps) => {
                                     color="primary"
                                 />
                             }
-                            label="Combine survive charts"
+                            label="Объединить графики"
                         />
                     ) : null}
 

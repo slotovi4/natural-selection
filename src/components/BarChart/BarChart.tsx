@@ -7,10 +7,11 @@ import { getParamAverageValue, fixValue } from '../helpers';
 const BarChart = ({ selectionResultData }: IProps) => {
     const [dataSets, setDataSets] = React.useState<ICreatureResult[] | null>(null);
     const [selectedDataSet, setSelectedDataSet] = React.useState(0);
+    const lastSelection = selectionResultData[selectionResultData.length - 1] || [];
     const dataSet = dataSets ? dataSets[selectedDataSet] : null;
 
     React.useEffect(() => {
-        const { length } = selectionResultData;
+        const { length } = lastSelection;
 
         if (length) {
             const averageVelocityArr: number[] = [];
@@ -18,16 +19,11 @@ const BarChart = ({ selectionResultData }: IProps) => {
             const averageEnergyIntensityArr: number[] = [];
 
             for (let i = 0; i < length; i++) {
-                const selectionCreatures = selectionResultData[i];
-                const arrLength = selectionCreatures.length;
+                const { survivedCreatures } = lastSelection[i];
 
-                for (let j = 0; j < arrLength; j++) {
-                    const { survivedCreatures } = selectionCreatures[j];
-
-                    averageVelocityArr.push(getParamAverageValue(survivedCreatures.map(e => e.velocity)));
-                    averageVisibilityRadiusArr.push(getParamAverageValue(survivedCreatures.map(e => e.visibilityRadius)));
-                    averageEnergyIntensityArr.push(getParamAverageValue(survivedCreatures.map(e => e.energyIntensity)));
-                }
+                averageVelocityArr.push(getParamAverageValue(survivedCreatures.map(e => e.velocity)));
+                averageVisibilityRadiusArr.push(getParamAverageValue(survivedCreatures.map(e => e.visibilityRadius)));
+                averageEnergyIntensityArr.push(getParamAverageValue(survivedCreatures.map(e => e.energyIntensity)));
             }
 
             const data = createDataSets({
@@ -79,7 +75,7 @@ const BarChart = ({ selectionResultData }: IProps) => {
         labels: [...dataSet.data.map((e, i) => `день: ${i + 1}`)],
         datasets: [{
             label: `Среднее значение параметра - ${dataSet.name}`,
-            backgroundColor: 'rgba(63, 81, 181, 0.4)',
+            backgroundColor: [...dataSet.data.map(val => `rgba(63, 81, 181, ${0.3 * val})`)],
             borderColor: '#3f51b5',
             borderWidth: 1,
             hoverBackgroundColor: 'rgba(63, 81, 181, 0.6)',
