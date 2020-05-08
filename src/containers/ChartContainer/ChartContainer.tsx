@@ -6,7 +6,7 @@ import { IRootState } from '../../redux/store';
 const ChartContainer = ({ selectionResultData }: IProps) => {
     return (
         <div className='d-flex'>
-            <section className='w-70'>
+            <section className='w-70 pr-2'>
                 <div className='mt-3'>
                     <LineChart selectionResultData={selectionResultData} />
                 </div>

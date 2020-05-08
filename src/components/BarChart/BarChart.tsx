@@ -74,7 +74,7 @@ const BarChart = ({ selectionResultData }: IProps) => {
     const barData: ChartComponentProps['data'] | null = dataSet ? {
         labels: [...dataSet.data.map((e, i) => `день: ${i + 1}`)],
         datasets: [{
-            label: `Среднее значение параметра - ${dataSet.name}`,
+            label: `Средняя ${dataSet.name}`,
             backgroundColor: [...dataSet.data.map(val => `rgba(63, 81, 181, ${val / Math.max(...dataSet.data)})`)],
             borderColor: '#3f51b5',
             borderWidth: 1,
@@ -86,6 +86,9 @@ const BarChart = ({ selectionResultData }: IProps) => {
 
     const options: ChartOptions = {
         maintainAspectRatio: false,
+        legend: {
+            display: false
+        },
         scales: {
             yAxes: [{
                 ticks: {
@@ -99,7 +102,7 @@ const BarChart = ({ selectionResultData }: IProps) => {
     return (
         <section className='w-100'>
             {dataSets ? (
-                <ButtonGroup size="small" color="primary">
+                <ButtonGroup className='mb-2' size="small" color="primary">
                     {dataSets.map(({ name }, i) => (
                         <Button
                             color={selectedDataSet === i ? 'primary' : 'default'}
