@@ -2,19 +2,29 @@ import { Creature, IProps as ICreatureProps } from '../Creature';
 import { randomIntFromRange } from '../../helpers';
 
 export class Posterity extends Creature {
-    private readonly canMutate: boolean;
-
-    public constructor({ canMutate, parentVelocity, parentVisibilityRadius, parentEnergyIntensity, ...props }: IProps) {
+    public constructor({
+        canMutate,
+        parentVelocity,
+        parentVisibilityRadius,
+        parentEnergyIntensity,
+        canMutateVelocity,
+        canMutateVisibility,
+        ...props
+    }: IProps) {
         super(props);
 
         this.velocity *= parentVelocity;
         this.visibilityRadius = parentVisibilityRadius * this.visibilityAreaSize;
         this.energyIntensity = parentEnergyIntensity * this.energyIntensityScale;
-        this.canMutate = canMutate && this.checkCanMutate();
 
-        if (this.canMutate) {
-            this.mutateVelocity();
-            // this.mutateVisibilityRadius();
+        if (canMutate && this.checkCanMutate()) {
+            if (canMutateVelocity) {
+                this.mutateVelocity();
+            }
+
+            if (canMutateVisibility) {
+                this.mutateVisibilityRadius();
+            }
         }
 
         // dependence variables
@@ -34,14 +44,14 @@ export class Posterity extends Creature {
         this.energyIntensity *= (oldVelocity / this.velocity);
     }
 
-    // private mutateVisibilityRadius() {
-    //     const oldVisibility = this.visibilityRadius;
-    //     const { newValue, color } = this.mutateParam(oldVisibility);
-        
-    //     this.visibilityRadius = newValue;
-    //     // this.fillStyle = color;
-    //     this.energyIntensity *= (oldVisibility / this.visibilityRadius);
-    // }
+    private mutateVisibilityRadius() {
+        const oldVisibility = this.visibilityRadius;
+        const { newValue } = this.mutateParam(oldVisibility);
+
+        this.visibilityRadius = newValue;
+        // this.fillStyle = color;
+        this.energyIntensity *= (oldVisibility / this.visibilityRadius);
+    }
 
     private mutateParam(defaultValue: number, includeSelectionSpeed?: boolean) {
         const selectionSpeed = includeSelectionSpeed ? this.selectionSpeed : 1;
@@ -67,6 +77,8 @@ export class Posterity extends Creature {
 
 interface IProps extends ICreatureProps {
     canMutate: boolean;
+    canMutateVelocity: boolean;
+    canMutateVisibility: boolean;
     parentVelocity: number;
     parentVisibilityRadius: number;
     parentEnergyIntensity: number;

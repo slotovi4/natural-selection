@@ -172,6 +172,8 @@ export interface ICreatureControlParams {
     creatureCount: number;
     mutationChance: number;
     canMutate: boolean;
+    canMutateVelocity: boolean;
+    canMutateVisibility: boolean;
 }
 
 export interface ISelectionControlParams {

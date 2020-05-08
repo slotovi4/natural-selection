@@ -115,10 +115,11 @@ interface ICreatureSettingsProps extends IDefaultProps {
 }
 
 interface ICreatePosterityProps extends ICreatureSettingsProps {
-    canMutate: boolean;
     parentVelocity: number;
     parentVisibilityRadius: number;
     parentEnergyIntensity: number;
+    canMutateVelocity: boolean;
+    canMutateVisibility: boolean;
 }
 
 interface ICreateCreatureArrayProps extends ICreatureSettingsProps {
@@ -127,7 +128,8 @@ interface ICreateCreatureArrayProps extends ICreatureSettingsProps {
 
 interface IGetNextDayCreature extends ICreatureSettingsProps {
     endDayCreatureArray: Creature[];
-    canMutate: boolean;
+    canMutateVelocity: boolean;
+    canMutateVisibility: boolean;
 }
 
 interface IDefaultProps {

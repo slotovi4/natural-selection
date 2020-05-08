@@ -75,7 +75,7 @@ const BarChart = ({ selectionResultData }: IProps) => {
         labels: [...dataSet.data.map((e, i) => `день: ${i + 1}`)],
         datasets: [{
             label: `Среднее значение параметра - ${dataSet.name}`,
-            backgroundColor: [...dataSet.data.map(val => `rgba(63, 81, 181, ${0.3 * val})`)],
+            backgroundColor: [...dataSet.data.map(val => `rgba(63, 81, 181, ${val / Math.max(...dataSet.data)})`)],
             borderColor: '#3f51b5',
             borderWidth: 1,
             hoverBackgroundColor: 'rgba(63, 81, 181, 0.6)',

@@ -4,6 +4,8 @@ import { createModel } from '@rematch/core';
 const initialState: IState = {
     creatureCount: 5,
     canMutate: true,
+    canMutateVelocity: true,
+    canMutateVisibility: true,
     mutationChance: 1
 };
 
@@ -15,6 +17,12 @@ const creature = createModel({
         },
         setCanMutate(state: IState, canMutate: IState['canMutate']) {
             return { ...state, canMutate };
+        },
+        setCanMutateVelocity(state: IState, canMutateVelocity: IState['canMutateVelocity']) {
+            return { ...state, canMutateVelocity };
+        },
+        setCanMutateVisibility(state: IState, canMutateVisibility: IState['canMutateVisibility']) {
+            return { ...state, canMutateVisibility };
         },
         setMutationChance(state: IState, mutationChance: IState['mutationChance']) {
             return { ...state, mutationChance };
@@ -30,6 +38,12 @@ const creature = createModel({
         setNewCreatureCanMutate(canMutate: IState['canMutate']) {
             this.setCanMutate(canMutate);
         },
+        setNewCreatureCanMutateVelocity(canMutateVelocity: IState['canMutateVelocity']) {
+            this.setCanMutateVelocity(canMutateVelocity);
+        },
+        setNewCreatureCanMutateVisibility(canMutateVisibility: IState['canMutateVisibility']) {
+            this.setCanMutateVisibility(canMutateVisibility);
+        },
         setNewCreatureMutationChance(mutationChance: IState['mutationChance']) {
             this.setMutationChance(mutationChance);
         },
@@ -44,5 +58,7 @@ export default creature;
 export interface IState {
     creatureCount: number;
     canMutate: boolean;
+    canMutateVelocity: boolean;
+    canMutateVisibility: boolean;
     mutationChance: number;
 }
