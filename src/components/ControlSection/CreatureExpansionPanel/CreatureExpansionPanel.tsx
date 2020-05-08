@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slider, Switch, Mark } from '@material-ui/core';
+import { Slider, Switch, Mark, FormControlLabel } from '@material-ui/core';
 import { ExpansionPanel } from '../../index';
 import { checkResetExpansionSettings } from '../helpers';
 import { cn } from '@bem-react/classname';
@@ -10,7 +10,9 @@ const CreatureExpansionPanel = ({
     setCreatureCount,
     disabled,
     setCreatureCanMutate,
-    setCreatureMutationChance
+    setCreatureMutationChance,
+    setCreatureCanMutateVelocity,
+    setCreatureCanMutateVisibility
 }: IProps) => {
     const cl = cn('CreatureExpansionPanel');
 
@@ -58,6 +60,16 @@ const CreatureExpansionPanel = ({
         setCreatureCanMutate(!settings.canMutate);
     };
 
+    const onChangeCanMutateVelocity = () => {
+        setSettings({ ...settings, canMutate: !settings.canMutateVelocity });
+        setCreatureCanMutateVelocity(!settings.canMutateVelocity);
+    };
+
+    const onChangeCanMutateVisibility = () => {
+        setSettings({ ...settings, canMutate: !settings.canMutateVisibility });
+        setCreatureCanMutateVisibility(!settings.canMutateVisibility);
+    };
+
     return (
         <ExpansionPanel
             id='creature'
@@ -66,6 +78,24 @@ const CreatureExpansionPanel = ({
             contentClassName='p-0'
         >
             <div className={cl('Panel-Container')}>
+                <div className={cl('Content')}>
+                    <div className='w-100'>
+                        <span className={cl('Label')}>Начальное количество существ</span>
+                        <Slider
+                            value={settings.creatureCount}
+                            onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, creatureCount: value })}
+                            onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureCount(value * creatureSliderStep)}
+                            aria-labelledby="discrete-slider"
+                            valueLabelDisplay="auto"
+                            className={cl('Slider')}
+                            step={creatureSliderStep}
+                            marks={creatureCountMarks}
+                            min={1}
+                            max={10}
+                            disabled={disabled}
+                        />
+                    </div>
+                </div>
                 <ExpansionPanel
                     id='mutation'
                     title='Мутация существа'
@@ -85,41 +115,52 @@ const CreatureExpansionPanel = ({
                     )}
                 >
                     <div className='w-100'>
-                        <span className={cl('Label')}>Шанс мутации</span>
-                        <Slider
-                            value={settings.mutationChance}
-                            onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, mutationChance: value })}
-                            onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureMutationChance(value)}
-                            aria-labelledby="discrete-slider"
-                            valueLabelDisplay="auto"
-                            className={cl('Slider')}
-                            step={mutationChanceSliderStep}
-                            marks={mutationChanceMarks}
-                            min={minMutationChance}
-                            max={maxMutationChance}
-                            disabled={!settings.canMutate || disabled}
-                        />
+                        <div className='w-100'>
+                            <span className={cl('Label')}>Шанс мутации</span>
+                            <Slider
+                                value={settings.mutationChance}
+                                onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, mutationChance: value })}
+                                onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureMutationChance(value)}
+                                aria-labelledby="discrete-slider"
+                                valueLabelDisplay="auto"
+                                className={cl('Slider')}
+                                step={mutationChanceSliderStep}
+                                marks={mutationChanceMarks}
+                                min={minMutationChance}
+                                max={maxMutationChance}
+                                disabled={!settings.canMutate || disabled}
+                            />
+                        </div>
+                        <div className='w-100'>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={settings.canMutateVelocity}
+                                        onChange={onChangeCanMutateVelocity}
+                                        disabled={!settings.canMutate || disabled}
+                                        name="canMutateVelocity"
+                                        color="primary"
+                                    />
+                                }
+                                label={<span className={cl('Label')}>Мутация скорости</span>}
+                            />
+                        </div>
+                        <div className='w-100'>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={settings.canMutateVisibility}
+                                        onChange={onChangeCanMutateVisibility}
+                                        disabled={!settings.canMutate || disabled}
+                                        name="canMutateVisibility"
+                                        color="primary"
+                                    />
+                                }
+                                label={<span className={cl('Label')}>Мутация чувствительности</span>}
+                            />
+                        </div>
                     </div>
                 </ExpansionPanel>
-
-                <div className={cl('Content')}>
-                    <div className='w-100'>
-                        <span className={cl('Label')}>Начальное количество существ</span>
-                        <Slider
-                            value={settings.creatureCount}
-                            onChange={(e, value) => typeof value === 'number' && setSettings({ ...settings, creatureCount: value })}
-                            onChangeCommitted={(e, value) => typeof value === 'number' && setCreatureCount(value * creatureSliderStep)}
-                            aria-labelledby="discrete-slider"
-                            valueLabelDisplay="auto"
-                            className={cl('Slider')}
-                            step={creatureSliderStep}
-                            marks={creatureCountMarks}
-                            min={1}
-                            max={10}
-                            disabled={disabled}
-                        />
-                    </div>
-                </div>
             </div>
         </ExpansionPanel>
     );
@@ -136,10 +177,14 @@ export interface ICreatureProps {
     setCreatureCount: (creatureCount: number) => void;
     setCreatureCanMutate: (canMutate: boolean) => void;
     setCreatureMutationChance: (mutationChance: number) => void;
+    setCreatureCanMutateVelocity: (canMutate: boolean) => void;
+    setCreatureCanMutateVisibility: (canMutate: boolean) => void;
 }
 
 interface ICreatureSettings {
     creatureCount: number;
     canMutate: boolean;
+    canMutateVelocity: boolean;
+    canMutateVisibility: boolean;
     mutationChance: number;
 }

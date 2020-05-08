@@ -21,21 +21,37 @@ const ControlSectionContainer = ({
     setSelectionSpeed,
     setCreatureCanMutate,
     setCreatureMutationChance,
+    setCreatureCanMutateVisibility,
+    setCreatureCanMutateVelocity,
     daysLeft,
 }: IProps) => {
     return (
         <ControlSection
             onStartClick={setSelectionStart}
+            disabled={start}
+            daysLeft={daysLeft}
             onResetClick={() => {
                 clearSelectionState();
                 clearFoodState();
                 clearCreatureState();
             }}
-            disabled={start}
-            daysLeft={daysLeft}
-            foodProps={{ foodSettings, setFoodCount }}
-            creatureProps={{ creatureSettings, setCreatureCount, setCreatureCanMutate, setCreatureMutationChance }}
-            selectionProps={{ selectionSettings, setSelectionDaysCount, setSelectionSpeed }}
+            foodProps={{ 
+                foodSettings, 
+                setFoodCount 
+            }}
+            creatureProps={{ 
+                creatureSettings, 
+                setCreatureCount, 
+                setCreatureCanMutate, 
+                setCreatureMutationChance, 
+                setCreatureCanMutateVisibility, 
+                setCreatureCanMutateVelocity 
+            }}
+            selectionProps={{ 
+                selectionSettings, 
+                setSelectionDaysCount, 
+                setSelectionSpeed 
+            }}
         />
     );
 };
@@ -55,6 +71,8 @@ const mapDispatch = (dispatch: Dispatch) => ({
     setSelectionDaysCount: (daysCount: ISelectionSettings['selectionDays']) => dispatch.selection.setNewSelectionDays(daysCount),
     setSelectionSpeed: (selectionSpeed: ISelectionSettings['selectionSpeed']) => dispatch.selection.setNewSelectionSpeed(selectionSpeed),
     setCreatureCanMutate: (canMutate: ICreatureSettings['canMutate']) => dispatch.creature.setNewCreatureCanMutate(canMutate),
+    setCreatureCanMutateVelocity: (canMutateVelocity: ICreatureSettings['canMutateVelocity']) => dispatch.creature.setNewCreatureCanMutateVelocity(canMutateVelocity),
+    setCreatureCanMutateVisibility: (canMutateVisibility: ICreatureSettings['canMutateVisibility']) => dispatch.creature.setNewCreatureCanMutateVisibility(canMutateVisibility),
     setCreatureMutationChance: (mutationChance: ICreatureSettings['mutationChance']) => dispatch.creature.setNewCreatureMutationChance(mutationChance),
     clearSelectionState: () => dispatch.selection.clearSelectionState(),
     clearFoodState: () => dispatch.food.clearFoodState(),

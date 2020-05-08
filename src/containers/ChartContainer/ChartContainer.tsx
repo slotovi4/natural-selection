@@ -4,15 +4,16 @@ import { connect } from 'react-redux';
 import { IRootState } from '../../redux/store';
 
 const ChartContainer = ({ selectionResultData }: IProps) => {
-    const finalResult = selectionResultData.length ? selectionResultData[selectionResultData.length - 1] : null;
-    const finalLastResult = finalResult ? finalResult[finalResult.length - 1] : null;
-
     return (
         <div className='d-flex'>
-            <section className='w-70'>
-                <LineChart selectionResultData={selectionResultData} />
+            <section className='w-70 pr-2'>
+                <div className='mt-3'>
+                    <LineChart selectionResultData={selectionResultData} />
+                </div>
 
-                <BarChart survivedCreatures={finalLastResult ? finalLastResult.survivedCreatures : []} />
+                <div className='mt-3'>
+                    <BarChart selectionResultData={selectionResultData} />
+                </div>
             </section>
 
             <section className='w-30'>
