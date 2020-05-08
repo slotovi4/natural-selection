@@ -2,35 +2,42 @@ import React from 'react';
 import { Button, ButtonGroup } from '@material-ui/core';
 import { ChartOptions } from 'chart.js';
 import { Bar, ChartComponentProps } from 'react-chartjs-2';
+import {getParamAverageValue} from '../helpers';
 
-const BarChart = ({ survivedCreatures }: IProps) => {
+const BarChart = ({ selectionResultData }: IProps) => {
     const [dataSets, setDataSets] = React.useState<ICreatureResult[] | null>(null);
     const [selectedDataSet, setSelectedDataSet] = React.useState(0);
     const dataSet = dataSets ? dataSets[selectedDataSet] : null;
 
     React.useEffect(() => {
-        const { length } = survivedCreatures;
+        const { length } = selectionResultData;
 
         if (length) {
-            const velocityArr: number[] = [];
-            const visibilityRadiusArr: number[] = [];
-            const energyArr: number[] = [];
+            const averageVelocityArr: number[] = [];
+            const averageVisibilityRadiusArr: number[] = [];
+            const averageEnergyIntensityArr: number[] = [];
 
             for (let i = 0; i < length; i++) {
-                const { velocity, visibilityRadius, energyIntensity } = survivedCreatures[i];
-                velocityArr.push(velocity);
-                visibilityRadiusArr.push(visibilityRadius);
-                energyArr.push(energyIntensity);
+                const arr = selectionResultData[i];
+                const arrLength = selectionResultData[i].length;
+
+                for (let j = 0; j < arrLength; j++) {
+                    const { survivedCreatures } = arr[j];
+
+                    averageVelocityArr.push(getParamAverageValue(survivedCreatures.map(e => e.velocity)));
+                    averageVisibilityRadiusArr.push(getParamAverageValue(survivedCreatures.map(e => e.visibilityRadius)));
+                    averageEnergyIntensityArr.push(getParamAverageValue(survivedCreatures.map(e => e.energyIntensity)));
+                }
             }
 
             const data = createDataSets({
-                valuesArr: [velocityArr, visibilityRadiusArr, energyArr],
+                valuesArr: [averageVelocityArr, averageVisibilityRadiusArr, averageEnergyIntensityArr],
                 valuesNames: ['velocity', 'visibilityRadius', 'energyIntensity']
             });
 
             setDataSets(data);
         }
-    }, [survivedCreatures]);
+    }, [selectionResultData]);
 
     const createDataSets = (data: ICreateDataSets) => {
         const { length } = data.valuesArr;
@@ -40,18 +47,14 @@ const BarChart = ({ survivedCreatures }: IProps) => {
             const paramName = data.valuesNames[j];
             const paramsArr = data.valuesArr[j];
             const uniqueParamsArr = paramsArr.filter((e, i) => paramsArr.indexOf(e) === i);
-            let creatureData: ICreatureData[] = [];
+            const creatureData: number[] = [];
 
             for (let i = 0; i < uniqueParamsArr.length; i++) {
-                const paramValue = uniqueParamsArr[i];
+                const paramValue = parseFloat(uniqueParamsArr[i].toFixed(2));
 
-                creatureData.push({
-                    creaturesCount: survivedCreatures.filter(creature => creature[paramName] === paramValue).length,
-                    value: paramValue,
-                });
+                creatureData.push(paramValue);
             }
 
-            creatureData = creatureData.sort((a, b) => a.value - b.value);
             creatureDataArr = [...creatureDataArr, { data: creatureData, name: checkValueName(paramName) }];
         }
 
@@ -75,15 +78,15 @@ const BarChart = ({ survivedCreatures }: IProps) => {
     };
 
     const barData: ChartComponentProps['data'] | null = dataSet ? {
-        labels: [...dataSet.data.map(e => `${dataSet.name}: ${e.value}`)],
+        labels: [...dataSet.data.map((e, i) => `день: ${i + 1}`)],
         datasets: [{
-            label: `Мутация параметра - ${dataSet.name}`,
+            label: `Среднее значение параметра - ${dataSet.name}`,
             backgroundColor: 'rgba(63, 81, 181, 0.4)',
             borderColor: '#3f51b5',
             borderWidth: 1,
             hoverBackgroundColor: 'rgba(63, 81, 181, 0.6)',
             hoverBorderColor: '#3f51b5',
-            data: [...dataSet.data.map(e => e.creaturesCount)],
+            data: [...dataSet.data],
         }]
     } : null;
 
@@ -132,6 +135,10 @@ const BarChart = ({ survivedCreatures }: IProps) => {
 export default BarChart;
 
 interface IProps {
+    selectionResultData: ISurvivedCreatures[][];
+}
+
+interface ISurvivedCreatures {
     survivedCreatures: ICreatureParams[];
 }
 
@@ -141,13 +148,8 @@ interface ICreatureParams {
     energyIntensity: number;
 }
 
-interface ICreatureData {
-    creaturesCount: number;
-    value: number;
-}
-
 interface ICreatureResult {
-    data: ICreatureData[];
+    data: number[];
     name: string;
 }
 

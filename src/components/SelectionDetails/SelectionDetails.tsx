@@ -7,7 +7,7 @@ import {
 import { ExpansionPanel } from '../ExpansionPanel';
 import { TableDetails } from './TableDetails';
 import { ColorizeParamDifference } from '../ColorizeParamDifference';
-import { getParamAverageValue, getParamChangeDifference } from './helpers';
+import { getParamAverageValue, getParamChangeDifference } from '../helpers';
 import { cn } from '@bem-react/classname';
 import './SelectionDetails.scss';
 
