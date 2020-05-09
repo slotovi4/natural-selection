@@ -5,7 +5,7 @@ export class Posterity extends Creature {
     public constructor({
         canMutate,
         parentVelocity,
-        parentVisibilityRadius,
+        parentVisibilitySize,
         parentEnergyIntensity,
         canMutateVelocity,
         canMutateVisibility,
@@ -13,26 +13,24 @@ export class Posterity extends Creature {
     }: IProps) {
         super(props);
 
-        this.velocity *= parentVelocity;
-        this.visibilityRadius = parentVisibilityRadius * this.visibilityAreaSize;
-        this.energyIntensity = parentEnergyIntensity * this.energyIntensityScale;
-
         if (canMutate && this.checkCanMutate()) {
+            this.energyIntensity = parentEnergyIntensity;
+
             if (canMutateVelocity) {
+                this.velocity = parentVelocity * this.selectionSpeed;
                 this.mutateVelocity();
             }
 
             if (canMutateVisibility) {
-                this.mutateVisibilityRadius();
+                this.visibilitySize = parentVisibilitySize;
+                this.mutateVisibilitySize();
             }
+
+            // this.mutateSize();
+
+            // dependence variables
+            this.setDependenceVariables();
         }
-
-        // dependence variables
-        this.setDependenceVariables();
-    }
-
-    private checkCanMutate() {
-        return !this.isMutated ? Math.random() <= this.mutationChance : false;
     }
 
     private mutateVelocity() {
@@ -42,15 +40,25 @@ export class Posterity extends Creature {
         this.velocity = newValue;
         this.fillStyle = color;
         this.energyIntensity *= (oldVelocity / this.velocity);
+        // this.velocity *= this.selectionSpeed;
     }
 
-    private mutateVisibilityRadius() {
-        const oldVisibility = this.visibilityRadius;
-        const { newValue } = this.mutateParam(oldVisibility);
+    private mutateVisibilitySize() {
+        const oldVisibilitySize = this.visibilitySize;
+        const { newValue } = this.mutateParam(oldVisibilitySize);
 
-        this.visibilityRadius = newValue;
+        this.visibilitySize = newValue;
         // this.fillStyle = color;
-        this.energyIntensity *= (oldVisibility / this.visibilityRadius);
+        this.energyIntensity *= (oldVisibilitySize / this.visibilitySize);
+    }
+
+    private mutateSize() {
+        const oldSize = this.size;
+        const { newValue, color } = this.mutateParam(oldSize);
+
+        this.size = newValue;
+        this.fillStyle = color;
+        this.energyIntensity *= (oldSize / this.size);
     }
 
     private mutateParam(defaultValue: number, includeSelectionSpeed?: boolean) {
@@ -68,6 +76,10 @@ export class Posterity extends Creature {
         return { newValue, color };
     }
 
+    private checkCanMutate() {
+        return !this.isMutated ? Math.random() <= this.mutationChance : false;
+    }
+
     private getColorRelativeToParameter(value: number, maxValue: number) {
         const h = 240 - ((value / maxValue) * 240);
 
@@ -80,6 +92,6 @@ interface IProps extends ICreatureProps {
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
     parentVelocity: number;
-    parentVisibilityRadius: number;
+    parentVisibilitySize: number;
     parentEnergyIntensity: number;
 }

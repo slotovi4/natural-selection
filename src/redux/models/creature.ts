@@ -5,7 +5,7 @@ const initialState: IState = {
     creatureCount: 5,
     canMutate: true,
     canMutateVelocity: true,
-    canMutateVisibility: true,
+    canMutateVisibility: false,
     mutationChance: 1
 };
 

@@ -24,7 +24,7 @@ const DetailsRows = ({ lastSelectionDaysArr }: IProps) => {
         offspringCreaturesCount.push(dayData.offspringCount);
 
         averageVelocityArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.velocity)));
-        averageVisibilityArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.visibilityRadius)));
+        averageVisibilityArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.visibilitySize)));
         averageEnergyArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.energyIntensity)));
     }
 

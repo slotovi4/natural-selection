@@ -15,7 +15,7 @@ const DialogSelection = ({ selection, num }: IProps) => {
 
     for (let j = 0; j < length; j++) {
         averageSelectionVelocityArr.push(getParamAverageValue(selection[j].survivedCreatures.map(e => e.velocity)));
-        averageSelectionVisibilityArr.push(getParamAverageValue(selection[j].survivedCreatures.map(e => e.visibilityRadius)));
+        averageSelectionVisibilityArr.push(getParamAverageValue(selection[j].survivedCreatures.map(e => e.visibilitySize)));
         averageSelectionEnergyArr.push(getParamAverageValue(selection[j].survivedCreatures.map(e => e.energyIntensity)));
     }
 

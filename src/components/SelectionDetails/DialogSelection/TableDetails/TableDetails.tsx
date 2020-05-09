@@ -17,7 +17,7 @@ const TableDetails = ({ selection }: IProps) => {
         const { survivedCreatures, survivedCount, offspringCount, dieCount } = selectionResult;
 
         const averageVelocity = getParamAverageValue(survivedCreatures.map(e => e.velocity));
-        const averageVisibilityRadius = getParamAverageValue(survivedCreatures.map(e => e.visibilityRadius));
+        const averageVisibilityRadius = getParamAverageValue(survivedCreatures.map(e => e.visibilitySize));
 
         return ({
             value: {

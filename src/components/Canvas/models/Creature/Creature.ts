@@ -7,7 +7,7 @@ import { IArea, IFood, IPoint } from '../interface';
 import { creatureParams } from './config';
 
 export class Creature {
-    public readonly radius: number;
+    public radius: number;
     public x: number;
     public y: number;
     public returnedToHome: boolean;
@@ -17,16 +17,16 @@ export class Creature {
     protected fillStyle: string;
     protected velocity: number;
     protected energyIntensity: number;
-    protected energyIntensityScale: number;
     protected isMutated: boolean;
     protected dX: number;
     protected dY: number;
     protected energy: number;
     protected visibilityRadius: number;
+    protected size: number;
+    protected visibilitySize: number;
 
     protected readonly mutationChance: number;
     protected readonly selectionSpeed: number;
-    protected readonly visibilityAreaSize: number;
 
     private readonly wasteEnergyVal: number;
     private readonly exitAreaPoints: IPoint[];
@@ -41,21 +41,20 @@ export class Creature {
         this.ctx = ctx;
         this.area = area;
 
-        this.energyIntensityScale = 2;
         this.selectionSpeed = selectionSpeed;
         this.mutationChance = mutationChance;
-        this.radius = creatureParams.radius;
-        this.velocity = creatureParams.velocity * selectionSpeed;
-        this.energyIntensity = creatureParams.energyIntensity * this.energyIntensityScale;
-        this.visibilityAreaSize = creatureParams.visibilityAreaSize;
-        this.visibilityRadius = creatureParams.visibilityRadius * this.visibilityAreaSize;
-        this.isMutated = false;
 
-        this.grabbedFoodCount = 0;
+        this.size = creatureParams.size;
+        this.velocity = creatureParams.velocity * this.selectionSpeed;
+        this.energyIntensity = creatureParams.energyIntensity;
+        this.visibilitySize = creatureParams.visibilitySize;
+        this.fillStyle = creatureParams.fillStyle;
+    
+        this.isMutated = false;
         this.returnedToHome = false;
         this.isDie = false;
         this.noFoodForPosterity = false;
-        this.fillStyle = creatureParams.fillStyle;
+        this.grabbedFoodCount = 0;
         this.wasteEnergyVal = 4;
         this.exitAreaPoints = this.getExitAreaPoints();
 
@@ -112,7 +111,6 @@ export class Creature {
         const haveFood = foodArray.length > 0;
 
         // if (this.isDie && this.grabbedFoodCount === 1) {
-        //     console.log('bug');
         //     console.log(this);
         // }
 
@@ -151,13 +149,13 @@ export class Creature {
     public getCreatureParams(): ICreatureParams {
         return {
             velocity: this.velocity / this.selectionSpeed,
-            visibilityRadius: parseFloat((this.visibilityRadius / this.visibilityAreaSize).toFixed(1)),
-            energyIntensity: parseFloat((this.energyIntensity / 2).toFixed(1))
+            visibilitySize: this.visibilitySize,
+            energyIntensity: this.energyIntensity
         };
     }
 
     protected replenishEnergy() {
-        return 100 * this.energyIntensity;
+        return 200 * this.energyIntensity;
     }
 
     protected randomDirection() {
@@ -165,6 +163,9 @@ export class Creature {
     }
 
     protected setDependenceVariables() {
+        this.radius = this.size * creatureParams.radius;
+        this.visibilityRadius = this.visibilitySize * creatureParams.visibilityAreaSize;
+
         this.energy = this.replenishEnergy();
         this.dX = this.randomDirection();
         this.dY = this.randomDirection();
@@ -358,7 +359,7 @@ export class Creature {
     // (velocity + visibility^3) / wasteEnergyVal
     private getWasteEnergyPerMove() {
         const velocity = this.getVelocityFromD();
-        const visibility = Math.pow(this.visibilityRadius / this.visibilityAreaSize, 2);
+        const visibility = Math.pow(this.visibilitySize, 2);
 
         return Math.round(((velocity + visibility) / this.wasteEnergyVal) * 100) / 100;
     }
@@ -391,6 +392,6 @@ export interface IProps {
 
 export interface ICreatureParams {
     velocity: number;
-    visibilityRadius: number;
+    visibilitySize: number;
     energyIntensity: number;
 }

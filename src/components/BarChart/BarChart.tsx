@@ -15,20 +15,20 @@ const BarChart = ({ selectionResultData }: IProps) => {
 
         if (length) {
             const averageVelocityArr: number[] = [];
-            const averageVisibilityRadiusArr: number[] = [];
+            const averageVisibilitySizeArr: number[] = [];
             const averageEnergyIntensityArr: number[] = [];
 
             for (let i = 0; i < length; i++) {
                 const { survivedCreatures } = lastSelection[i];
 
                 averageVelocityArr.push(getParamAverageValue(survivedCreatures.map(e => e.velocity)));
-                averageVisibilityRadiusArr.push(getParamAverageValue(survivedCreatures.map(e => e.visibilityRadius)));
+                averageVisibilitySizeArr.push(getParamAverageValue(survivedCreatures.map(e => e.visibilitySize)));
                 averageEnergyIntensityArr.push(getParamAverageValue(survivedCreatures.map(e => e.energyIntensity)));
             }
 
             const data = createDataSets({
-                valuesArr: [averageVelocityArr, averageVisibilityRadiusArr, averageEnergyIntensityArr],
-                valuesNames: ['velocity', 'visibilityRadius', 'energyIntensity']
+                valuesArr: [averageVelocityArr, averageVisibilitySizeArr, averageEnergyIntensityArr],
+                valuesNames: ['velocity', 'visibilitySize', 'energyIntensity']
             });
 
             setDataSets(data);
@@ -60,7 +60,7 @@ const BarChart = ({ selectionResultData }: IProps) => {
             return 'скорость';
         }
 
-        if (name === 'visibilityRadius') {
+        if (name === 'visibilitySize') {
             return 'чувствительность';
         }
 
@@ -141,7 +141,7 @@ interface ISurvivedCreatures {
 
 interface ICreatureParams {
     velocity: number;
-    visibilityRadius: number;
+    visibilitySize: number;
     energyIntensity: number;
 }
 
