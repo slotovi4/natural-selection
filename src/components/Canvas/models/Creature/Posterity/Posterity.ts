@@ -1,6 +1,6 @@
 import { Creature, IProps as ICreatureProps } from '../Creature';
 import { randomIntFromRange } from '../../helpers';
-import {fixValue} from '../../../../helpers';
+import { fixValue } from '../../../../helpers';
 
 export class Posterity extends Creature {
     public constructor({
@@ -8,8 +8,10 @@ export class Posterity extends Creature {
         parentVelocity,
         parentVisibilitySize,
         parentEnergyIntensity,
+        parentSize,
         canMutateVelocity,
         canMutateVisibility,
+        canMutateSize,
         ...props
     }: IProps) {
         super(props);
@@ -27,7 +29,10 @@ export class Posterity extends Creature {
                 this.mutateVisibilitySize();
             }
 
-            // this.mutateSize();
+            if (canMutateSize) {
+                this.size = parentSize;
+                this.mutateSize();
+            }
 
             // dependence variables
             this.setDependenceVariables();
@@ -91,7 +96,9 @@ interface IProps extends ICreatureProps {
     canMutate: boolean;
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
     parentVelocity: number;
     parentVisibilitySize: number;
     parentEnergyIntensity: number;
+    parentSize: number;
 }

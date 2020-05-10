@@ -23,6 +23,7 @@ const ControlSectionContainer = ({
     setCreatureMutationChance,
     setCreatureCanMutateVisibility,
     setCreatureCanMutateVelocity,
+    setCreatureCanMutateSize,
     daysLeft,
 }: IProps) => {
     return (
@@ -45,7 +46,8 @@ const ControlSectionContainer = ({
                 setCreatureCanMutate, 
                 setCreatureMutationChance, 
                 setCreatureCanMutateVisibility, 
-                setCreatureCanMutateVelocity 
+                setCreatureCanMutateVelocity,
+                setCreatureCanMutateSize
             }}
             selectionProps={{ 
                 selectionSettings, 
@@ -73,6 +75,7 @@ const mapDispatch = (dispatch: Dispatch) => ({
     setCreatureCanMutate: (canMutate: ICreatureSettings['canMutate']) => dispatch.creature.setNewCreatureCanMutate(canMutate),
     setCreatureCanMutateVelocity: (canMutateVelocity: ICreatureSettings['canMutateVelocity']) => dispatch.creature.setNewCreatureCanMutateVelocity(canMutateVelocity),
     setCreatureCanMutateVisibility: (canMutateVisibility: ICreatureSettings['canMutateVisibility']) => dispatch.creature.setNewCreatureCanMutateVisibility(canMutateVisibility),
+    setCreatureCanMutateSize: (canMutateSize: ICreatureSettings['canMutateSize']) => dispatch.creature.setNewCreatureCanMutateSize(canMutateSize),
     setCreatureMutationChance: (mutationChance: ICreatureSettings['mutationChance']) => dispatch.creature.setNewCreatureMutationChance(mutationChance),
     clearSelectionState: () => dispatch.selection.clearSelectionState(),
     clearFoodState: () => dispatch.food.clearFoodState(),

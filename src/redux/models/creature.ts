@@ -7,6 +7,7 @@ const initialSettings: IState = {
     canMutate: true,
     canMutateVelocity: true,
     canMutateVisibility: false,
+    canMutateSize: false,
     mutationChance: 1
 };
 
@@ -29,6 +30,9 @@ const creature = createModel({
         },
         setCanMutateVisibility(state: IState, canMutateVisibility: IState['canMutateVisibility']) {
             return { ...state, canMutateVisibility };
+        },
+        setCanMutateSize(state: IState, canMutateSize: IState['canMutateSize']) {
+            return { ...state, canMutateSize };
         },
         setMutationChance(state: IState, mutationChance: IState['mutationChance']) {
             return { ...state, mutationChance };
@@ -53,6 +57,9 @@ const creature = createModel({
         setNewCreatureCanMutateVisibility(canMutateVisibility: IState['canMutateVisibility']) {
             this.setCanMutateVisibility(canMutateVisibility);
         },
+        setNewCreatureCanMutateSize(canMutateSize: IState['canMutateSize']) {
+            this.setCanMutateSize(canMutateSize);
+        },
         setNewCreatureMutationChance(mutationChance: IState['mutationChance']) {
             this.setMutationChance(mutationChance);
         },
@@ -69,5 +76,6 @@ export interface IState {
     canMutate: boolean;
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
     mutationChance: number;
 }

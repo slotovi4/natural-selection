@@ -12,7 +12,8 @@ const CreatureExpansionPanel = ({
     setCreatureCanMutate,
     setCreatureMutationChance,
     setCreatureCanMutateVelocity,
-    setCreatureCanMutateVisibility
+    setCreatureCanMutateVisibility,
+    setCreatureCanMutateSize,
 }: IProps) => {
     const cl = cn('CreatureExpansionPanel');
 
@@ -68,6 +69,11 @@ const CreatureExpansionPanel = ({
     const onChangeCanMutateVisibility = () => {
         setSettings({ ...settings, canMutate: !settings.canMutateVisibility });
         setCreatureCanMutateVisibility(!settings.canMutateVisibility);
+    };
+
+    const onChangeCanMutateSize = () => {
+        setSettings({ ...settings, canMutate: !settings.canMutateSize });
+        setCreatureCanMutateSize(!settings.canMutateSize);
     };
 
     return (
@@ -159,6 +165,20 @@ const CreatureExpansionPanel = ({
                                 label={<span className={cl('Label')}>Мутация чувствительности</span>}
                             />
                         </div>
+                        <div className='w-100'>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={settings.canMutateSize}
+                                        onChange={onChangeCanMutateSize}
+                                        disabled={!settings.canMutate || disabled}
+                                        name="canMutateSize"
+                                        color="primary"
+                                    />
+                                }
+                                label={<span className={cl('Label')}>Мутация размера</span>}
+                            />
+                        </div>
                     </div>
                 </ExpansionPanel>
             </div>
@@ -179,6 +199,7 @@ export interface ICreatureProps {
     setCreatureMutationChance: (mutationChance: number) => void;
     setCreatureCanMutateVelocity: (canMutate: boolean) => void;
     setCreatureCanMutateVisibility: (canMutate: boolean) => void;
+    setCreatureCanMutateSize: (canMutate: boolean) => void;
 }
 
 interface ICreatureSettings {
@@ -186,5 +207,6 @@ interface ICreatureSettings {
     canMutate: boolean;
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
     mutationChance: number;
 }

@@ -75,13 +75,14 @@ export const getNextDayCreatureArray = ({ endDayCreatureArray, ...props }: IGetN
     const offspringCreaturesCount = offspringCreatures.length;
 
     for (let i = 0; i < offspringCreaturesCount; i++) {
-        const { visibilitySize, velocity, energyIntensity } = offspringCreatures[i].getCreatureParams();
+        const { visibilitySize, velocity, energyIntensity, size } = offspringCreatures[i].getCreatureParams();
 
         posterityCreaturesArray.push(createPosterity({
             ...props,
             parentVelocity: velocity,
             parentVisibilitySize: visibilitySize,
-            parentEnergyIntensity: energyIntensity
+            parentEnergyIntensity: energyIntensity,
+            parentSize: size,
         }));
     }
 
@@ -118,8 +119,10 @@ interface ICreatePosterityProps extends ICreatureSettingsProps {
     parentVelocity: number;
     parentVisibilitySize: number;
     parentEnergyIntensity: number;
+    parentSize: number;
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
 }
 
 interface ICreateCreatureArrayProps extends ICreatureSettingsProps {
@@ -130,6 +133,7 @@ interface IGetNextDayCreature extends ICreatureSettingsProps {
     endDayCreatureArray: Creature[];
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
 }
 
 interface IDefaultProps {

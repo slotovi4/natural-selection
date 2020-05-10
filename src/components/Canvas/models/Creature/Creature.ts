@@ -150,7 +150,8 @@ export class Creature {
         return {
             velocity: this.velocity / this.selectionSpeed,
             visibilitySize: this.visibilitySize,
-            energyIntensity: this.energyIntensity
+            energyIntensity: this.energyIntensity,
+            size: this.size,
         };
     }
 
@@ -395,4 +396,5 @@ export interface ICreatureParams {
     velocity: number;
     visibilitySize: number;
     energyIntensity: number;
+    size: number;
 }
