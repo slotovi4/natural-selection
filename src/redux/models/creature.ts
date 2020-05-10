@@ -1,12 +1,18 @@
 
 import { createModel } from '@rematch/core';
+import { getSavedControlSectionSettings } from '../../components/ControlSection/helpers';
 
-const initialState: IState = {
+const initialSettings: IState = {
     creatureCount: 5,
     canMutate: true,
     canMutateVelocity: true,
     canMutateVisibility: false,
     mutationChance: 1
+};
+
+const initialState: IState = {
+    ...initialSettings,
+    ...getSavedControlSectionSettings()?.creatureSettings,
 };
 
 const creature = createModel({
@@ -28,7 +34,10 @@ const creature = createModel({
             return { ...state, mutationChance };
         },
         clearState() {
-            return { ...initialState };
+            return {
+                ...initialSettings,
+                ...getSavedControlSectionSettings()?.creatureSettings,
+            };
         },
     },
     effects: () => ({

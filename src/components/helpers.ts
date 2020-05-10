@@ -8,4 +8,4 @@ export const getParamAverageValue = (averageArr: number[]) => {
     return averageArr.reduce((a, b) => a + b, 0) / averageArr.length || 0;
 };
 
-export const fixValue = (value: number) => parseFloat(value.toFixed(2)); 
+export const fixValue = (value: number) => parseFloat(value.toFixed(2));
