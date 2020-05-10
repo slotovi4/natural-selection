@@ -356,12 +356,13 @@ export class Creature {
         this.energy -= this.getWasteEnergyPerMove();
     }
 
-    // (velocity + visibility^3) / wasteEnergyVal
+    // (velocity * visibility^2 * size^3) / wasteEnergyVal
     private getWasteEnergyPerMove() {
         const velocity = this.getVelocityFromD();
         const visibility = Math.pow(this.visibilitySize, 2);
+        const size = Math.pow(this.size, 3);
 
-        return Math.round(((velocity + visibility) / this.wasteEnergyVal) * 100) / 100;
+        return Math.round(((velocity * visibility * size) / this.wasteEnergyVal) * 100) / 100;
     }
 
     private getVelocityFromD() {

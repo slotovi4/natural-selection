@@ -1,5 +1,6 @@
 import { Creature, IProps as ICreatureProps } from '../Creature';
 import { randomIntFromRange } from '../../helpers';
+import {fixValue} from '../../../../helpers';
 
 export class Posterity extends Creature {
     public constructor({
@@ -39,8 +40,7 @@ export class Posterity extends Creature {
 
         this.velocity = newValue;
         this.fillStyle = color;
-        this.energyIntensity *= (oldVelocity / this.velocity);
-        // this.velocity *= this.selectionSpeed;
+        this.energyIntensity = fixValue(this.energyIntensity * (oldVelocity / this.velocity));
     }
 
     private mutateVisibilitySize() {
@@ -49,7 +49,7 @@ export class Posterity extends Creature {
 
         this.visibilitySize = newValue;
         // this.fillStyle = color;
-        this.energyIntensity *= (oldVisibilitySize / this.visibilitySize);
+        this.energyIntensity = fixValue(this.energyIntensity * (oldVisibilitySize / this.visibilitySize));
     }
 
     private mutateSize() {
@@ -58,7 +58,7 @@ export class Posterity extends Creature {
 
         this.size = newValue;
         this.fillStyle = color;
-        this.energyIntensity *= (oldSize / this.size);
+        this.energyIntensity = fixValue(this.energyIntensity * (oldSize / this.size));
     }
 
     private mutateParam(defaultValue: number, includeSelectionSpeed?: boolean) {
