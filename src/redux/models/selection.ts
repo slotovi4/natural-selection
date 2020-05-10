@@ -96,4 +96,5 @@ interface ICreatureParams {
     velocity: number;
     visibilitySize: number;
     energyIntensity: number;
+    size: number;
 }

@@ -3,8 +3,11 @@ import { Button, ButtonGroup } from '@material-ui/core';
 import { ChartOptions } from 'chart.js';
 import { Bar, ChartComponentProps } from 'react-chartjs-2';
 import { getParamAverageValue, fixValue } from '../helpers';
+import { cn } from '@bem-react/classname';
+import './BarChart.scss';
 
 const BarChart = ({ selectionResultData }: IProps) => {
+    const cl = cn('BarChart');
     const [dataSets, setDataSets] = React.useState<ICreatureResult[] | null>(null);
     const [selectedDataSet, setSelectedDataSet] = React.useState(0);
     const lastSelection = selectionResultData[selectionResultData.length - 1] || [];
@@ -17,6 +20,7 @@ const BarChart = ({ selectionResultData }: IProps) => {
             const averageVelocityArr: number[] = [];
             const averageVisibilitySizeArr: number[] = [];
             const averageEnergyIntensityArr: number[] = [];
+            const averageSizeArr: number[] = [];
 
             for (let i = 0; i < length; i++) {
                 const { survivedCreatures } = lastSelection[i];
@@ -24,11 +28,12 @@ const BarChart = ({ selectionResultData }: IProps) => {
                 averageVelocityArr.push(getParamAverageValue(survivedCreatures.map(e => e.velocity)));
                 averageVisibilitySizeArr.push(getParamAverageValue(survivedCreatures.map(e => e.visibilitySize)));
                 averageEnergyIntensityArr.push(getParamAverageValue(survivedCreatures.map(e => e.energyIntensity)));
+                averageSizeArr.push(getParamAverageValue(survivedCreatures.map(e => e.size)));
             }
 
             const data = createDataSets({
-                valuesArr: [averageVelocityArr, averageVisibilitySizeArr, averageEnergyIntensityArr],
-                valuesNames: ['velocity', 'visibilitySize', 'energyIntensity']
+                valuesArr: [averageVelocityArr, averageVisibilitySizeArr, averageEnergyIntensityArr, averageSizeArr],
+                valuesNames: ['velocity', 'visibilitySize', 'energyIntensity', 'size']
             });
 
             setDataSets(data);
@@ -45,10 +50,10 @@ const BarChart = ({ selectionResultData }: IProps) => {
             const creatureData: number[] = paramsArr.map(param => fixValue(param));
 
             creatureDataArr = [
-                ...creatureDataArr, 
-                { 
-                    data: creatureData, 
-                    name: checkValueName(paramName) 
+                ...creatureDataArr,
+                {
+                    data: creatureData,
+                    name: checkValueName(paramName)
                 }];
         }
 
@@ -68,13 +73,17 @@ const BarChart = ({ selectionResultData }: IProps) => {
             return 'энергия';
         }
 
+        if (name === 'size') {
+            return 'размер';
+        }
+
         return name;
     };
 
     const barData: ChartComponentProps['data'] | null = dataSet ? {
         labels: [...dataSet.data.map((e, i) => `день: ${i + 1}`)],
         datasets: [{
-            label: `Средняя ${dataSet.name}`,
+            label: `Сред. ${dataSet.name}`,
             backgroundColor: [...dataSet.data.map(val => `rgba(63, 81, 181, ${val / Math.max(...dataSet.data)})`)],
             borderColor: '#3f51b5',
             borderWidth: 1,
@@ -99,34 +108,32 @@ const BarChart = ({ selectionResultData }: IProps) => {
         }
     };
 
-    return (
-        <section className='w-100'>
-            {dataSets ? (
-                <ButtonGroup className='mb-2' size="small" color="primary">
-                    {dataSets.map(({ name }, i) => (
-                        <Button
-                            color={selectedDataSet === i ? 'primary' : 'default'}
-                            key={`button_data_${i}`}
-                            variant="contained"
-                            onClick={() => setSelectedDataSet(i)}
-                        >
-                            {name}
-                        </Button>
-                    ))}
-                </ButtonGroup>
-            ) : null}
+    return dataSets && barData ? (
+        <section className={cl()}>
+            <ButtonGroup className={cl('Buttons-Group')} size="small" color="primary">
+                {dataSets.map(({ name }, i) => (
+                    <Button
+                        color={selectedDataSet === i ? 'primary' : 'default'}
+                        key={`button_data_${i}`}
+                        variant="outlined"
+                        onClick={() => setSelectedDataSet(i)}
+                        disableElevation
+                    >
+                        {name}
+                    </Button>
+                ))}
+            </ButtonGroup>
 
-            {barData ? (
-                <div>
-                    <Bar
-                        data={barData}
-                        options={options}
-                        height={400}
-                    />
-                </div>
-            ) : null}
+
+            <div>
+                <Bar
+                    data={barData}
+                    options={options}
+                    height={400}
+                />
+            </div>
         </section>
-    );
+    ) : null;
 };
 
 export default BarChart;
@@ -143,6 +150,7 @@ interface ICreatureParams {
     velocity: number;
     visibilitySize: number;
     energyIntensity: number;
+    size: number;
 }
 
 interface ICreatureResult {

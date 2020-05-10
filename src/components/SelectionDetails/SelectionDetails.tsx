@@ -22,6 +22,7 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
                 className='d-block w-100 mt-2'
                 variant="contained"
                 onClick={() => setOpenDetails(true)}
+                disableElevation
             >
                 Подробная информация
             </Button>
@@ -29,6 +30,7 @@ const SelectionDetails = ({ selectionResultData }: IProps) => {
             <Dialog
                 open={openDetails}
                 onClose={() => setOpenDetails(false)}
+                maxWidth="lg"
                 fullWidth
             >
                 {selectionResultData.map((selection, i) => (
@@ -59,4 +61,5 @@ interface ICreatureParams {
     velocity: number;
     visibilitySize: number;
     energyIntensity: number;
+    size: number;
 }
