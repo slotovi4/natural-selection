@@ -111,18 +111,11 @@ const LineChart = ({ selectionResultData }: IProps) => {
     const drawChartDividingLine = (chart: Chart) => {
         if (selectionResultData.length) {
             const { ctx, chartArea } = chart;
-            let selectionsDaysCountArray: number[] = [];
-
-            for (let i = 0; i < selectionResultData.length; i++) {
-                selectionsDaysCountArray = [...selectionsDaysCountArray, selectionResultData[i].length];
-            }
-
             const labelItems: ILabelItem[] = (chart as any).scales['x-axis-0']._labelItems;
 
             if (ctx && chartArea && labelItems) {
                 for (let i = 0; i < labelItems.length; i++) {
                     if (labelItems[i].label === '0') {
-
                         ctx.save();
                         ctx.beginPath();
                         ctx.moveTo(labelItems[i].x, chartArea.top);
