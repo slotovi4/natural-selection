@@ -37,10 +37,10 @@ const DialogSelection = ({ selection, num }: IProps) => {
         >
             <div className='w-100'>
                 <div className={cl('Selection-Average-Container')}>
-                    <span>средняя скорость: {fixValue(averageSelectionVelocity)}</span>
-                    <span>средняя чувствительность: {fixValue(averageSelectionVisibility)}</span>
-                    <span>средняя энергия: {fixValue(averageSelectionEnergy)}</span>
-                    <span>средний размер: {fixValue(averageSelectionSize)}</span>
+                    <span>средн. скорость: {fixValue(averageSelectionVelocity)}</span>
+                    <span>средн. чувствительность: {fixValue(averageSelectionVisibility)}</span>
+                    <span>средн. энергия: {fixValue(averageSelectionEnergy)}</span>
+                    <span>средн. размер: {fixValue(averageSelectionSize)}</span>
                 </div>
                 <TableDetails selection={selection} />
             </div>
