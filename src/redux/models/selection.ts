@@ -1,14 +1,20 @@
 
 import { createModel } from '@rematch/core';
 import { SelectionSpeed } from '../../components/ControlSection/SelectionExpansionPanel';
+import { getSavedControlSectionSettings } from '../../components/ControlSection/helpers';
+
+const initialSettings: IState['selectionSettings'] = {
+    selectionDays: 10,
+    selectionSpeed: SelectionSpeed.X10,
+};
 
 const initialState: IState = {
     start: false,
     daysLeft: 0,
     selectionResultData: [],
     selectionSettings: {
-        selectionDays: 10,
-        selectionSpeed: SelectionSpeed.X10,
+        ...initialSettings,
+        ...getSavedControlSectionSettings()?.selectionSettings,
     }
 };
 
@@ -33,6 +39,10 @@ const selection = createModel({
         clearState() {
             return {
                 ...initialState,
+                selectionSettings: {
+                    ...initialSettings,
+                    ...getSavedControlSectionSettings()?.selectionSettings
+                }
             };
         },
     },
@@ -84,6 +94,7 @@ export interface ISelectionResultData {
 
 interface ICreatureParams {
     velocity: number;
-    visibilityRadius: number;
+    visibilitySize: number;
     energyIntensity: number;
+    size: number;
 }

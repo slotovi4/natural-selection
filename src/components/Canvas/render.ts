@@ -174,6 +174,7 @@ export interface ICreatureControlParams {
     canMutate: boolean;
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
 }
 
 export interface ISelectionControlParams {

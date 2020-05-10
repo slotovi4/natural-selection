@@ -14,6 +14,7 @@ const DetailsRows = ({ lastSelectionDaysArr }: IProps) => {
     const averageVelocityArr: number[] = [];
     const averageVisibilityArr: number[] = [];
     const averageEnergyArr: number[] = [];
+    const averageSizeArr: number[] = [];
 
     for (let i = 0; i < length; i++) {
         const dayData = lastSelectionDaysArr[i];
@@ -24,15 +25,18 @@ const DetailsRows = ({ lastSelectionDaysArr }: IProps) => {
         offspringCreaturesCount.push(dayData.offspringCount);
 
         averageVelocityArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.velocity)));
-        averageVisibilityArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.visibilityRadius)));
+        averageVisibilityArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.visibilitySize)));
         averageEnergyArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.energyIntensity)));
+        averageSizeArr.push(getParamAverageValue(daySurvivedCreatures.map(e => e.size)));
     }
 
     const renderRow = (title: string, value: number, paramDifference?: number) => (
         <div className={cl('Row')}>
             <span className='pr-2'>{title}</span>
             <div className='d-flex'>
-                <strong>{fixValue(value)}</strong>
+                <strong className={!paramDifference ? cl('Value-Padding') : undefined}>
+                    {fixValue(value)}
+                </strong>
                 <ColorizeParamDifference paramDifference={paramDifference} />
             </div>
         </div>
@@ -43,6 +47,7 @@ const DetailsRows = ({ lastSelectionDaysArr }: IProps) => {
             {renderRow('Средняя скорость', getParamAverageValue(averageVelocityArr), getParamChangeDifference(averageVelocityArr))}
             {renderRow('Средняя чувствительность', getParamAverageValue(averageVisibilityArr), getParamChangeDifference(averageVisibilityArr))}
             {renderRow('Средняя энергия', getParamAverageValue(averageEnergyArr), getParamChangeDifference(averageEnergyArr))}
+            {renderRow('Средний размер', getParamAverageValue(averageSizeArr), getParamChangeDifference(averageSizeArr))}
             {renderRow('Выжило', getParamAverageValue(survivedCreaturesCount), getParamChangeDifference(survivedCreaturesCount))}
             {renderRow('Погибло', getParamAverageValue(dieCreaturesCount), getParamChangeDifference(dieCreaturesCount))}
             {renderRow('Дало потомство', getParamAverageValue(offspringCreaturesCount), getParamChangeDifference(offspringCreaturesCount))}

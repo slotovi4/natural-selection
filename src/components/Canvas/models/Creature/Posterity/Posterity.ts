@@ -1,56 +1,72 @@
 import { Creature, IProps as ICreatureProps } from '../Creature';
 import { randomIntFromRange } from '../../helpers';
+import { creatureParams } from '../config';
+import { foodParams } from '../../Food/config';
+import { fixValue } from '../../../../helpers';
 
 export class Posterity extends Creature {
     public constructor({
         canMutate,
         parentVelocity,
-        parentVisibilityRadius,
+        parentVisibilitySize,
         parentEnergyIntensity,
+        parentSize,
         canMutateVelocity,
         canMutateVisibility,
+        canMutateSize,
         ...props
     }: IProps) {
         super(props);
 
-        this.velocity *= parentVelocity;
-        this.visibilityRadius = parentVisibilityRadius * this.visibilityAreaSize;
-        this.energyIntensity = parentEnergyIntensity * this.energyIntensityScale;
-
         if (canMutate && this.checkCanMutate()) {
+            this.energyIntensity = parentEnergyIntensity;
+
+            if (canMutateVisibility) {
+                this.visibilitySize = parentVisibilitySize;
+                this.mutateVisibilitySize();
+            }
+
+            if (canMutateSize) {
+                this.size = parentSize;
+                this.mutateSize();
+            }
+
+            // dependence from size mutation
             if (canMutateVelocity) {
+                this.velocity = parentVelocity * this.selectionSpeed;
                 this.mutateVelocity();
             }
 
-            if (canMutateVisibility) {
-                this.mutateVisibilityRadius();
-            }
+            // dependence variables
+            this.setDependenceVariables();
         }
-
-        // dependence variables
-        this.setDependenceVariables();
-    }
-
-    private checkCanMutate() {
-        return !this.isMutated ? Math.random() <= this.mutationChance : false;
     }
 
     private mutateVelocity() {
         const oldVelocity = this.velocity;
         const { newValue, color } = this.mutateParam(oldVelocity, true);
 
-        this.velocity = newValue;
+        this.velocity = this.checkPosterityVelocity(newValue);
         this.fillStyle = color;
-        this.energyIntensity *= (oldVelocity / this.velocity);
+        this.energyIntensity = fixValue(this.energyIntensity * (oldVelocity / this.velocity));
     }
 
-    private mutateVisibilityRadius() {
-        const oldVisibility = this.visibilityRadius;
-        const { newValue } = this.mutateParam(oldVisibility);
+    private mutateVisibilitySize() {
+        const oldVisibilitySize = this.visibilitySize;
+        const { newValue, color } = this.mutateParam(oldVisibilitySize);
 
-        this.visibilityRadius = newValue;
-        // this.fillStyle = color;
-        this.energyIntensity *= (oldVisibility / this.visibilityRadius);
+        this.visibilitySize = newValue;
+        this.fillStyle = color;
+        this.energyIntensity = fixValue(this.energyIntensity * (oldVisibilitySize / this.visibilitySize));
+    }
+
+    private mutateSize() {
+        const oldSize = this.size;
+        const { newValue, color } = this.mutateParam(oldSize);
+
+        this.size = this.checkPosteritySize(newValue);
+        this.fillStyle = color;
+        this.energyIntensity = fixValue(this.energyIntensity * (oldSize / this.size));
     }
 
     private mutateParam(defaultValue: number, includeSelectionSpeed?: boolean) {
@@ -60,12 +76,39 @@ export class Posterity extends Creature {
         const max = defaultValue + inc;
         const val = (randomIntFromRange((min / selectionSpeed) * 10, (max / selectionSpeed) * 10) / 10) * selectionSpeed;
 
-        const newValue = val || defaultValue; // IF 0 -> defaultValue
+        const newValue = fixValue(val) || fixValue(defaultValue); // IF 0 -> defaultValue
         const color = this.getColorRelativeToParameter(newValue, max);
 
         this.isMutated = true;
 
         return { newValue, color };
+    }
+
+    private checkPosterityVelocity(newVelocity: number) {
+        const creatureRadius = fixValue(this.size * creatureParams.radius);
+        const creatureAndFoodRadius = creatureRadius + foodParams.radius;
+
+        if (newVelocity > creatureAndFoodRadius) {
+            return fixValue(creatureAndFoodRadius);
+        }
+
+        return newVelocity;
+    }
+
+    private checkPosteritySize(newSize: number) {
+        const newRadius = fixValue(newSize * creatureParams.radius);
+
+        if (newRadius < 5) {
+            return fixValue(5 / creatureParams.radius);
+        } else if (newRadius > (this.area.radius / 10)) {
+            return fixValue((this.area.radius / 10) / creatureParams.radius);
+        }
+
+        return newSize;
+    }
+
+    private checkCanMutate() {
+        return !this.isMutated ? Math.random() <= this.mutationChance : false;
     }
 
     private getColorRelativeToParameter(value: number, maxValue: number) {
@@ -79,7 +122,9 @@ interface IProps extends ICreatureProps {
     canMutate: boolean;
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
     parentVelocity: number;
-    parentVisibilityRadius: number;
+    parentVisibilitySize: number;
     parentEnergyIntensity: number;
+    parentSize: number;
 }

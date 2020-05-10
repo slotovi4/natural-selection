@@ -1,10 +1,16 @@
 
 import { createModel } from '@rematch/core';
+import { getSavedControlSectionSettings } from '../../components/ControlSection/helpers';
 
-const initialState: IState = {
+const initialSettings: IState = {
     maxFoodCount: 10,
     minFoodCount: 0,
     foodCount: 10,
+};
+
+const initialState: IState = {
+    ...initialSettings,
+    ...getSavedControlSectionSettings()?.foodSettings,
 };
 
 const food = createModel({
@@ -17,7 +23,10 @@ const food = createModel({
             return { ...state, foodCount };
         },
         clearState(state: IState) {
-            return { ...state, foodCount: initialState.foodCount };
+            return { 
+                ...state, 
+                foodCount: getSavedControlSectionSettings()?.foodSettings?.foodCount || initialSettings.foodCount
+            };
         },
     },
     effects: () => ({

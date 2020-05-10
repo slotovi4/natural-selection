@@ -33,15 +33,32 @@ const createCreatureArray = ({ ctx, area, creatureCount, selectionSpeed, mutatio
 };
 
 const getSurvivedCreatures = (creatureArray: Creature[]) => {
-    return creatureArray.filter(creature => creature.grabbedFoodCount && !creature.isDie && creature.returnedToHome);
+    return creatureArray.filter(creature => {
+        const { grabbedFoodCount, isDie, returnedToHome } = creature.getCreatureParams();
+
+        return grabbedFoodCount && !isDie && returnedToHome;
+    });
 };
 
 const getDeadCreatures = (creatureArray: Creature[]) => {
-    return creatureArray.filter(creature => creature.isDie);
+    return creatureArray.filter(creature => creature.getCreatureParams().isDie);
 };
 
 const getOffspringCreatures = (creatureArray: Creature[]) => {
-    return creatureArray.filter(creature => creature.grabbedFoodCount === 2 && !creature.isDie && creature.returnedToHome);
+    return creatureArray.filter(creature => {
+        const { grabbedFoodCount, isDie, returnedToHome } = creature.getCreatureParams();
+
+        return grabbedFoodCount === 2 && !isDie && returnedToHome;
+    });
+};
+
+const removeCreatureFromArray = (creature: Creature, creatureArray: Creature[]) => {
+    return creatureArray.filter(nCreature => {
+        const nParams = nCreature.getCreatureParams();
+        const params = creature.getCreatureParams();
+
+        return nParams.x !== params.x && nParams.y !== params.y;
+    });
 };
 
 export const drawCreature = ({ ctx, area, creatureCount, selectionSpeed, mutationChance, canMutate }: ICreateCreatureArrayProps) => {
@@ -58,13 +75,17 @@ export const updateCreature = (creatureArray: Creature[], foodArray: IFood[], da
     const newCreatureArray: Creature[] = [];
 
     creatureArray.forEach(creature => {
-        newCreatureArray.push(creature.update(foodArray, dayEnd));
+        newCreatureArray.push(creature.update(foodArray, removeCreatureFromArray(creature, newCreatureArray), dayEnd));
     });
 
     return newCreatureArray;
 };
 
-export const checkEndDay = (creatureArray: Creature[]) => creatureArray.every(creature => creature.isDie || creature.returnedToHome);
+export const checkEndDay = (creatureArray: Creature[]) => creatureArray.every(creature => {
+    const { isDie, returnedToHome } = creature.getCreatureParams();
+    
+    return isDie || returnedToHome;
+});
 
 export const getNextDayCreatureArray = ({ endDayCreatureArray, ...props }: IGetNextDayCreature) => {
     const nextDayCreatureArray = [];
@@ -75,13 +96,14 @@ export const getNextDayCreatureArray = ({ endDayCreatureArray, ...props }: IGetN
     const offspringCreaturesCount = offspringCreatures.length;
 
     for (let i = 0; i < offspringCreaturesCount; i++) {
-        const { visibilityRadius, velocity, energyIntensity } = offspringCreatures[i].getCreatureParams();
+        const { visibilitySize, velocity, energyIntensity, size } = offspringCreatures[i].getCreatureParams();
 
         posterityCreaturesArray.push(createPosterity({
             ...props,
             parentVelocity: velocity,
-            parentVisibilityRadius: visibilityRadius,
-            parentEnergyIntensity: energyIntensity
+            parentVisibilitySize: visibilitySize,
+            parentEnergyIntensity: energyIntensity,
+            parentSize: size,
         }));
     }
 
@@ -116,10 +138,12 @@ interface ICreatureSettingsProps extends IDefaultProps {
 
 interface ICreatePosterityProps extends ICreatureSettingsProps {
     parentVelocity: number;
-    parentVisibilityRadius: number;
+    parentVisibilitySize: number;
     parentEnergyIntensity: number;
+    parentSize: number;
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
 }
 
 interface ICreateCreatureArrayProps extends ICreatureSettingsProps {
@@ -130,6 +154,7 @@ interface IGetNextDayCreature extends ICreatureSettingsProps {
     endDayCreatureArray: Creature[];
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
 }
 
 interface IDefaultProps {
