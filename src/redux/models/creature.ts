@@ -1,12 +1,19 @@
 
 import { createModel } from '@rematch/core';
+import { getSavedControlSectionSettings } from '../../components/ControlSection/helpers';
 
-const initialState: IState = {
+const initialSettings: IState = {
     creatureCount: 5,
     canMutate: true,
     canMutateVelocity: true,
-    canMutateVisibility: true,
+    canMutateVisibility: false,
+    canMutateSize: false,
     mutationChance: 1
+};
+
+const initialState: IState = {
+    ...initialSettings,
+    ...getSavedControlSectionSettings()?.creatureSettings,
 };
 
 const creature = createModel({
@@ -24,11 +31,17 @@ const creature = createModel({
         setCanMutateVisibility(state: IState, canMutateVisibility: IState['canMutateVisibility']) {
             return { ...state, canMutateVisibility };
         },
+        setCanMutateSize(state: IState, canMutateSize: IState['canMutateSize']) {
+            return { ...state, canMutateSize };
+        },
         setMutationChance(state: IState, mutationChance: IState['mutationChance']) {
             return { ...state, mutationChance };
         },
         clearState() {
-            return { ...initialState };
+            return {
+                ...initialSettings,
+                ...getSavedControlSectionSettings()?.creatureSettings,
+            };
         },
     },
     effects: () => ({
@@ -43,6 +56,9 @@ const creature = createModel({
         },
         setNewCreatureCanMutateVisibility(canMutateVisibility: IState['canMutateVisibility']) {
             this.setCanMutateVisibility(canMutateVisibility);
+        },
+        setNewCreatureCanMutateSize(canMutateSize: IState['canMutateSize']) {
+            this.setCanMutateSize(canMutateSize);
         },
         setNewCreatureMutationChance(mutationChance: IState['mutationChance']) {
             this.setMutationChance(mutationChance);
@@ -60,5 +76,6 @@ export interface IState {
     canMutate: boolean;
     canMutateVelocity: boolean;
     canMutateVisibility: boolean;
+    canMutateSize: boolean;
     mutationChance: number;
 }

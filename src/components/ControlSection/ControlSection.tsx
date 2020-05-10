@@ -3,7 +3,10 @@ import { Button, CardMedia, Tooltip } from '@material-ui/core';
 import { SelectionExpansionPanel, ISelectionProps as SelectionExpansionPanelProps } from './SelectionExpansionPanel';
 import { FoodExpansionPanel, IFoodProps as FoodExpansionPanelProps } from './FoodExpansionPanel';
 import { CreatureExpansionPanel, ICreatureProps as CreatureExpansionPanelProps } from './CreatureExpansionPanel';
+import { saveControlSectionSettings, resetSavedControlSectionSettings } from './helpers';
 import { cn } from '@bem-react/classname';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SaveIcon from '@material-ui/icons/Save';
 import controlImg from './controlImg.jpg';
 import './ControlSection.scss';
 
@@ -17,6 +20,19 @@ const ControlSection = ({
     disabled,
 }: IProps) => {
     const cl = cn('ControlSection');
+
+    const onResetSettingsClick = () => {
+        resetSavedControlSectionSettings();
+        onResetClick();
+    };
+
+    const onSavaSettingsClick = () => {
+        saveControlSectionSettings({
+            selectionSettings: selectionProps['selectionSettings'],
+            creatureSettings: creatureProps['creatureSettings'],
+            foodSettings: foodProps['foodSettings']
+        });
+    };
 
     return (
         <section className={cl()}>
@@ -36,9 +52,39 @@ const ControlSection = ({
             <CreatureExpansionPanel disabled={disabled} {...creatureProps} />
             <FoodExpansionPanel disabled={disabled} {...foodProps} />
 
-            <div className='p-2'>
-                <Button disabled={disabled} variant="contained" color="primary" onClick={onStartClick}>Старт</Button>
-                <Button disabled={disabled} variant="contained" onClick={onResetClick} className='ml-2'>Сброс настроек</Button>
+            <div className='pt-2 pb-2'>
+                <Button
+                    disabled={disabled}
+                    variant="contained"
+                    color="primary"
+                    onClick={onStartClick}
+                    size="small"
+                    disableElevation
+                >
+                    Старт
+                </Button>
+                <Button
+                    disabled={disabled}
+                    variant="outlined"
+                    onClick={onSavaSettingsClick}
+                    className='ml-2'
+                    startIcon={<SaveIcon color={disabled ? 'disabled' : 'primary'} />}
+                    size="small"
+                    disableElevation
+                >
+                    Сохранить настройки
+                </Button>
+                <Button
+                    disabled={disabled}
+                    variant="outlined"
+                    onClick={onResetSettingsClick}
+                    className='ml-2'
+                    startIcon={<DeleteIcon color={disabled ? 'disabled' : 'error'} />}
+                    size="small"
+                    disableElevation
+                >
+                    Сброс настроек
+                    </Button>
             </div>
         </section>
     );
@@ -46,7 +92,7 @@ const ControlSection = ({
 
 export default ControlSection;
 
-interface IProps {
+export interface IProps {
     disabled: boolean;
     daysLeft: number;
     foodProps: FoodExpansionPanelProps;

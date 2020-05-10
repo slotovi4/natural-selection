@@ -7,32 +7,31 @@ import { IArea, IFood, IPoint } from '../interface';
 import { creatureParams } from './config';
 
 export class Creature {
-    public readonly radius: number;
-    public x: number;
-    public y: number;
-    public returnedToHome: boolean;
-    public isDie: boolean;
-    public grabbedFoodCount: number;
-
     protected fillStyle: string;
     protected velocity: number;
     protected energyIntensity: number;
-    protected energyIntensityScale: number;
     protected isMutated: boolean;
     protected dX: number;
     protected dY: number;
     protected energy: number;
     protected visibilityRadius: number;
+    protected size: number;
+    protected visibilitySize: number;
 
     protected readonly mutationChance: number;
     protected readonly selectionSpeed: number;
-    protected readonly visibilityAreaSize: number;
+    protected readonly area: IArea;
 
     private readonly wasteEnergyVal: number;
     private readonly exitAreaPoints: IPoint[];
-    private readonly area: IArea;
     private readonly ctx: CanvasRenderingContext2D;
 
+    private radius: number;
+    private x: number;
+    private y: number;
+    private returnedToHome: boolean;
+    private isDie: boolean;
+    private grabbedFoodCount: number;
     private noFoodForPosterity: boolean;
 
     public constructor({ x, y, ctx, area, selectionSpeed, mutationChance }: IProps) {
@@ -41,21 +40,20 @@ export class Creature {
         this.ctx = ctx;
         this.area = area;
 
-        this.energyIntensityScale = 2;
         this.selectionSpeed = selectionSpeed;
         this.mutationChance = mutationChance;
-        this.radius = creatureParams.radius;
-        this.velocity = creatureParams.velocity * selectionSpeed;
-        this.energyIntensity = creatureParams.energyIntensity * this.energyIntensityScale;
-        this.visibilityAreaSize = creatureParams.visibilityAreaSize;
-        this.visibilityRadius = creatureParams.visibilityRadius * this.visibilityAreaSize;
-        this.isMutated = false;
 
-        this.grabbedFoodCount = 0;
+        this.size = creatureParams.size;
+        this.velocity = creatureParams.velocity * this.selectionSpeed;
+        this.energyIntensity = creatureParams.energyIntensity;
+        this.visibilitySize = creatureParams.visibilitySize;
+        this.fillStyle = creatureParams.fillStyle;
+
+        this.isMutated = false;
         this.returnedToHome = false;
         this.isDie = false;
         this.noFoodForPosterity = false;
-        this.fillStyle = creatureParams.fillStyle;
+        this.grabbedFoodCount = 0;
         this.wasteEnergyVal = 4;
         this.exitAreaPoints = this.getExitAreaPoints();
 
@@ -108,33 +106,20 @@ export class Creature {
         this.ctx.closePath();
     }
 
-    public update(foodArray: IFood[], dayEnd: boolean) {
-        const haveFood = foodArray.length > 0;
-
+    public update(foodArray: IFood[], creatureArray: Creature[], dayEnd: boolean) {
+        this.checkDeath();
         // if (this.isDie && this.grabbedFoodCount === 1) {
-        //     console.log('bug');
         //     console.log(this);
         // }
 
-        if (!this.checkDeath()) {
+        if(this.radius < 5) {
+            console.log(123);
+        }
+
+        if (!this.isDie) {
             // if not returned to home
             if (!this.returnedToHome) {
-
-                if (this.grabbedFoodCount === 0) {
-                    if (haveFood) {
-                        this.searchFood(foodArray);
-                    } else {
-                        this.isDie = true;
-                    }
-                }
-
-                else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity && haveFood) {
-                    this.tryFindFoodForPosterity(foodArray);
-                }
-
-                else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity || !haveFood) {
-                    this.goHome();
-                }
+                this.ifNotReturnedToHome(foodArray);
             }
 
             // if returned to home
@@ -151,13 +136,20 @@ export class Creature {
     public getCreatureParams(): ICreatureParams {
         return {
             velocity: this.velocity / this.selectionSpeed,
-            visibilityRadius: parseFloat((this.visibilityRadius / this.visibilityAreaSize).toFixed(1)),
-            energyIntensity: parseFloat((this.energyIntensity / 2).toFixed(1))
+            visibilitySize: this.visibilitySize,
+            energyIntensity: this.energyIntensity,
+            size: this.size,
+            radius: this.radius,
+            x: this.x,
+            y: this.y,
+            returnedToHome: this.returnedToHome,
+            isDie: this.isDie,
+            grabbedFoodCount: this.grabbedFoodCount
         };
     }
 
     protected replenishEnergy() {
-        return 100 * this.energyIntensity;
+        return 200 * this.energyIntensity;
     }
 
     protected randomDirection() {
@@ -165,9 +157,36 @@ export class Creature {
     }
 
     protected setDependenceVariables() {
+        this.radius = this.size * creatureParams.radius;
+        this.visibilityRadius = this.visibilitySize * creatureParams.visibilityAreaSize;
+
         this.energy = this.replenishEnergy();
         this.dX = this.randomDirection();
         this.dY = this.randomDirection();
+    }
+
+    private ifNotReturnedToHome = (foodArray: IFood[]) => {
+        if (this.returnedToHome) {
+            return;
+        }
+
+        const haveFood = foodArray.length > 0;
+
+        if (this.grabbedFoodCount === 0) {
+            if (haveFood) {
+                this.searchFood(foodArray);
+            } else {
+                this.isDie = true;
+            }
+        }
+
+        else if (this.grabbedFoodCount === 1 && !this.noFoodForPosterity && haveFood) {
+            this.tryFindFoodForPosterity(foodArray);
+        }
+
+        else if (this.grabbedFoodCount === 2 || this.noFoodForPosterity || !haveFood) {
+            this.goHome();
+        }
     }
 
     private searchFood(foodArray: IFood[]) {
@@ -277,7 +296,7 @@ export class Creature {
     }
 
     private resetState() {
-        if (!this.checkDeath()) {
+        if (!this.isDie) {
             this.grabbedFoodCount = 0;
             this.returnedToHome = false;
             this.noFoodForPosterity = false;
@@ -287,7 +306,7 @@ export class Creature {
     }
 
     /**
-     * Проверка, добыла ли еду сущность
+     * Проверка, добыло ли еду существо
      * @param food 
      */
     private foodWasGrabbedCheck(food: IFood) {
@@ -295,7 +314,7 @@ export class Creature {
     }
 
     /**
-     * Проверка, на нахождение сущности в пределах области
+     * Проверка, на нахождение существа в пределах области
      */
     private creatureOutsideArea() {
         const pointDistance = calcPointDistance(this.x, this.y, this.area.centerX, this.area.centerY);
@@ -355,12 +374,12 @@ export class Creature {
         this.energy -= this.getWasteEnergyPerMove();
     }
 
-    // (velocity + visibility^3) / wasteEnergyVal
     private getWasteEnergyPerMove() {
         const velocity = this.getVelocityFromD();
-        const visibility = Math.pow(this.visibilityRadius / this.visibilityAreaSize, 2);
+        const visibility = this.visibilitySize;
+        const size = Math.pow(this.size, 3);
 
-        return Math.round(((velocity + visibility) / this.wasteEnergyVal) * 100) / 100;
+        return Math.round((((velocity * size) + visibility) / this.wasteEnergyVal) * 100) / 100;
     }
 
     private getVelocityFromD() {
@@ -375,8 +394,6 @@ export class Creature {
         if (this.energy <= 0) {
             this.isDie = true;
         }
-
-        return this.isDie;
     }
 }
 
@@ -391,6 +408,14 @@ export interface IProps {
 
 export interface ICreatureParams {
     velocity: number;
-    visibilityRadius: number;
+    visibilitySize: number;
     energyIntensity: number;
+    size: number;
+
+    radius: number;
+    x: number;
+    y: number;
+    returnedToHome: boolean;
+    isDie: boolean;
+    grabbedFoodCount: number;
 }

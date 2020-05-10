@@ -2,14 +2,17 @@ import React from 'react';
 import { Table, ITableHeader, ITableRow } from '../../../Table';
 import { ISelectionResultData } from '../../SelectionDetails';
 import { getParamAverageValue } from '../../../helpers';
+import {fixValue} from '../../../helpers';
 
 const TableDetails = ({ selection }: IProps) => {
     const headers: ITableHeader[] = [
         { title: 'День' },
-        { title: 'Средняя скорость' },
-        { title: 'Средняя чувствительность' },
-        { title: 'Выжило' },
+        { title: 'Средн. скорость' },
+        { title: 'Средн. чувствительность' },
+        { title: 'Средн. энергия' },
+        { title: 'Средн. размер' },
         { title: 'Дало потомство' },
+        { title: 'Выжило' },
         { title: 'Погибло' },
     ];
 
@@ -17,15 +20,19 @@ const TableDetails = ({ selection }: IProps) => {
         const { survivedCreatures, survivedCount, offspringCount, dieCount } = selectionResult;
 
         const averageVelocity = getParamAverageValue(survivedCreatures.map(e => e.velocity));
-        const averageVisibilityRadius = getParamAverageValue(survivedCreatures.map(e => e.visibilityRadius));
+        const averageVisibilityRadius = getParamAverageValue(survivedCreatures.map(e => e.visibilitySize));
+        const averageEnergy = getParamAverageValue(survivedCreatures.map(e => e.energyIntensity));
+        const averageSize = getParamAverageValue(survivedCreatures.map(e => e.size));
 
         return ({
             value: {
                 day: `${i + 1}`,
-                velocity: parseFloat(averageVelocity.toFixed(2)),
-                visibilityRadius: parseFloat(averageVisibilityRadius.toFixed(2)),
-                survivedCount,
+                velocity: fixValue(averageVelocity),
+                visibilityRadius: fixValue(averageVisibilityRadius),
+                energy: fixValue(averageEnergy),
+                size: fixValue(averageSize),
                 offspringCount,
+                survivedCount,
                 dieCount
             }
         });
