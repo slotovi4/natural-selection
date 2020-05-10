@@ -34,7 +34,9 @@ const DetailsRows = ({ lastSelectionDaysArr }: IProps) => {
         <div className={cl('Row')}>
             <span className='pr-2'>{title}</span>
             <div className='d-flex'>
-                <strong>{fixValue(value)}</strong>
+                <strong className={!paramDifference ? cl('Value-Padding') : undefined}>
+                    {fixValue(value)}
+                </strong>
                 <ColorizeParamDifference paramDifference={paramDifference} />
             </div>
         </div>
